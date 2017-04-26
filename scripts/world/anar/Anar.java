@@ -29,8 +29,7 @@ public class Anar {
     public void generate(SectorAPI sector) {
         
         StarSystemAPI system = sector.createStarSystem("Anar");
-        //system.getLocation().set(-6400, 11500);
-        system.getLocation().set(-6200, 7500);
+        system.getLocation().set(-4500, 1500);
 	LocationAPI hyper = Global.getSector().getHyperspace();
         
         system.setBackgroundTextureFilename("graphics/backgrounds/anarbg.jpg");

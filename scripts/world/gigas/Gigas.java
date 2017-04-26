@@ -36,7 +36,7 @@ public class Gigas {
     
     public void generate(SectorAPI sector) {
         StarSystemAPI system = sector.createStarSystem("Gigas");
-        system.getLocation().set(-75, 9100);
+        system.getLocation().set(-3700, 100);
         //system.getLocation().set(-5250, 4500);
 	LocationAPI hyper = Global.getSector().getHyperspace();
                 
