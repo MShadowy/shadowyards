@@ -1,0 +1,112 @@
+for later
+    Add Persean League skins
+        Similar to former (C) variants above, likely favoring a midline combat set up
+        Ships: Seski, Enlil, Inanna, Clade, Sargasso, Elysium, Charybdis, Tartarus, Mimir, Neriads, Skinwalkers, Raksashas, trade and utility ships
+
+0.6.5 Roadmap
+    Add Enkidu-class special actions frigate
+
+
+0.6.1 - 0.6.4 Roadmap
+    Various enhancements to Anar and Gigas.
+        Berin's stash will be surrounded a unique terrain feature which makes detecting ships inside it harder.  Eventually, the stash will be made unknown until discovered.
+        Anar gains a series of cloud like formations between Euripides and Calleach (function not yet decided) and some small asteroid fields.
+        Gigas gains a number of mildly hazardous terrains including a field which will greatly slow down craft and reduce CR.
+    Add the Eitri-class Modular Industrial Ship(todo: sprite partially finished):
+        lots of variants; has a "Modular Industrial Tray" system that lets it fill multiple commercial/industrial applications
+                not actually a ship system
+        most notoriously is that of a deep space refinery ship allowing for efficient mineral extraction in remote systems
+        most common is cargo transport, though
+        can also do research and function as a slightly less draining construction rig
+        also, pirate versions of these are capital scale carriers(!)
+        Versions avaialbe for this patch: cargo hauler-refinery(in this version of things, more like a larger Venture)-pirate carrier
+    Add Archipelago Construction Ship(sprite started, stalled):
+        can rapidly restock and supply ships in fleet, and construct new ships/supplies if enough materials are present (the last is very unlikely to be implemented until industry is in)
+        system is intended to be a massive scale "drone" system -- basically has several squadrons of fighters and bombers permanently stationed on board
+        not a combat ship by any means; slow, vulnerable, inflexible, armament mostly built in dedicated pd weapons
+    Add the Eitri-class Modular Industrial Ship(todo: sprite partially finished):
+                lots of variants; has a "Modular Industrial Tray" system that lets it fill multiple commercial/industrial applications
+                        not actually a ship system
+                most notoriously is that of a deep space refinery ship allowing for efficient mineral extraction in remote systems
+                most common is cargo transport, though
+                can also do research and function as a slightly less draining construction rig
+                also, pirate versions of these are capital scale carriers(!)
+                Versions avaialbe for this patch: cargo hauler-refinery(in this version of things, more like a larger Venture)-pirate carrier
+        Bonus Addition: Add the Baseplate-class Carrier Frigate
+                it is a bad ship
+                "Speculated to exist primarly as a means to dispose of particularly troublesome crew, the Baseplate-class Carrier Frigate is an unusual and extensive modification of the Ashnan Frieght Hauler."
+                Converted Ashnan
+                No loss of speed but acceleration and turning are worse because of the badly balanced mass distribution and reduced durability from stripping out most of the central hull
+                Loses the hardpoint, turret converted to ballistic mount
+                Loses drone, gets two awkwardly place flare launchers
+        Add Unnamed Heavy Blaster type thing (todo, somewhere between the standard Heavy Blaster and the Scalaron Repeater; fires a short but hefty burst of relatively innacurate shots)
+                Revised, the MCEPC now fills this role; make it more like an energy chaingun
+        Add small extremely rapid fire energy weapon
+                In tandem with the above, rebalance light cepc and chaingang to make them more valuable--probably acting as a kind of burst firing flak
+    Add Unnamed Heavy Blaster type thing (todo, somewhere between the standard Heavy Blaster and the Scalaron Repeater; fires a short but hefty burst of relatively innacurate shots)
+        Revised, the MCEPC now fills this role; make it more like an energy chaingun
+    Add Unnamed "Energy Mine" launcher (fires a spray of small missiles which slow down after a moderate distance (~700-900 units); guided so no FF, enemy ships that get too close get blasted)
+        probably will have a small and medium version
+    Add Unnamed 30 OP Large Mount energy weapon that basically does what the old Pandora Array did.
+    Add small extremely rapid fire energy weapon 
+    Remove (C)ivilian variants
+        Cream colored ships will now belong to unnamed third party government with ties to SRA; will generally be more in midline style (ballistics for offense, energy PD)
+        Ships: Seski, Enlil, Morningstar, Clade, Sargasso, Elysium, Tartarus, a cleaned up version of the pirate carrier Eitri, Neriads, Kobolds, trade and utility ships
+        Add new system (mostly) controlled by this ally.
+    Return Cyan/Teal utility hulls to SRA sprite pool
+    Replace existing (C) ships with (D)amaged variants, plus (D) Clade, Inanna and Tartarus
+        Add unique (D) hullmod, Misaligned Flux Conduits, which reduces flux dissipation as hard flux rises
+    Add a local pirate faction (the Zaikan Cartels) for Pirates in and around SRA territory to make use of said ships and SRA uglies/bashes
+    Add Redwings subfaction and skins to Shadowyards
+        The Redwings are an elite unit, minimum crew levels are veteran, fleets are commanded by high level commanders.
+        Have a special refit only present on these ships which improves flux stats, armor and OP.
+        Redwings craft cannot normally be obtained, and are available only via boarding or as rewards for completing high level missions. 
+        Ships: Enlil, Seski, Shamash, Morningstar, Clade, Sargasso, (plus Enkidu [which, thinking about it, is probably only available to RW units], Solaris and Minarette when made) Charybdis, Scylla, Tartarus, Mimir, all Fighters
+        If possible, Redwings have some special behaviours:
+            Unlike the Lions Guard, the Redwings are specifically dispatched for problematic situations and are not normally flying around on patrol.
+            RW Units are mostly used as a special response unit, and are likely to be dispatched to protect SRA assets under particular duress (as such they're likely to be deployed to Gigas in the base campaign to defend Stillness.)
+            RW units will also spawn to lead SRA task forces in defending allies from Templar attacks if Templars are enabled.
+                If Anar is directly threatened by a Templar encroachment all available RW fleets will spawn, with at least 1 to defend Euripides.
+                    Fleet allotment if all fleets available: (2 Euripides, 2 Theramin, 1 Lumen, 1 Patrol; Order/Priority - Euripides, Theramin, Euripides, Lumen, Theramin, Patrol)
+                This will require a special fleet manager, even sans Templar interactions; a Nexerelin hook may also be needed (though in all likelihood I'll just keep the RW out of it)
+                    Redwings will have a maxFleets tracker to ensure that only so many can be in play at one time (tentatively 6 fleets)
+                    There will also be a certain amount of enforced downtime; downtime is higher if a fleet has been destroyed.
+                        Unlikely to be an issue unless RW units have been taking very heavy casualties or if all untis have been deployed at once.
+                    While perhaps unecessary, it may be possible to force the unit to disband if all fleets have been destroyed and none can spawn.
+    Rewrite mission descriptions and go over lore to update them to current standards, and improve mission scenario implementation
+    Adjust Seski's ship system to be a "Fractal Displacer"; single charge at any given time, charges reasonably quickly (not sure how to implement)
+                Consists of several (6-10) short displacements chained together in a burst.  At each jump the ship gets the vector of the last jump (or initial vector) and modifies it
+                within a range
+                EMP lightning bursts follow behind
+                Individual jumps have a vey short duration, but the overal time taken should be longer than a wolf jumping three times rapidly
+                Total range covered should be 1.75 - 2.5 standard displacer hops
+                Cycle time should be 1.25 - 2 displacer charging cycles
+    Improve Mimir AI by adding officer specific routines
+                Aggressive:  Charge happy, aggressively uses it to close, not too worried about ramming though it still would prefer not to
+                Standard: As current fixes; standard behavior
+                Cautious: Will try to avoid using it except to avoid damage; only uses it for getting around if it's sure it won't hit anything, probably won't do so in combat
+                Timid: Hyper sensitive to incoming damage, never uses it to advance, has a special routine that tries to figure out if the vector will lead it further from enemies and use 
+                it if it does so
+    Sounds to do: 
+        Urumi *P2
+        Splinter rocket launch sounds *P3
+        Black Cap launch sounds *P3
+        Sounds for built in weapons (Phasegun*, Phase Beam) *P4
+        As well as sounds for new weapons (Barrago and Trishula) *P1
+        Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
+        Generic Sound effects still using vanilla sounds: Ship Explosions, Shields up/down, EMP Loop/Overload Explosions - 4; EMP - Start sound effect and loop
+    (Address whatever balance issues come up)
+    Add Prototype Fast Attack Cruiser (repurposed original Elysium sprite) as IBB Bounty
+                Tentative name: Asphodel
+                ship traits; fast, maneuverable, solid armaments package, non standard defensive package
+                Things can do with bullet:
+                Eat Bullet, Repel Bullet, Teleport Bullet, Ignore Bullet, Make Bullet Intangible, Destroy Bullet, Slow Bullet Down, Speed Bullet Up, Avoid Bullet, Tank Bullet
+                Combination of Avoid/Repel - a short, fixed duration Time Slow which gives at least 2x the dilation of a normal phase cloak combined with a repulsion wave when the effect ends
+                Has a pretty considerable f/s build up while active
+                Limited number of availabe uses at any given time (3-5) whith a slowish regeneration
+                Repulsion effect pushes back ships/asteroids/bullets/missiles except the projectiles created by the Asphodels F-Key system
+                F-Key is a weapon-type system which does a sizeable amount of damage on a long cd, firing a number of tracking projectiles
+                However, when the right click system is active the function changes significantly
+                The damage reduces sharply, as does the flux use (but not as much) and the projectiles lose their homing capability
+                In exchange the cd becomes very short (something like 1/4 - 1/3 of a second) allowing it to be spammed at the risk of overloading
+                As an additional balancing measure when the ships right-click system goes offline, the F-key system is considered to have been used and must go through it's full cd
