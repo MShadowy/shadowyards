@@ -1,0 +1,12 @@
+{
+    "id":"ms_swacs",
+    "type":"STAT_MOD",
+    "aiType":"TARGETING_FEED",
+
+    "statsScript":"data.shipsystems.scripts.MS_swacs",
+	
+    "useSound":"system_targeting_feed",
+    #"loopSound":"system_targeting_feed_loop",
+    "useSound":"system_ammo_feeder",
+    "outOfUsesSound":"gun_out_of_ammo",
+}
