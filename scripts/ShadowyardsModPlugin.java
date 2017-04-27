@@ -50,10 +50,6 @@ public class ShadowyardsModPlugin extends BaseModPlugin {
                 }
             }
         } catch (NoClassDefFoundError ex) {
-            String message = System.lineSeparator()
-                    + System.lineSeparator() + "ShaderLib not found; advanced graphics function disabled."
-                    + System.lineSeparator();
-            throw new NoClassDefFoundError(message); 
         }
         try {
             if (TEM_LatticeShield.AEGIS_SHIELD_COLOR != null) {

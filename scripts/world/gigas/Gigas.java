@@ -22,7 +22,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner.ShipRecoverySpecialCreator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipCondition;
-import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldParams;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldSource;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
@@ -36,7 +35,7 @@ public class Gigas {
     
     public void generate(SectorAPI sector) {
         StarSystemAPI system = sector.createStarSystem("Gigas");
-        system.getLocation().set(-3700, 100);
+        system.getLocation().set(-6500, -1550);
         //system.getLocation().set(-5250, 4500);
 	LocationAPI hyper = Global.getSector().getHyperspace();
                 
@@ -184,6 +183,8 @@ public class Gigas {
         StarSystemGenerator.addSystemwideNebula(system, StarAge.OLD);
 
         system.autogenerateHyperspaceJumpPoints(true, true);
+        
+        cleanup(system);
     }
     
     void cleanup(StarSystemAPI system){

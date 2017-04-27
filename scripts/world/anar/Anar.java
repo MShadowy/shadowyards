@@ -3,7 +3,6 @@ package data.scripts.world.anar;
 import data.scripts.world.MS_Conditions;
 import data.scripts.world.AddMarketplace;
 import com.fs.starfarer.api.Global;
-//import com.fs.starfarer.api.InteractionDialogImageVisual;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -29,7 +28,7 @@ public class Anar {
     public void generate(SectorAPI sector) {
         
         StarSystemAPI system = sector.createStarSystem("Anar");
-        system.getLocation().set(-4500, 1500);
+        system.getLocation().set(-9000, 3400);
 	LocationAPI hyper = Global.getSector().getHyperspace();
         
         system.setBackgroundTextureFilename("graphics/backgrounds/anarbg.jpg");
@@ -217,6 +216,8 @@ public class Anar {
         //StarSystemGenerator.addSystemwideNebula(system, StarAge.AVERAGE);
 
         system.autogenerateHyperspaceJumpPoints(true, true);
+        
+        cleanup(system);
     }
     
     void cleanup(StarSystemAPI system){
