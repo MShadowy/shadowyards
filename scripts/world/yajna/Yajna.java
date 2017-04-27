@@ -40,7 +40,8 @@ public class Yajna {
         //Udgatri is a moonless gas giant which probably devoured all the inner system mass when the system formed
         PlanetAPI yaj1 = system.addPlanet("udgatri", yaj, "Udgatri", "ice_giant", 20, 670, 2100, 120);
         //Around Udgatri is Pillager Point, a large and successful Pirate haven, complete with Pirate "Military" base(!) and freeport
-        SectorEntityToken pillager = system.addCustomEntity("pillager", "Pillager Point", "station_side06", "pirate");
+        SectorEntityToken pillager = system.addCustomEntity("pillager", "Pillager Point", "station_side06", "pirates");
+        pillager.setCircularOrbitPointingDown(yaj1, 55, 500, 100);
         pillager.setCustomDescriptionId("pillager_point");
         
         AddMarketplace.addMarketplace("pirates",
@@ -138,7 +139,7 @@ public class Yajna {
         );
         
         //Karma is a small mining outpost under SRA control
-        PlanetAPI karma = system.addPlanet("karma", yaj, "Karma", "rocky-unstable", 95, 60, 9750, 1180);
+        PlanetAPI karma = system.addPlanet("karma", yaj, "Karma", "rocky_unstable", 95, 60, 9750, 1180);
         karma.setCustomDescriptionId("planet_karma");
         
         AddMarketplace.addMarketplace("shadow_industry",
@@ -153,7 +154,8 @@ public class Yajna {
         );
         
         //Lastly, Maks Hole, named so as to mock the eponymous Mak, is a dinky pirate waystation hiding out in the nebula
-        SectorEntityToken maks_hole = system.addCustomEntity("maks_hole", "Maks Hole", "station_pirate_type", "pirate");
+        SectorEntityToken maks_hole = system.addCustomEntity("maks_hole", "Maks Hole", "station_pirate_type", "pirates");
+        maks_hole.setCircularOrbitPointingDown(yaj, 115, 12500, 1270);
         maks_hole.setCustomDescriptionId("maks_hole");
         
         AddMarketplace.addMarketplace("pirates",
