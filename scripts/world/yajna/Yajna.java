@@ -70,7 +70,7 @@ public class Yajna {
                 null,
                 "Jnana",
                 5,
-                new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.MILITARY_BASE, MS_Conditions.MODULARFAB, Conditions.SPACEPORT,
+                new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.HABITABLE, Conditions.MILITARY_BASE, MS_Conditions.MODULARFAB, Conditions.SPACEPORT,
                     Conditions.HYDROPONICS_COMPLEX, Conditions.ORE_REFINING_COMPLEX, Conditions.ANTIMATTER_FUEL_PRODUCTION, Conditions.POPULATION_5)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
