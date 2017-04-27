@@ -38,7 +38,7 @@ public class Yajna {
         system.addRingBand(yaj, "misc", "rings_asteroids0", 256f, 1, Color.white, 256f, 800, 40f, null, null);
         
         //Udgatri is a moonless gas giant which probably devoured all the inner system mass when the system formed
-        PlanetAPI yaj1 = system.addPlanet("udgatri", yaj, "Udgatri", "ice_giant", 20, 670, 2100, 120);
+        PlanetAPI yaj1 = system.addPlanet("udgatri", yaj, "Udgatri", "ice_giant", 20, 500, 2100, 120);
         //Around Udgatri is Pillager Point, a large and successful Pirate haven, complete with Pirate "Military" base(!) and freeport
         SectorEntityToken pillager = system.addCustomEntity("pillager", "Pillager Point", "station_side06", "pirates");
         pillager.setCircularOrbitPointingDown(yaj1, 55, 800, 100);
