@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import data.scripts.world.anar.Anar;
 import data.scripts.world.gigas.Gigas;
 import data.scripts.world.outposts.Outposter;
+import data.scripts.world.yajna.Yajna;
 
 public class SHIGen implements SectorGeneratorPlugin {
     
@@ -19,6 +20,7 @@ public class SHIGen implements SectorGeneratorPlugin {
         
         new Anar().generate(sector);
         new Gigas().generate(sector);
+        new Yajna().generate(sector);
         new Outposter().generate(sector);
     }
     
