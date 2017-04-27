@@ -1,8 +1,19 @@
-0.6.0.6 Changelog
+0.6.0.7.1 Changelog
+
+    Fixed a stupid coding decision with the Sargasso's SWACs system that made it stupidly and unintentionally overpowered
+    Decided I didn't like Anar and Gigas' positions in hyperspace and have decompressed them some
+        Anar is now at -9000, 3400
+        Gigas is now at -6500, -1550
+    A new star system, Yajna, has been added
+        Yajna is shared (somewhat uneasily) between the SRA and the Persean league, both quietly contesting over a valuable, nominally independent world
+        Located at -3600, -200
+
+0.6.0.7 Changelog
 
     Adjusted Scatter CEPC flux costs to 1100 per volley (from 900/volley)
         Also fixed a mistake with the flux cost which was causing the flux generated per volley to be a couple orders of magnitude lower than it should be, oops
         Gave it more of a shotgun like effect to help bring up the polish level a wee bit
+    Booster jets system changed to make it a punchier short duration thruster
     The Inanna has had it's layout adjusted to resolve a consistent problem resulting from it's broadside layout, and should now broadside much more effectively.
         Additionally, the Inanna's flux cap has been reduced to 2500 (from 3000) and it's dissipation rate to 250 (from 300) in order to somewhat offset this increase in effectiveness
     The Scylla's Supply cost/month has increased to 35 (from 30)
@@ -14,7 +25,13 @@
     Changes to the Charybdis
         Added the CARRIER, COMBAT tag
         Mildly reduced mobility: Max Speed reduced to 65 (from 70), Turn Rate to 35 (from 40), and Turn Acceleration to 35 (from 45)
-        Reduced drone count to 3 (from 4) and lowered replacement rate
+        Thetis Drones system removed and replaced with Booster Jets
+    Changes to the Sargasso
+        Sprite updated to make it look generally better
+        Ship system updated and streamlined alongside the fighter updates
+    Changes to the Ashnan
+        The Ashnan's drone system has been removed; the ship now comes with a built in wing of 3 "loader" type utility nad mining drones
+        The Ashnan now has the Booster Jets system
     Changes to the Mimir's Lock Drive system
         Removed the ability to vent during use from the Mimir's Lock Drive system
         Rewrote parts of the Lock Drive AI handling collision evaluation, which should result in the AI being less crash happy
@@ -22,6 +39,14 @@
         TAG range increased to 1000 (from 800)
         Duration increased to 20 seconds and damage taken increased by 1.5* (from 10 seconds, 1.25 *)
         Cooldown decreased to 20 seconds (from 25)
+    Carriers flight decks adjusted for 0.8a
+    Fighters retooled and balance adjusted for 0.8a
+        Neriad's Shrike ASM replaced with a Blackcap Launcher
+        Health, Armor and Flux stats generally reduced
+    The SRA now fields the QME-2200 Wraith Drone Fighter
+        Fast, cheap, swiftly replaced craft equipped with a moderate damage/high impact beam weapon and a miniflak
+        0 OP to fit
+        6 fighters per wing; bulk up on these (They still lose to Talons)
     Adjusted Hue and details of SRA craft to bring them in line with new visual standards
     Added Vectored Thrusters to the Charybdis, Enlil, Mimir, Potnia/Potnia-Bis and Southpaw
     Returned Cyan/Teal utility hulls to SRA sprite pool
@@ -38,37 +63,12 @@
     Changed Skinwalker and Bit Drone Particle Guns to Projectiles from Beams
         Bit Drone Guns DPS remains 50, F/S remains 25
         Skinwalker Particle Gun to 117 DPS, 75 F/S (from 111, 67)
-    Moved Anar back to it's original location at -6000, 7500 (was previously at -6400, 11500) and cleared the hyperspace clouds blocking it (credit to MesoTronik for the code snippet)
-        But since the locations will have to be changed anyway given upcoming sector chages I guess it's not that critical =/
+    Gigas moved to -3700, 100
+    Anar moved to -4500, 1500
+    Adjusted and updated SRA related economic conditions
     Implemented improvements to the Random mission generator to more closely match campaign fleet generation, and fixed a bug that was including the deprecated Knights of Ludd faction in the factions lists.
     Resolved shot trajectory issue plaguing the Nidhoggr lance by converting the shot to BALLISTIC (was formerly BALLISTIC_AS_BEAM)
     Improved behavior of the TAG System AI (thanks Tongo!)
-    
-    ToDo:
-        (Optional) Adjust Seski's ship system to be a "Fractal Displacer"; single charge at any given time, charges reasonably quickly (not sure how to implement)
-                Consists of several (6-10) short displacements chained together in a burst.  At each jump the ship gets the vector of the last jump (or initial vector) and modifies it
-                within a range
-                EMP lightning bursts follow behind
-                Individual jumps have a vey short duration, but the overal time taken should be longer than a wolf jumping three times rapidly
-                Total range covered should be 1.75 - 2.5 standard displacer hops
-                Cycle time should be 1.25 - 2 displacer charging cycles
-        (Optional) Finish Sounds
-                Urumi *P2
-                Splinter rocket launch sounds *P3
-                Black Cap launch sounds *P3
-                Sounds for built in weapons (Phasegun*, Phase Beam) *P4
-                As well as sounds for new weapons (Barrago and Trishula) *P1
-                Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
-                Generic Sound effects still using vanilla sounds: Ship Explosions, Shields up/down, EMP Loop/Overload
-                        Explosions - 4; EMP - Start sound effect and loop
-        Add visual effects for the TAG system (partial)
-        (Optional) Improve the visual effects for the SWACs system (add ping effect at Sargasso)
-        (Optional) Rewrite mission descriptions and go over lore to update them to current standards and improve mission scenario implementation if time permits
-        (Optional) Add Vectored thrusters to the Poseidon
-        (Optional) Go over Boss Ship sprites and bring them up to par
-        (Optional) Adjust Phasegun to have a secondary explosion effect following shot death and make necessary damage adjustments to account for it
-        (Optional) Add visual effects for Potnia's ecm system
-        
 
 0.6.0.5 Changelog
 
