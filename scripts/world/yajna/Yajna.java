@@ -41,7 +41,7 @@ public class Yajna {
         PlanetAPI yaj1 = system.addPlanet("udgatri", yaj, "Udgatri", "ice_giant", 20, 670, 2100, 120);
         //Around Udgatri is Pillager Point, a large and successful Pirate haven, complete with Pirate "Military" base(!) and freeport
         SectorEntityToken pillager = system.addCustomEntity("pillager", "Pillager Point", "station_side06", "pirates");
-        pillager.setCircularOrbitPointingDown(yaj1, 55, 500, 100);
+        pillager.setCircularOrbitPointingDown(yaj1, 55, 800, 100);
         pillager.setCustomDescriptionId("pillager_point");
         
         AddMarketplace.addMarketplace("pirates",
@@ -79,6 +79,7 @@ public class Yajna {
         //Hotri is a undeveloped but potentially very rich world which both the Leeague and SRA have been unsuccesfully courting--the locals are having none of that
         PlanetAPI hotri = system.addPlanet("hotri", yaj, "Hotri", "terran-eccentric", 110, 90, 5500, 295);
         SectorEntityToken hotri_port = system.addCustomEntity("hotri_port", "Hotri Port", "station_sporeship_derelict", "independent");
+        hotri_port.setCircularOrbitPointingDown(hotri, 60, 400, 100);
         hotri.setCustomDescriptionId("planet_hotri");
         hotri_port.setCustomDescriptionId("hotri_port");
         
@@ -125,6 +126,7 @@ public class Yajna {
         PlanetAPI yaj6a = system.addPlanet("soma", mantra, "Soma", "frozen", 190, 35, 450, 100);
         PlanetAPI yaj6b = system.addPlanet("havir", mantra, "Havir", "frozen3", 70, 15, 700, 60);
         SectorEntityToken mandala_station = system.addCustomEntity("mandala_station", "Mandala Station", "station_side03", "persean");
+        mandala_station.setCircularOrbitPointingDown(mantra, 75, 400, 100);
         mantra.setCustomDescriptionId("planet_mantra");
         
         AddMarketplace.addMarketplace("persean",
