@@ -7,15 +7,11 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipEngineControllerAPI.ShipEngineAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
-import static com.fs.starfarer.api.impl.combat.RecallDeviceStats.getFighters;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
-import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
@@ -34,12 +30,10 @@ public class MS_swacs extends BaseShipSystemScript {
     public static final Color JITTER_COLOR = new Color(255,50,0,75);
 
     //Just some global variables.
-    public static final float RANGE = 5000f;
-    public static final float ACCURACY_BONUS = 10f;
-    public static final float RANGE_BONUS = 25f;
+    public static final float ACCURACY_BONUS = 20f;
+    public static final float RANGE_BONUS = 10f;
     public static final float DAMAGE_BOOST = 33f;
-    public static final float SPEED_BONUS = 15f;
-    public static final float AGILITY_BONUS = 20f;
+    public static final float AGILITY_BONUS = 15f;
     private static final Vector2f ZERO = new Vector2f();
 
     //Creates a hashmap that keeps track of what ships are receiving the benefits.
@@ -69,20 +63,20 @@ public class MS_swacs extends BaseShipSystemScript {
 			if (fighter.isHulk()) continue;
 			MutableShipStatsAPI fStats = fighter.getMutableStats();
 				
-			fStats.getBallisticWeaponDamageMult().modifyMult(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
-			fStats.getEnergyWeaponDamageMult().modifyMult(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
-			fStats.getMissileWeaponDamageMult().modifyMult(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
+			fStats.getBallisticWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
+			fStats.getEnergyWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
+			fStats.getMissileWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
                         
-                        fStats.getAutofireAimAccuracy().modifyMult(id, ACCURACY_BONUS);
-                        fStats.getBallisticWeaponRangeBonus().modifyMult(id, RANGE_BONUS);
-                        fStats.getEnergyWeaponRangeBonus().modifyMult(id, RANGE_BONUS);
-                        fStats.getBeamWeaponRangeBonus().modifyMult(id, RANGE_BONUS);
+                        fStats.getAutofireAimAccuracy().modifyPercent(id, ACCURACY_BONUS);
+                        fStats.getBallisticWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
+                        fStats.getEnergyWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
+                        fStats.getBeamWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
                         
-                        fStats.getMaxSpeed().modifyMult(id, SPEED_BONUS);
-                        fStats.getAcceleration().modifyMult(id, AGILITY_BONUS);
-                        fStats.getDeceleration().modifyMult(id, AGILITY_BONUS);
-                        fStats.getMaxTurnRate().modifyMult(id, AGILITY_BONUS);
-                        fStats.getTurnAcceleration().modifyMult(id, AGILITY_BONUS);
+                        fStats.getMaxSpeed().modifyPercent(id, AGILITY_BONUS);
+                        fStats.getAcceleration().modifyPercent(id, AGILITY_BONUS);
+                        fStats.getDeceleration().modifyPercent(id, AGILITY_BONUS);
+                        fStats.getMaxTurnRate().modifyPercent(id, AGILITY_BONUS);
+                        fStats.getTurnAcceleration().modifyPercent(id, AGILITY_BONUS);
 				
 			if (jitterLevel > 0) {
 				//fighter.setWeaponGlow(effectLevel, new Color(255,50,0,125), EnumSet.allOf(WeaponType.class));
@@ -158,7 +152,7 @@ public class MS_swacs extends BaseShipSystemScript {
         if (index == 0) {
             return new StatusData("" + Misc.getRoundedValueMaxOneAfterDecimal(1f + DAMAGE_BOOST * effectLevel * 0.01f) + "x fighter damage", false);
         } else if (index == 1) {
-            return new StatusData("" + Misc.getRoundedValueMaxOneAfterDecimal(1f + SPEED_BONUS * effectLevel * 0.01f) + "x fighter speed", false);
+            return new StatusData("" + Misc.getRoundedValueMaxOneAfterDecimal(1f + AGILITY_BONUS * effectLevel * 0.01f) + "x fighter speed", false);
         }
         return null;
     }
