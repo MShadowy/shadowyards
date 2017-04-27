@@ -41,6 +41,7 @@ public class Yajna {
         PlanetAPI yaj1 = system.addPlanet("udgatri", yaj, "Udgatri", "ice_giant", 20, 670, 2100, 120);
         //Around Udgatri is Pillager Point, a large and successful Pirate haven, complete with Pirate "Military" base(!) and freeport
         SectorEntityToken pillager = system.addCustomEntity("pillager", "Pillager Point", "station_side06", "pirate");
+        pillager.setCustomDescriptionId("pillager_point");
         
         AddMarketplace.addMarketplace("pirates",
                 pillager,
@@ -68,7 +69,7 @@ public class Yajna {
                 null,
                 "Jnana",
                 5,
-                new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.MILITARY_BASE, MS_Conditions.MODULARFAB,
+                new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.MILITARY_BASE, MS_Conditions.MODULARFAB, Conditions.SPACEPORT,
                     Conditions.HYDROPONICS_COMPLEX, Conditions.ORE_REFINING_COMPLEX, Conditions.ANTIMATTER_FUEL_PRODUCTION, Conditions.POPULATION_5)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
@@ -85,8 +86,8 @@ public class Yajna {
                 new ArrayList<>(Arrays.asList((SectorEntityToken) hotri_port)),
                 "Hotri",
                 4,
-                new ArrayList<>(Arrays.asList(Conditions.ARID, Conditions.MILD_CLIMATE, Conditions.ORBITAL_STATION, Conditions.FARMLAND_RICH, Conditions.RARE_ORE_ABUNDANT,
-                    Conditions.ORE_MODERATE, Conditions.COTTAGE_INDUSTRY, Conditions.RUINS_SCATTERED, Conditions.RURAL_POLITY, Conditions.POPULATION_4)),
+                new ArrayList<>(Arrays.asList(Conditions.ARID, Conditions.MILD_CLIMATE, Conditions.HABITABLE, Conditions.ORBITAL_STATION, Conditions.FARMLAND_RICH, 
+                        Conditions.RARE_ORE_ABUNDANT, Conditions.ORE_MODERATE, Conditions.COTTAGE_INDUSTRY, Conditions.RUINS_SCATTERED, Conditions.RURAL_POLITY, Conditions.POPULATION_4)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f
         );
@@ -156,9 +157,9 @@ public class Yajna {
         maks_hole.setCustomDescriptionId("maks_hole");
         
         AddMarketplace.addMarketplace("pirates",
-                pillager,
+                maks_hole,
                 null,
-                "Pillager Point",
+                "Maks Hole",
                 3,
                 new ArrayList<>(Arrays.asList(Conditions.ORBITAL_STATION, Conditions.FRONTIER, Conditions.VICE_DEMAND,
                     Conditions.FREE_PORT, Conditions.POPULATION_3)),
