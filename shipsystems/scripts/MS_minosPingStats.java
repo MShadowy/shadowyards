@@ -53,6 +53,11 @@ public class MS_minosPingStats extends BaseShipSystemScript {
         //same objects as before.
         ShipAPI host_ship = (ShipAPI) stats.getEntity();
         
+        if (engine != Global.getCombatEngine()) {
+            engine = Global.getCombatEngine();
+            receiving.clear();
+        }
+        
         stats.getSightRadiusMod().unmodify();
         
         for (ShipAPI ship : engine.getShips()) {
@@ -72,5 +77,9 @@ public class MS_minosPingStats extends BaseShipSystemScript {
             return new StatusData("fleet ecm capalities improved", false);
         }
         return null;
+    }
+    
+    public void init (CombatEngineAPI engine) {
+        this.engine = engine;
     }
 }
