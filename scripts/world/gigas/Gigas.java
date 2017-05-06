@@ -210,7 +210,6 @@ public class Gigas {
 	if (recoverable) {
 		ShipRecoverySpecialCreator creator = new ShipRecoverySpecialCreator(null, 0, 0, false, null, null);
 		Misc.setSalvageSpecial(ship, creator.createSpecial(ship, null));
-	}
-		
+	}	
     }
 }
