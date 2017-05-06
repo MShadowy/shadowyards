@@ -20,7 +20,6 @@ import org.lwjgl.util.vector.Vector2f;
 public class MS_swacs extends BaseShipSystemScript {
 
     private CombatEngineAPI engine;
-    private ShipAPI host;
     
     public static final Object KEY_JITTER = new Object();
     
@@ -38,8 +37,6 @@ public class MS_swacs extends BaseShipSystemScript {
 
     //Creates a hashmap that keeps track of what ships are receiving the benefits.
     private static final Map<ShipAPI, ShipAPI> receiving = new HashMap<>();
-
-    private static final String staticID = "sargassoSWACSbuff";
 
     @Override
     public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {
@@ -105,7 +102,7 @@ public class MS_swacs extends BaseShipSystemScript {
     }
     
     private List<ShipAPI> getFighters(ShipAPI carrier) {
-	List<ShipAPI> result = new ArrayList<ShipAPI>();
+	List<ShipAPI> result = new ArrayList<>();
 		
 	for (ShipAPI ship : Global.getCombatEngine().getShips()) {
 		if (!ship.isFighter()) continue;
@@ -159,6 +156,5 @@ public class MS_swacs extends BaseShipSystemScript {
     
     public void init(CombatEngineAPI engine, ShipAPI host) {
         this.engine = engine;
-        this.host = host;
     }
 }
