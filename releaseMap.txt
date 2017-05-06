@@ -1,13 +1,8 @@
-for later
-    Add Persean League skins
-        Similar to former (C) variants above, likely favoring a midline combat set up
-        Ships: Seski, Enlil, Inanna, Clade, Sargasso, Elysium, Charybdis, Tartarus, Mimir, Neriads, Skinwalkers, Raksashas, trade and utility ships
-
 0.6.5 Roadmap
     Add Enkidu-class special actions frigate
 
 
-0.6.1 - 0.6.4 Roadmap
+0.6.2 - 0.6.4 Roadmap
     Various enhancements to Anar and Gigas.
         Berin's stash will be surrounded a unique terrain feature which makes detecting ships inside it harder.  Eventually, the stash will be made unknown until discovered.
         Anar gains a series of cloud like formations between Euripides and Calleach (function not yet decided) and some small asteroid fields.
@@ -24,41 +19,14 @@ for later
         can rapidly restock and supply ships in fleet, and construct new ships/supplies if enough materials are present (the last is very unlikely to be implemented until industry is in)
         system is intended to be a massive scale "drone" system -- basically has several squadrons of fighters and bombers permanently stationed on board
         not a combat ship by any means; slow, vulnerable, inflexible, armament mostly built in dedicated pd weapons
-    Add the Eitri-class Modular Industrial Ship(todo: sprite partially finished):
-                lots of variants; has a "Modular Industrial Tray" system that lets it fill multiple commercial/industrial applications
-                        not actually a ship system
-                most notoriously is that of a deep space refinery ship allowing for efficient mineral extraction in remote systems
-                most common is cargo transport, though
-                can also do research and function as a slightly less draining construction rig
-                also, pirate versions of these are capital scale carriers(!)
-                Versions avaialbe for this patch: cargo hauler-refinery(in this version of things, more like a larger Venture)-pirate carrier
-        Bonus Addition: Add the Baseplate-class Carrier Frigate
-                it is a bad ship
-                "Speculated to exist primarly as a means to dispose of particularly troublesome crew, the Baseplate-class Carrier Frigate is an unusual and extensive modification of the Ashnan Frieght Hauler."
-                Converted Ashnan
-                No loss of speed but acceleration and turning are worse because of the badly balanced mass distribution and reduced durability from stripping out most of the central hull
-                Loses the hardpoint, turret converted to ballistic mount
-                Loses drone, gets two awkwardly place flare launchers
-        Add Unnamed Heavy Blaster type thing (todo, somewhere between the standard Heavy Blaster and the Scalaron Repeater; fires a short but hefty burst of relatively innacurate shots)
-                Revised, the MCEPC now fills this role; make it more like an energy chaingun
-        Add small extremely rapid fire energy weapon
-                In tandem with the above, rebalance light cepc and chaingang to make them more valuable--probably acting as a kind of burst firing flak
-    Add Unnamed Heavy Blaster type thing (todo, somewhere between the standard Heavy Blaster and the Scalaron Repeater; fires a short but hefty burst of relatively innacurate shots)
-        Revised, the MCEPC now fills this role; make it more like an energy chaingun
+    Add small extremely rapid fire energy weapon
+        In tandem with the above, rebalance light cepc and chaingang to make them more valuable--probably acting as a kind of burst firing flak
     Add Unnamed "Energy Mine" launcher (fires a spray of small missiles which slow down after a moderate distance (~700-900 units); guided so no FF, enemy ships that get too close get blasted)
         probably will have a small and medium version
     Add Unnamed 30 OP Large Mount energy weapon that basically does what the old Pandora Array did.
-    Add small extremely rapid fire energy weapon 
-    Remove (C)ivilian variants
-        Cream colored ships will now belong to unnamed third party government with ties to SRA; will generally be more in midline style (ballistics for offense, energy PD)
-        Ships: Seski, Enlil, Morningstar, Clade, Sargasso, Elysium, Tartarus, a cleaned up version of the pirate carrier Eitri, Neriads, Kobolds, trade and utility ships
-        Add new system (mostly) controlled by this ally.
-    Return Cyan/Teal utility hulls to SRA sprite pool
-    Replace existing (C) ships with (D)amaged variants, plus (D) Clade, Inanna and Tartarus
-        Add unique (D) hullmod, Misaligned Flux Conduits, which reduces flux dissipation as hard flux rises
     Add a local pirate faction (the Zaikan Cartels) for Pirates in and around SRA territory to make use of said ships and SRA uglies/bashes
     Add Redwings subfaction and skins to Shadowyards
-        The Redwings are an elite unit, minimum crew levels are veteran, fleets are commanded by high level commanders.
+        The Redwings are an elite unit, fleets are commanded by high level commanders.
         Have a special refit only present on these ships which improves flux stats, armor and OP.
         Redwings craft cannot normally be obtained, and are available only via boarding or as rewards for completing high level missions. 
         Ships: Enlil, Seski, Shamash, Morningstar, Clade, Sargasso, (plus Enkidu [which, thinking about it, is probably only available to RW units], Solaris and Minarette when made) Charybdis, Scylla, Tartarus, Mimir, all Fighters
@@ -110,3 +78,28 @@ for later
                 The damage reduces sharply, as does the flux use (but not as much) and the projectiles lose their homing capability
                 In exchange the cd becomes very short (something like 1/4 - 1/3 of a second) allowing it to be spammed at the risk of overloading
                 As an additional balancing measure when the ships right-click system goes offline, the F-key system is considered to have been used and must go through it's full cd
+    
+    ToDo:
+        (Optional) Adjust Seski's ship system to be a "Fractal Displacer"; single charge at any given time, charges reasonably quickly (not sure how to implement)
+                Consists of several (6-10) short displacements chained together in a burst.  At each jump the ship gets the vector of the last jump (or initial vector) and modifies it
+                within a range
+                EMP lightning bursts follow behind
+                Individual jumps have a vey short duration, but the overal time taken should be longer than a wolf jumping three times rapidly
+                Total range covered should be 1.75 - 2.5 standard displacer hops
+                Cycle time should be 1.25 - 2 displacer charging cycles
+        (Optional) Finish Sounds
+                Urumi *P2
+                Splinter rocket launch sounds *P3
+                Black Cap launch sounds *P3
+                Sounds for built in weapons (Phasegun*, Phase Beam) *P4
+                As well as sounds for new weapons (Barrago and Trishula) *P1
+                Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
+                Generic Sound effects still using vanilla sounds: Ship Explosions, Shields up/down, EMP Loop/Overload
+                        Explosions - 4; EMP - Start sound effect and loop
+        Add visual effects for the TAG system (partial)
+        (Optional) Improve the visual effects for the SWACs system (add ping effect at Sargasso)
+        (Optional) Rewrite mission descriptions and go over lore to update them to current standards and improve mission scenario implementation if time permits
+        (Optional) Add Vectored thrusters to the Poseidon
+        (Optional) Go over Boss Ship sprites and bring them up to par
+        (Optional) Adjust Phasegun to have a secondary explosion effect following shot death and make necessary damage adjustments to account for it
+        (Optional) Add visual effects for Potnia's ecm system

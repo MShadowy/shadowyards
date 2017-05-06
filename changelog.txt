@@ -1,3 +1,47 @@
+0.6.1 Changelog
+    
+    Adjusted down most fighter base prices
+        Skinwalkers to 11,000 (from 18,000)
+        Neriads to 4,000 (from 10,000)
+        Kobold to 8,000 (from 15,000)
+    Removed (or rather changed purpose of) the small Blackcap Launcher
+        Fighter only weapon, fitted to Neriad and Skinwalker
+        Starts with 2 ammo; regenerates 1 shot every 15 seconds
+    Skinwalkers shrike launcher changed to fighter specific built-in; regenerates 1 shot every 45 seconds.
+    Fixed an oversight related to misreading the the tables that left the Raksasha and Kobold with lower OP than their vanilla equivalents
+        Raksahsa OP to to 28 (from 8)
+        Kobold OP to 12 (from 5)
+    Added the Skadi-class fleet carrier
+        Vaguely between the Astral and Legion while being more fragile than either
+    Added the Minos-class Cruiser
+        Exploration focused civilian ship
+    Shamash changes:
+        Ordnance Points increased to 40 (from 35)
+        Additional small energy mount added
+        ENERGY hardpoints on the arms changed to SYNERGY
+        Ship system changed from the Flak flares system to the Remote Engine Inhibitor System
+    Changed the Morningstars ship system, removing the drone and tweaking the stats
+    Morningstar L (formerly Civ) system changed to Plasma Jets
+    Civilian Modifications removed and replaced with League Refit
+        Reduced flux loss compared to CM
+        Cargo expansion removed
+        Armor and hull health improved
+    Added the Storm Blaster, a short range assault weapon for ENERGY mounts
+        It shoots a hail of small flak rounds at a very high rof, doing loads of frag damage
+    Created dummy files for the Pirates, Persean League, Independents and Scavengers so that they spawn with SRA ships or cobbled together pirate uglies
+    Expanded and revised faction description slightly
+    Changed civilian skins to be Persean League skins; League variants have more health and armor but worse flux stats, with much of their offensive equipment becoming BALLISTIC
+    Added Pirate Skins
+        Ships with these skins--Clade, Elysium, Shamash and Solidarity
+        Layouts are very different with most energy mounts stripped and replaced with BALLISTIC or COMPOSITE mounts
+    Added the Baseplate class Utralight Carrier
+        Converted Ashnan, basically little more than a flight deck in space
+    General graphical overhaul for sprites in the mod; overall style changed
+        Original style available as a seperate graphics pcack for those who want it
+    Added autofit variants
+    
+    
+
 0.6.0.7.1 Changelog
 
     Fixed a stupid coding decision with the Sargasso's SWACs system that made it stupidly and unintentionally overpowered
