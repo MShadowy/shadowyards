@@ -55,7 +55,8 @@ public class MS_reisAI implements ShipSystemAIScript {
                 for (ShipEngineAPI shipEngine : shipEngines) {
                     // So we deterimine if we can hit the target (i.e. - is in front of us), and if so, fire the system
                     if (engine.getOwner() != ship.getOwner() && shipEngine.isDisabled() == false 
-                            && MathUtils.getShortestRotation(entity.getFacing(), Vector2f.angle(ship.getLocation(), engine.getLocation())) < 10f) {
+                            && MathUtils.getShortestRotation(entity.getFacing(), Vector2f.angle(ship.getLocation(), engine.getLocation())) < 10f
+                            && MathUtils.getDistance(engine, ship.getLocation()) < 700f) {
                         continue;
                     }
 
