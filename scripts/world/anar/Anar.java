@@ -43,8 +43,8 @@ public class Anar {
                 anar1,
                 null,
                 "Lambence",
-                4,
-                new ArrayList<>(Arrays.asList(Conditions.NO_ATMOSPHERE, Conditions.HOT, MS_Conditions.MEGA_SOLAR_ARRAYS, Conditions.POPULATION_4, Conditions.LOW_GRAVITY)),
+                3,
+                new ArrayList<>(Arrays.asList(Conditions.NO_ATMOSPHERE, Conditions.HOT, MS_Conditions.MEGA_SOLAR_ARRAYS, Conditions.HYDROPONICS_COMPLEX, Conditions.POPULATION_3, Conditions.LOW_GRAVITY)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f
         );
@@ -75,7 +75,7 @@ public class Anar {
                 "Euripides",
                 8,
                 new ArrayList<>(Arrays.asList(MS_Conditions.SEMI_ARID, Conditions.HABITABLE, Conditions.FARMLAND_ADEQUATE, Conditions.ORE_MODERATE, 
-                        Conditions.RARE_ORE_SPARSE, Conditions.ORBITAL_STATION, Conditions.SPACEPORT, Conditions.ORE_COMPLEX, Conditions.ORE_REFINING_COMPLEX,
+                        Conditions.RARE_ORE_SPARSE, Conditions.ORBITAL_STATION, Conditions.ORE_COMPLEX, Conditions.ORE_REFINING_COMPLEX,
                     Conditions.ORE_REFINING_COMPLEX, Conditions.ORE_REFINING_COMPLEX, Conditions.LIGHT_INDUSTRIAL_COMPLEX, MS_Conditions.MODULARFAB, MS_Conditions.MODULARFAB, 
                         MS_Conditions.MODULARFAB, MS_Conditions.MEDCENTER, Conditions.REGIONAL_CAPITAL, Conditions.POPULATION_8)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),

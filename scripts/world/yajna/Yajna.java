@@ -135,7 +135,7 @@ public class Yajna {
                 "Mantra",
                 6,
                 new ArrayList<>(Arrays.asList(Conditions.TOXIC_ATMOSPHERE, Conditions.COLD, Conditions.ORBITAL_STATION, Conditions.ORGANICS_TRACE, Conditions.VOLATILES_DIFFUSE,
-                    Conditions.VOLATILES_COMPLEX, Conditions.LIGHT_INDUSTRIAL_COMPLEX, Conditions.SPACEPORT, Conditions.POPULATION_6)),
+                    Conditions.VOLATILES_COMPLEX, Conditions.LIGHT_INDUSTRIAL_COMPLEX, Conditions.POPULATION_6)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f
         );
