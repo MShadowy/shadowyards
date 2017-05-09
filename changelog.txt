@@ -1,3 +1,22 @@
+0.6.1.1 Changelog
+
+    Fixed some minor problems in the faction files
+    Removed the Spaceport condition from markets which also have an Orbital Station--specifically Euripides and Mantra
+    Somehow the Minos' material, normal, and surface maps had not gotten included; this is now fixed
+    Replaced the sprite for the Mimir's Lock drive overlay which I somehow forgot
+    Polarizer chargedown reduced to 5 seconds (from 8)
+    Fixed an issue with the Raksasha which was causing it to launch it's torpedoes at point blank range
+    Raksasha loadout redone; one Tusk Torpedo removed, OP cost reduced to 25 (from 28), Base Price reduced to 13,000 (from 15,000)
+        Also slightly revised the sprite
+    Tusk damage reduced to 2000 (from 2500) doing 400 per bomblet (from 500)
+    Tusk Rack OP decreased to 6 (from 7)
+    Fixed a glitch in the Morningstars system AI which was preventing it from using its system
+    Did some refinement work for the REIS system AI; it should be less pointlessly trigger happy now
+    Reduced ratio of Yardie Pirate to standard pirates to try and make them not so dominant in the spawn lists
+    Added more d-mods to the following SRA pirate ships:
+        Clade P; added Glitched Sensor Array
+        Shamash P; added Phase Coil Instability and Compromised Hull
+
 0.6.1a Changelog
 
     Fixed a null pointer error in the Minos' ship system
