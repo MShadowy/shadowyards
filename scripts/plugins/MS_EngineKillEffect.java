@@ -39,11 +39,15 @@ public class MS_EngineKillEffect extends BaseEveryFrameCombatPlugin {
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
         CombatEngineAPI engine = Global.getCombatEngine();
-
+        
         // Scan all shots on the map for armor piercing projectiles
         for (DamagingProjectileAPI proj : engine.getProjectiles()) {
             Vector2f projLocation = proj.getLocation();
             String spec = proj.getProjectileSpecId();
+            
+            if (engine.isPaused()) {
+                continue;
+            }
 
             // Is this projectile armor piercing?
             if (!PROJ_IDS.contains(spec)) {

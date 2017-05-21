@@ -27,38 +27,38 @@ import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class MS_shamashFlaresFlakEffect extends BaseEveryFrameCombatPlugin {
+public class MS_phaseGunEnergyBomb extends BaseEveryFrameCombatPlugin {
     
-    private static final float flareDamage = 100f;
-    private static final float flareFlakSize = 65f;
-    private static final float flareFlakCoreSize = 30f;
+    private static final float bombDamage = 400f; //Damage
+    private static final float bombSplodeSize = 125f; //Area of Effect
+    private static final float bombSplodeCore = 112.5f; //Full damage area
     private static final Color effectColor1 = new Color(210, 125, 105, 215);
     private static final Color effectColor2 = new Color(85, 35, 50, 150);
-    private static final float flareFlashDur = 0.2f;
-    private static final float flareFuseRange = 30f;
-    private final static String MISS_IDS = "ms_flare_shamash";
-    private static final float flareVisualSize = 90f;
-    private static final float flareCoreSize = 30f;
+    private static final float bombFlashDur = 0.25f;
+    private static final float bombFuseRange = 50f; //"Detonation" radius
+    private final static String MISS_IDS = "ms_phaseblast";
+    private static final float bombVisualSize = 125f;
+    private static final float bombCoreVisualSize = 50f;
     private static final float LOOK_AHEAD_TIME = 0.067f;    // Extrapolate projectile position for this long in look-ahead for collisions
     private static final Vector2f ZERO = new Vector2f();
 
     private final Set<DamagingProjectileAPI> DO_NOT_EXPLODE = new HashSet<>();
     
-    public static void burstFlakExplode(DamagingProjectileAPI projectile, Vector2f point, CombatEngineAPI engine)
+    public static void phaseBombExplode(DamagingProjectileAPI projectile, Vector2f point, CombatEngineAPI engine)
     {
         if (point == null)
         {
             return;
         }
 
-        MS_effectsHook.createFlakShockwave(point);
+        MS_effectsHook.createRift(point);
 
-        engine.addHitParticle(point, ZERO, flareCoreSize, 1f, flareFlashDur, Color.WHITE);
-        engine.addHitParticle(point, ZERO, flareVisualSize, 0.4f, 0.6f, effectColor1);
+        engine.addHitParticle(point, ZERO, bombCoreVisualSize, 1f, bombFlashDur, Color.WHITE);
+        engine.addHitParticle(point, ZERO, bombVisualSize, 0.4f, 0.4f, effectColor1);
         Vector2f vel = new Vector2f();
         for (int i = 0; i < 30; i++)
         {
-            vel.set(((float) Math.random() * 1.25f + 0.25f) * flareVisualSize, 0f);
+            vel.set(((float) Math.random() * 1.25f + 0.25f) * bombVisualSize, 0f);
             VectorUtils.rotate(vel, (float) Math.random() * 360f, vel);
             engine.addSmoothParticle(projectile.getLocation(), vel, (float) Math.random() * 2.5f + 2.5f, 1f,
                     (float) Math.random() * 0.3f + 0.6f, effectColor2);
@@ -66,16 +66,16 @@ public class MS_shamashFlaresFlakEffect extends BaseEveryFrameCombatPlugin {
 
         StandardLight light = new StandardLight(projectile.getLocation(), ZERO, ZERO, null);
         light.setColor(effectColor1);
-        light.setSize(flareVisualSize * 1.1f);
+        light.setSize(bombVisualSize * 1.1f);
         light.setIntensity(0.15f);
         light.fadeOut(0.2f);
         LightShader.addLight(light);
 
-        Global.getSoundPlayer().playSound("hit_light", 1f, 1f, point, projectile.getVelocity());
+        Global.getSoundPlayer().playSound("phaseGunGapAsplode", 1f, 1f, point, projectile.getVelocity());
 
-        List<ShipAPI> ships = CombatUtils.getShipsWithinRange(point, flareFlakSize);
-        List<CombatEntityAPI> targets = CombatUtils.getAsteroidsWithinRange(point, flareFlakSize);
-        targets.addAll(CombatUtils.getMissilesWithinRange(point, flareFlakSize));
+        List<ShipAPI> ships = CombatUtils.getShipsWithinRange(point, bombSplodeSize);
+        List<CombatEntityAPI> targets = CombatUtils.getAsteroidsWithinRange(point, bombSplodeSize);
+        targets.addAll(CombatUtils.getMissilesWithinRange(point, bombSplodeSize));
 
         Iterator<ShipAPI> iter = ships.iterator();
         while (iter.hasNext())
@@ -117,23 +117,23 @@ public class MS_shamashFlaresFlakEffect extends BaseEveryFrameCombatPlugin {
         for (CombatEntityAPI tgt : targets)
         {
             /* No friendly fire for flak */
-            if (tgt.getOwner() == projectile.getOwner())
+            /*if (tgt.getOwner() == projectile.getOwner())
             {
                 continue;
-            }
-
+            }*/
+            
             float distance = MS_Utils.getActualDistance(point, tgt, true);
             float reduction = 1f;
-            if (distance > flareFuseRange)
+            if (distance > bombFuseRange)
             {
-                reduction = (flareFlakSize - distance) / (flareFlakSize - flareFuseRange);
+                reduction = (bombSplodeSize - distance) / (bombSplodeSize - bombSplodeCore);
             }
 
             if (reduction <= 0f)
             {
                 continue;
             }
-
+            
             boolean shieldHit = false;
             if (tgt instanceof ShipAPI)
             {
@@ -143,7 +143,7 @@ public class MS_shamashFlaresFlakEffect extends BaseEveryFrameCombatPlugin {
                     shieldHit = true;
                 }
             }
-
+            
             Vector2f damagePoint;
             if (shieldHit)
             {
@@ -162,7 +162,7 @@ public class MS_shamashFlaresFlakEffect extends BaseEveryFrameCombatPlugin {
             {
                 damagePoint = point;
             }
-            engine.applyDamage(tgt, damagePoint, flareDamage * reduction, DamageType.FRAGMENTATION, 0f, false, false, projectile.getSource());
+            engine.applyDamage(tgt, damagePoint, bombDamage * reduction, DamageType.ENERGY, 0f, false, false, projectile.getSource());
         }
 
         /* Don't want it exploding multiple times, do we?  Also cleans up the look of it */
@@ -191,133 +191,91 @@ public class MS_shamashFlaresFlakEffect extends BaseEveryFrameCombatPlugin {
             }
         }
         DO_NOT_EXPLODE.removeAll(toRemove);
-        
+
         int size = projectiles.size();
         for (int i = 0; i < size; i++) {
-            DamagingProjectileAPI flare = projectiles.get(i);
-            String spec = flare.getProjectileSpecId();
-            Vector2f loc = flare.getLocation();
+            DamagingProjectileAPI bomb = projectiles.get(i);
+            String spec = bomb.getProjectileSpecId();
+            Vector2f loc = bomb.getLocation();
+            
             if (spec == null) {
                 continue;
             }
             
             switch (spec) {
                 case MISS_IDS: {
-                    /* If the projectile already collided with something it's none of our business */
-                    if (flare.didDamage())
+                    if (bomb.didDamage())
                     {
                         break;
                     }
-                    if (DO_NOT_EXPLODE.contains(flare))
+                    if (DO_NOT_EXPLODE.contains(bomb))
                     {
+                        break;
+                    }
+                    if (bomb.isFading() && (Math.random() < 0.5)) {
+                        MS_phaseGunEnergyBomb.phaseBombExplode(bomb, loc, engine);
                         break;
                     }
             
                     List<CombatEntityAPI> toCheck = new LinkedList<>();
-                    List<CombatEntityAPI> asteroids = CombatUtils.getAsteroidsWithinRange(loc, flareFlakSize);
-                    toCheck.addAll(CombatUtils.getShipsWithinRange(loc, flareFlakSize));
-                    toCheck.addAll(CombatUtils.getMissilesWithinRange(loc, flareFlakSize));
+                    List<CombatEntityAPI> asteroids = CombatUtils.getAsteroidsWithinRange(loc, bombFuseRange);
+                    toCheck.addAll(CombatUtils.getShipsWithinRange(loc, bombFuseRange));
+                    toCheck.addAll(CombatUtils.getMissilesWithinRange(loc, bombFuseRange));
                     toCheck.addAll(asteroids);
             
                     for (CombatEntityAPI entity : toCheck) {
                         if (entity.getCollisionClass() == CollisionClass.NONE) {
                             continue; 
                         }
-                        if (entity == flare.getSource())	// No collision checks with own (firing) ship
-                        {
+                        if (entity == bomb.getSource()) { // No collision checks with own (firing) ship
                             continue;
                         }
+                        //the default script includes sensibles checks for a prox detonated flak canister to not kill your own ships or missiles
+                        //this is not a warhead, but rather an unstable P-Space instantiation, so beware friendly fire
                 
-                        if (entity.getOwner() == flare.getOwner())
-                        {
-                            // Don't check friendly projectiles for disarming / proximity fuse
-                            if (entity instanceof DamagingProjectileAPI)
-                            {
-                                continue;
-                            }
-
-                            // ... or friendly fighters and drones
-                            else if (entity instanceof ShipAPI)
-                            {
-                                ShipAPI ship = (ShipAPI) entity;
-                                if ((ship.isFighter() || ship.isDrone()) && ship.isAlive() && !ship.getEngineController().isFlamedOut())
-                                {
-                                    continue;
-                                }
-                            }
-                        }
-
                         /* Are we about to run into a shield? */
                         if (entity.getShield() != null)
                         {
-                            Vector2f ahead = new Vector2f(loc).translate(flare.getVelocity().getX() * LOOK_AHEAD_TIME,
-                                    flare.getVelocity().getY() * LOOK_AHEAD_TIME);
+                            Vector2f ahead = new Vector2f(loc).translate(bomb.getVelocity().getX() * LOOK_AHEAD_TIME,
+                                    bomb.getVelocity().getY() * LOOK_AHEAD_TIME);
                             ShieldAPI shield = entity.getShield();
                             if (CollisionUtils.getCollides(loc, ahead, shield.getLocation(), shield.getRadius())
                                     && shield.isWithinArc(ahead))   // Yes, we are
                             {
-                                if (entity.getOwner() == flare.getOwner() || entity.getOwner() > 1)  // Neutral or friendly shield, disarm
-                                {
-                                    DO_NOT_EXPLODE.add(flare);
-                                }
-                                else	// Hostile shield, blow up
-                                {
-                                    DO_NOT_EXPLODE.add(flare);
-                                    MS_shamashFlaresFlakEffect.burstFlakExplode(flare, loc, engine);
-                                }
+                                DO_NOT_EXPLODE.add(bomb);
+                                MS_phaseGunEnergyBomb.phaseBombExplode(bomb, loc, engine);
                                 break;
                             }
                         }
-
-                        /* Handle any neutral or friendly things we're likely to run into if we've started fading out,
-                        this prevents double hits where we do direct hit damage *and* explode */
-                        if ((entity.getOwner() == flare.getOwner() || entity.getOwner() > 1))
-                        {
-                            float distance = MS_Utils.getActualDistance(loc, entity, true);
-                            if ((distance <= flareFuseRange))
-                            {
-                                // Look-ahead hax
-                                // If we'll impact a neutral or friendly target in 0.067 seconds, deactivate warhead
-                                Vector2f ahead = new Vector2f(loc).translate(flare.getVelocity().getX() * LOOK_AHEAD_TIME,
-                                        flare.getVelocity().getY() * LOOK_AHEAD_TIME);
-                                if (CollisionUtils.getCollisionPoint(loc, ahead, entity) != null)
-                                {
-                                    DO_NOT_EXPLODE.add(flare);
-                                    break;
-                                }
-                            }
-                        }
-
+                        
                         /* Don't proximity fuse on asteroids, don't even bother checking them */
-                        if (asteroids.contains(entity))
-                        {
+                        if (asteroids.contains(entity)) {
                             continue;
                         }
-
+                        
                         /* Don't explode on neutrals or allies -- unless the projectile is neutral, in which case everything is fair game */
-                        if ((flare.getOwner() == 0) && (entity.getOwner() != 1))
+                        if ((bomb.getOwner() == 0) && (entity.getOwner() != 1))
                         {
                             continue;
                         }
-                        if ((flare.getOwner() == 1) && (entity.getOwner() != 0))
+                        if ((bomb.getOwner() == 1) && (entity.getOwner() != 0))
                         {
                             continue;
                         }
-
+                        
                         /* Check for targets in range */
                         float distance = MS_Utils.getActualDistance(loc, entity, true);
-                        if ((distance <= flareFuseRange))
+                        if ((distance <= bombFuseRange))
                         {
-                            DO_NOT_EXPLODE.add(flare);
-                            MS_shamashFlaresFlakEffect.burstFlakExplode(flare, loc, engine);
+                            DO_NOT_EXPLODE.add(bomb);
+                            MS_phaseGunEnergyBomb.phaseBombExplode(bomb, loc, engine);
                             break;
                         }
                     }
-                    /* Detonate at the end-of-life, like real flak */
-                    if (flare.isFading() && !DO_NOT_EXPLODE.contains(flare))
+                    if (bomb.isFading() && !DO_NOT_EXPLODE.contains(bomb))
                     {
-                        DO_NOT_EXPLODE.add(flare);
-                        MS_shamashFlaresFlakEffect.burstFlakExplode(flare, loc, engine);
+                        DO_NOT_EXPLODE.add(bomb);
+                        MS_phaseGunEnergyBomb.phaseBombExplode(bomb, loc, engine);
                         break;
                     }
                     

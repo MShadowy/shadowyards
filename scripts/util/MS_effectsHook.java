@@ -12,6 +12,7 @@ import com.fs.starfarer.api.input.InputEventAPI;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
@@ -22,6 +23,9 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
     private static final float FLAK_SHOCKWAVE_DURATION = 0.2f;
     private static final float FLAK_SHOCKWAVE_MAX_SCALE = 0.8f;
     private static final float FLAK_SHOCKWAVE_MIN_SCALE = 0.15f;
+    private static final float GAP_DURATION = 0.2f;
+    private static final float GAP_MAX_SCALE = 0.8f;
+    private static final float GAP_MIN_SCALE = 0.15f;
     private static final float PING_DURATION = 3f;
     private static final float PING_MAX_SCALE = 3.5f;
     private static final float PING_MIN_SCALE = 0.75f;
@@ -29,6 +33,14 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
     private static final float PULSE_MAX_SCALE = 2.5f;
     private static final float PULSE_MIN_SCALE = 0.5f;
     private static final int SHOCKWAVE_SIZE = 256;
+    
+    /*private final static Set<String> vistas = new HashSet();
+    
+    static{
+    vistas.add("ms_phaseSpaceRift1");
+    vistas.add("ms_phaseSpaceRift2");
+    vistas.add("ms_phaseSpaceRift3");
+    }*/
 
     public static void createFlakShockwave(Vector2f location)
     {
@@ -81,6 +93,22 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
         final List<swacsPulse> pulses = localData.pulses;
 
         pulses.add(new swacsPulse(location, PULSE_DURATION, PULSE_MAX_SCALE, PULSE_MIN_SCALE));
+    }
+    
+    /*Animation handler for the Shamash projectile explosion
+    Splat down horizon, which remains the same size but fades out
+    Over that is the Gap, which shrinks rapidly and keeps it opacity
+    Over that is the anamorphic flare; stretches horizontally and fades out and a hit particle*/
+    public static void createRift (Vector2f location) {
+        final LocalData localData = (LocalData) Global.getCombatEngine().getCustomData().get(DATA_KEY);
+        if (localData == null)
+        {
+            return;
+        }
+        
+        final List<Rift> rifts = localData.rifts;
+        
+        rifts.add(new Rift(location, GAP_DURATION, GAP_MAX_SCALE, GAP_MIN_SCALE));
     }
 
     @Override
@@ -150,6 +178,24 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
             pulse.alpha = pulse.lifespan / pulse.maxLifespan;
             pulse.scale = pulse.minScale + (((pulse.maxLifespan - pulse.lifespan) / pulse.maxLifespan) * (pulse.maxScale - pulse.minScale));
         }
+        
+        final List<Rift> rifts = localData.rifts;
+        
+        Iterator<Rift> iterD = rifts.iterator();
+        while (iterD.hasNext())
+        {
+            Rift rift = iterD.next();
+            
+            rift.lifespan -= amount;
+            if (rift.lifespan <= 0f)
+            {
+                iterD.remove();
+                continue;
+            }
+            
+            rift.alpha = rift.lifespan / rift.maxLifespan;
+            rift.scale = rift.maxScale - (((rift.maxLifespan - rift.lifespan) / rift.maxLifespan) * (rift.maxScale - rift.minScale));
+        }
     }
 
     @Override
@@ -166,11 +212,14 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
         {
             return;
         }
+        
+        
 
         final LocalData localData = (LocalData) engine.getCustomData().get(DATA_KEY);
         final List<Shockwave> shockwaves = localData.shockwaves;
         final List<tagPing> pings = localData.pings;
         final List<swacsPulse> pulses = localData.pulses;
+        final List<Rift> rifts = localData.rifts;
 
         // Concussion shockwave sprite
         for (Shockwave wave : shockwaves)
@@ -209,6 +258,39 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
                 waveSprite.renderAtCenter(pulse.location.x, pulse.location.y);
             }
         }
+        
+        for (Rift rift : rifts) {
+            SpriteAPI eventHorizonSprite = Global.getSettings().getSprite("misc", "ms_eventHorizon");
+            SpriteAPI gapSprite = Global.getSettings().getSprite("misc", "ms_phaseSpaceRift" + MathUtils.getRandomNumberInRange(1, 5));
+            //SpriteAPI gapSprite = Global.getSettings().getSprite("misc", vistas.iterator().next().toString());
+            SpriteAPI flareSprite = Global.getSettings().getSprite("flare", "nidhoggr_ALF");
+            if (eventHorizonSprite != null)
+            {
+                eventHorizonSprite.setAlphaMult(rift.alpha);
+                eventHorizonSprite.setAdditiveBlend();
+                eventHorizonSprite.setAngle(rift.facing);
+                eventHorizonSprite.setSize(150, 150);
+                eventHorizonSprite.renderAtCenter(rift.location.x, rift.location.y);
+            }
+            
+            if (gapSprite != null)
+            {
+                gapSprite.setAlphaMult(0.8f);
+                gapSprite.setAdditiveBlend();
+                gapSprite.setAngle(rift.facing);
+                gapSprite.setSize(rift.scale * SHOCKWAVE_SIZE, rift.scale * SHOCKWAVE_SIZE);
+                gapSprite.renderAtCenter(rift.location.x, rift.location.y);
+            }
+            
+            
+            if (flareSprite != null)
+            {
+                flareSprite.setAlphaMult(rift.alpha);
+                flareSprite.setAdditiveBlend();
+                flareSprite.setAngle(0f);
+                flareSprite.renderAtCenter(rift.location.x, rift.location.y);
+            }
+        }
     }
 
     private static final class LocalData
@@ -216,6 +298,7 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
         final List<Shockwave> shockwaves = new LinkedList<>();
         final List<tagPing> pings = new LinkedList<>();
         final List<swacsPulse> pulses = new LinkedList<>();
+        final List<Rift> rifts = new LinkedList<>();
     }
 
     static class Shockwave
@@ -280,6 +363,30 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
         float scale;
 
         swacsPulse(Vector2f location, float duration, float maxScale, float minScale)
+        {
+            this.location = new Vector2f(location);
+            alpha = 1f;
+            facing = (float) Math.random() * 360f;
+            maxLifespan = duration;
+            lifespan = maxLifespan;
+            this.maxScale = maxScale;
+            this.minScale = minScale;
+            scale = minScale;
+        }
+    }
+    
+    static class Rift
+    {
+        float alpha;
+        final float facing;
+        float lifespan;
+        final Vector2f location;
+        float maxLifespan;
+        float maxScale;
+        float minScale;
+        float scale;
+        
+        Rift(Vector2f location, float duration, float maxScale, float minScale)
         {
             this.location = new Vector2f(location);
             alpha = 1f;

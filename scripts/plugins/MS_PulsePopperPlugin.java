@@ -38,13 +38,26 @@ public class MS_PulsePopperPlugin extends BaseEveryFrameCombatPlugin {
                 float popSmall;
                 float popBig;
                 float vol;
-                if (proj.getProjectileSpecId().contentEquals("ms_mcepc_blast")) {
-                    popSmall = 15f; popBig = 25f; sound = "cepc_pop_big"; vol = 0.65f;
-                } else if (proj.getProjectileSpecId().contentEquals("ms_cepc_blast") 
-                        || proj.getProjectileSpecId().contentEquals("ms_scattercepc_clone")) {
-                    popSmall = 12f; popBig = 17f; sound = "cepc_pop"; vol = 0.5f;
-                } else {
-                    popSmall = 6f; popBig = 11f; sound = "cepc_pop_small"; vol = 0.4f;
+                switch (proj.getProjectileSpecId()) {
+                    case "ms_mcepc_blast":
+                        popSmall = 15f;
+                        popBig = 25f;
+                        sound = "cepc_pop_big";
+                        vol = 0.65f;
+                        break;
+                    case "ms_cepc_blast":
+                    case "ms_scattercepc_clone":
+                        popSmall = 12f;
+                        popBig = 17f;
+                        sound = "cepc_pop";
+                        vol = 0.5f;
+                        break;
+                    default:
+                        popSmall = 6f;
+                        popBig = 11f;
+                        sound = "cepc_pop_small";
+                        vol = 0.4f;
+                        break;
                 }
                 
                 engine.addHitParticle(proj.getLocation(), ZERO, popSmall, 1f, 0.15f, FX1);

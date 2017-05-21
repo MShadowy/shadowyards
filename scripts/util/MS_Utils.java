@@ -99,7 +99,7 @@ public class MS_Utils {
         }
         return MathUtils.getDistance(from, target.getLocation()) - Misc.getTargetingRadius(from, target, false);
     }
-    /*public static List<ShipAPI> getSortedAreaList(Vector2f loc, List<ShipAPI> list)
+    public static List<ShipAPI> getSortedAreaList(Vector2f loc, List<ShipAPI> list)
     {
         List<ShipAPI> out;
         if (ShadowyardsModPlugin.hasTwigLib)
@@ -129,7 +129,7 @@ public class MS_Utils {
             Collections.sort(out, new SortShipsByDistance(loc));
         }
         return out;
-    }*/
+    }
     private static class SortShipsByDistance implements Comparator<ShipAPI>
     {
         private final Vector2f loc;
