@@ -2,7 +2,7 @@
         "id":"shadow_ships", # internal id
 	"name":"Shadowyards", # displayed to the player
 	"author":"MShadowy",
-	"version":"0.6.1.1",
+	"version":"0.6.1.2",
 	"description":"=Requires LazyLib : ShaderLib Supported= Adds the Shadowyards Reconstruction Authority faction and related ships.",
 	"modPlugin":"data.scripts.ShadowyardsModPlugin", # Insert the path to your mod's implementation of ModPlugin here
 	"gameVersion":"0.8a",

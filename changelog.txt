@@ -1,3 +1,28 @@
+0.6.1.2 Changelog
+
+    Forgot to add built-in hullmods to the Minos; this has also been fixed
+        Added Survey Equipment, Salvage Gantry and a "Science Ship" hullmod which is a combination of High Res Sensors scan boost and Civilian Grade Hulls detection problem
+    Reduced flak explosion variance on Storm Blaster to 0.33 (from 0.75)
+    Revised Shamash's built weapon
+        Damage increased to 400 (from 350), Windup removed, cooldown reduced to 0.2 (from 0.8); Amma capacity of 3, reload size of 3, reloads in 8 seconds, range reduced to 500 (from 600)
+        Now functions kinda like an Energy Bomb, possessing a sizeable AOE damage effect; applies damage indiscriminately to targets within radius
+        Yes, you too
+    Adjusted the REIS script so that, for the Elysium, it matches aim to the Pandora Array; additionally further improvements have been made to the REIS AI to make it less dumb
+    Increased the Seski's armor to 150 (from 100), increased shield width to 90 (from 60)
+    Increased Southpaws shield width to 120 (from 90), and Potnias-bis' and Threshers shield width to 160 (from 120)
+    Increased Potnia-bis flux capacity to 6000 (from 4500), reduced maintenance to 8/mo (from 9/mo)
+    Changes to the Skadi
+        Top speed increased to 55 (from 45) and overall maneuverability improved just to give her an area she has an edge in
+        Ships central medium weapon mounts have been changed to MISSILE (from ENERGY)
+        Variants gone over and updated
+    The Neriads main gun has had it's damage type changed to FRAGMENTATION
+        Additionally it's been switched to a 10 round burst from full auto, and had it's damage increased to 40 (from 25) to partly offset the damage type change
+    Finally got around to updating sim opponents
+    Revised descriptions for the most dated SRA ships and equipment to remove outdated references and generally make things make better sense
+    Pandora Type sensors now apply a flat 50% sensor strength boost across all ship classes.
+    Partially went over missions
+    
+
 0.6.1.1 Changelog
 
     Fixed some minor problems in the faction files
