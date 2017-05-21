@@ -21,7 +21,7 @@
     Revised descriptions for the most dated SRA ships and equipment to remove outdated references and generally make things make better sense
     Pandora Type sensors now apply a flat 50% sensor strength boost across all ship classes.
     Partially went over missions
-    
+    Finally figured out what was wrong with the version file and fixed it
 
 0.6.1.1 Changelog
 
