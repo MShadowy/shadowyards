@@ -156,20 +156,20 @@ public class Yajna {
         );
         
         //Lastly, Maks Hole, named so as to mock the eponymous Mak, is a dinky pirate waystation hiding out in the nebula
-        SectorEntityToken maks_hole = system.addCustomEntity("maks_hole", "Maks Hole", "station_pirate_type", "pirates");
+        /*SectorEntityToken maks_hole = system.addCustomEntity("maks_hole", "Maks Hole", "station_pirate_type", "pirates");
         maks_hole.setCircularOrbitPointingDown(yaj, 115, 12500, 1270);
         maks_hole.setCustomDescriptionId("maks_hole");
         
         AddMarketplace.addMarketplace("pirates",
-                maks_hole,
-                null,
-                "Maks Hole",
-                3,
-                new ArrayList<>(Arrays.asList(Conditions.ORBITAL_STATION, Conditions.FRONTIER, Conditions.VICE_DEMAND,
-                    Conditions.FREE_PORT, Conditions.POPULATION_3)),
-                new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
-                0.3f
-        );
+        maks_hole,
+        null,
+        "Maks Hole",
+        3,
+        new ArrayList<>(Arrays.asList(Conditions.ORBITAL_STATION, Conditions.FRONTIER, Conditions.VICE_DEMAND,
+        Conditions.FREE_PORT, Conditions.POPULATION_3)),
+        new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
+        0.3f
+        );*/
         
         SectorEntityToken relay = system.addCustomEntity("yajna_relay", // unique id
 		"Yajna Relay", // name - if null, defaultName from custom_entities.json will be used
