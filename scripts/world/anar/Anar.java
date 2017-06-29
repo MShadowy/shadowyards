@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
+import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin.AsteroidFieldParams;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
@@ -124,6 +125,7 @@ public class Anar {
         theramin.setCustomDescriptionId("planet_theramin");
         theramin.setFaction("shadow_industry");
         PlanetAPI melancholia = system.addPlanet("melancholia", anar4, "Melancholia", "cryovolcanic", 200, 80, 2100, 492);
+        ProcgenUsedNames.notifyUsed("Melancholia");
         melancholia.setCustomDescriptionId("planet_melancholia");
         melancholia.setFaction("independent");
         
@@ -180,16 +182,16 @@ public class Anar {
         berins_stash.setCircularOrbitPointingDown(system.getEntityById("anar"), 72, 20100, 260);
         berins_stash.setCustomDescriptionId("berins_stash");
         
-        AddMarketplace.addMarketplace("pirates",
-                berins_stash,
-                null,
-                "Berins Stash",
-                3,
-                new ArrayList<>(Arrays.asList(Conditions.FREE_PORT, Conditions.ORBITAL_STATION, Conditions.OUTPOST, Conditions.VICE_DEMAND, Conditions.ORGANIZED_CRIME,
-                        Conditions.HYDROPONICS_COMPLEX, Conditions.POPULATION_3)),
-                new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
-                0.3f
-        );
+        /*AddMarketplace.addMarketplace("pirates",
+        berins_stash,
+        null,
+        "Berins Stash",
+        3,
+        new ArrayList<>(Arrays.asList(Conditions.FREE_PORT, Conditions.ORBITAL_STATION, Conditions.OUTPOST, Conditions.VICE_DEMAND, Conditions.ORGANIZED_CRIME,
+        Conditions.HYDROPONICS_COMPLEX, Conditions.POPULATION_3)),
+        new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
+        0.3f
+        );*/
         
         SectorEntityToken hideaway = system.addTerrain(Terrain.ASTEROID_FIELD,
                 new AsteroidFieldParams(
