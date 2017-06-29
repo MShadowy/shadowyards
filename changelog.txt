@@ -1,3 +1,16 @@
+0.6.2 Changelog
+
+    Added Vardr-class battleship
+        Ship system: Cyclic Plasma Thrusters; stops forward momentum but greatly increases lateral mobility while up
+    Revised Morningstar sprite, making it larger and beefier
+    Revised some segments of the Mimir sprite
+    Further refined the stripe style, leaving it slightly cooler and darker and with fewer stripes
+    Berin's Stash in Anar and Maks Hole in Yajna have been removed from the campaign
+    Added a beam sweep effect to the Deva and Murti
+    Urumi base damage/sec increased to 400 (from 250)
+    Retouched many of the weapon sprites:
+        All CEPC's have had their sprites updated, as well as the Wavepulse, Heavy and Light Polarizers, Urumi and Trishula
+
 0.6.1.2 Changelog
 
     Forgot to add built-in hullmods to the Minos; this has also been fixed
@@ -22,7 +35,7 @@
     Pandora Type sensors now apply a flat 50% sensor strength boost across all ship classes.
     Partially went over missions
     Finally figured out what was wrong with the version file and fixed it
-
+    
 0.6.1.1 Changelog
 
     Fixed some minor problems in the faction files
@@ -32,7 +45,7 @@
     Polarizer chargedown reduced to 5 seconds (from 8)
     Fixed an issue with the Raksasha which was causing it to launch it's torpedoes at point blank range
     Raksasha loadout redone; one Tusk Torpedo removed, OP cost reduced to 25 (from 28), Base Price reduced to 13,000 (from 15,000)
-        Also slightly revised the sprite
+        Also slightly revised the sprite 
     Tusk damage reduced to 2000 (from 2500) doing 400 per bomblet (from 500)
     Tusk Rack OP decreased to 6 (from 7)
     Fixed a glitch in the Morningstars system AI which was preventing it from using its system
