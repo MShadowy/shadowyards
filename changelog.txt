@@ -1,3 +1,35 @@
+0.6.2b Changelog
+
+    Charybdis Hull/armor increased to 7000/700 (from 5000/500)
+    TEST - Charybdis OP increased to 170 (from 150)
+    Elysium balance tweaks:
+        Cost reduced to 45000 (from 49000)
+        Turret facings adjusted so the class should be able to better focus firepower
+    Seski price reduced to 10000 (from 11000)
+    Clade shield efficiency improved to 0.8 (from 1.1)
+    Added missing Leage Refit hullmod to the Morningstar L
+    Changed some turret angles on the Morningstar to try and prevent it fom butt tanking shots
+    Changed all remaining UNIVERSAL slots to SYNERGY
+    Wavegun flux per shot decreased to 300 (from 400)
+    Increased Inanna side moun arcs to 90 (from 60)
+    League Refit Changes:
+        Flux malus increased for Destroyers to -250 capacity, -25 vent rate (from -200, -20) and Cruisers to -500, -50 (from -400, -40)
+        Now Reduces Speed somewhat; Frigates and Destroyers by 10, Cruisers by 15
+    TEST Neriad alterations:
+        1 additional Neriad per wing
+        The Neriads built-in gun now has a small aoe burst effect
+    Kobold changes:
+        Inbuilt Burst PD damage/sec increased to 200 (from 125) and has had 100 EMP damage added
+        TEST Kobold mounted rocket now carries 12 rounds that it will fire in rapid succession
+    TEST - added 1 Raksasha per wing
+    Deva flux/sec decreased to 1000 (from 1400)
+    Murti flux/sec decreased to 400 (from 600)
+    Splinter damage per rocket increased to 200 (from 175)
+
+0.6.2a Changelog
+    
+    Hotfixes: Vardr now is correctly a battleship, error which was casuing Murti to not sweep fixed
+
 0.6.2 Changelog
 
     Added Vardr-class battleship
