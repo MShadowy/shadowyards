@@ -14,8 +14,8 @@ import org.lwjgl.util.vector.Vector2f;
 public class MS_PulsePopperPlugin extends BaseEveryFrameCombatPlugin {
     private CombatEngineAPI engine;
     
-    private static final Color FX1 = new Color(245, 255, 245, 255);
-    private static final Color FX2 = new Color(100, 215, 100, 255);
+    private static final Color FX1 = new Color(255, 240, 165, 255);
+    private static final Color FX2 = new Color(250, 135, 75, 255);
     private Vector2f ZERO = new Vector2f(0,0);
     private String sound;
     
