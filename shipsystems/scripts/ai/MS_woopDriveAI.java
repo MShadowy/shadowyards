@@ -26,6 +26,7 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
     and if it thinks it's too much uses the system to NOPE */    
     private static final float SECONDS_TO_LOOK_AHEAD = 3f;
     private static final float RANGE_TO_CHECK = 2500f;
+    private static final float EDGE_CHECK = 700f;
     
     private final CollectionUtils.CollectionFilter<DamagingProjectileAPI> filterMisses = new CollectionUtils.CollectionFilter<DamagingProjectileAPI>()
     {
@@ -51,7 +52,11 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
         }
     };
     
+    private float mapX;
+    private float mapY;
+    
     private ShipAPI ship;
+    private boolean runOnce = false;
 
     private final IntervalUtil tracker = new IntervalUtil(0.1f, 0.2f);
     
@@ -60,6 +65,13 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
         CombatEngineAPI engine = Global.getCombatEngine();
         if (engine == null || engine.isPaused()) {
             return;
+        }
+        
+        if (!runOnce) {
+            runOnce = true;
+            
+            mapX = engine.getMapWidth();
+            mapY = engine.getMapHeight();
         }
         
         FluxTrackerAPI fluxer = ship.getFluxTracker();
@@ -74,6 +86,7 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
             float incoming = MS_Utils.estimateIncomingDamage(ship);
             
             boolean shouldUseSystem = false;
+            boolean clear = true;
             float hitRad = Math.max(ship.getCollisionRadius(), 100f);
             
             List<DamagingProjectileAPI> nearbyThreats = CombatUtils.getProjectilesWithinRange(shipLoc, hitRad);
@@ -91,13 +104,26 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
 
                 nearbyThreats.add(missile);
             }
+            
+            List<ShipAPI> ships = CombatUtils.getShipsWithinRange(shipLoc, EDGE_CHECK);
+            for (ShipAPI s : ships) {
+                if (MathUtils.isWithinRange(s.getLocation(), shipLoc, EDGE_CHECK) &&
+                        VectorUtils.getAngle(s.getLocation(), shipLoc) > 170) {
+                    clear = false;
+                }
+            }
+            if ((ship.getLocation().x + EDGE_CHECK > mapX || ship.getLocation().y + EDGE_CHECK > mapY || 
+                    ship.getLocation().x - EDGE_CHECK < mapX || ship.getLocation().y - EDGE_CHECK < mapY)) {
+                clear = false;
+            }
+            
             /* if incoming damage would overload the ship, or if shields are down and the 
             damage is more than 25% of its remaining hitpoints, or if the ship has been ordered to
             retreat and enemy ships are too close, use the system*/
             if (!nearbyThreats.isEmpty() && ship.getShield().isOn() && fluxer.getCurrFlux() >= fluxer.getMaxFlux() * 0.8f
                     && incoming >= fluxer.getMaxFlux() * 0.2f || !nearbyThreats.isEmpty() && ship.getShield().isOff() && incoming >=
                             (ship.getHitpoints() * 0.25f ) || ship.getAIFlags().hasFlag(ShipwideAIFlags.AIFlags.RUN_QUICKLY) &&
-                                    !AIUtils.getNearbyEnemies(ship, RANGE_TO_CHECK).isEmpty())
+                                    !AIUtils.getNearbyEnemies(ship, RANGE_TO_CHECK).isEmpty() && clear == true)
             {
                 shouldUseSystem = true;
             }
