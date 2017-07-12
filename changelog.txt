@@ -1,3 +1,11 @@
+0.6.2c Changelog
+
+    Deva and Murti now do a "cross slash" behavior, walking their beams inwards across their firing angles
+    Redid Barrago sprite
+    Reduced particle count and particle lifespan for Storm Blaster flak burst effects
+    Impact of the Wraiths Crawler Beam reduced to 50 (from 300)
+    Added a sanity check to the Retro Drive AI to keep it from launching off the map
+
 0.6.2b Changelog
 
     Charybdis Hull/armor increased to 7000/700 (from 5000/500)
