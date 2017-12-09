@@ -52,7 +52,7 @@ public class MS_scatterGunSpreader extends BaseEveryFrameCombatPlugin {
                     
                     if (proj.getProjectileSpecId().equals("ms_barrago_lrm_shatter")) {
                         for (int k = 0; k < 1; k++)  {
-                            Global.getSoundPlayer().playSound("barragoSeparator", 1f, 1f, proj.getLocation(), ZERO);
+                            Global.getSoundPlayer().playSound("barrago_stage_three_fire", MathUtils.getRandomNumberInRange(0.9f, 1.1f), 0.5f, proj.getLocation(), ZERO);
                         }
                     }
                 }

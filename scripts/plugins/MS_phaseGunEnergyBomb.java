@@ -124,7 +124,7 @@ public class MS_phaseGunEnergyBomb extends BaseEveryFrameCombatPlugin {
             
             float distance = MS_Utils.getActualDistance(point, tgt, true);
             float reduction = 1f;
-            if (distance > bombFuseRange)
+            if (distance > bombSplodeCore)
             {
                 reduction = (bombSplodeSize - distance) / (bombSplodeSize - bombSplodeCore);
             }
@@ -230,7 +230,7 @@ public class MS_phaseGunEnergyBomb extends BaseEveryFrameCombatPlugin {
                         if (entity == bomb.getSource()) { // No collision checks with own (firing) ship
                             continue;
                         }
-                        //the default script includes sensibles checks for a prox detonated flak canister to not kill your own ships or missiles
+                        //the default script includes sensible checks for a prox detonated flak canister to not kill your own ships or missiles
                         //this is not a warhead, but rather an unstable P-Space instantiation, so beware friendly fire
                 
                         /* Are we about to run into a shield? */
