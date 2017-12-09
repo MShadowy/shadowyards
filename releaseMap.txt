@@ -3,8 +3,20 @@
 
 
 0.6.2 - 0.6.4 Roadmap
-
-    ToDo Changed the Mimir main gun to make it more effective
+    
+    
+    ToDo Rework all old weapon sprites
+        MUST DO: missile launchers
+        blackcap launchers
+        splinter launchers
+        tusk launchers
+        shrike launchers
+    ToDo Sounds:
+        Sounds for built in weapons (Phase Beam) *P4
+        Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
+        Generic Sound effects still using vanilla sounds: Ship Explosions, Shields up/down, EMP Loop/Overload Explosions - 4; EMP - Start sound effect and loop
+    Test Give light CEPC and Chaingang AoE flak effect that only goes off at the end of their range
+    ToDo Change the Mimir main gun to make it more effective
         No longer fully pierces targets, instead losing range at each tick of piercing
         Damage per tick no longer treated as a percentage divided by the target ships collission radius, instead determined by hull type
         Bug Tartiflette about visual effects, yeesh
@@ -12,18 +24,6 @@
         Generates false sensor contacts, obfuscates details of actual contacts within field
         If implemented and Berins stash gets commented out, make it a favored spot for pirates to spawn
     ToDo Design and add Cargo and Fuel Cruisers since Eitri concept apparently won't work
-    ToDo Add Minarette-class Missile Destroyer
-        Ship system boosts velocity and hp of missiles for 1 volley
-    ToDo Rework all old weapon sprites
-        MUST DO: missile launchers
-    ToDo Sounds:
-        Urumi *P2
-        Splinter rocket launch sounds *P3
-        Black Cap launch sounds *P3
-        Sounds for built in weapons (Phasegun*, Phase Beam) *P4
-        As well as sounds for new weapons (Barrago and Trishula) *P1
-        Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
-        Generic Sound effects still using vanilla sounds: Ship Explosions, Shields up/down, EMP Loop/Overload Explosions - 4; EMP - Start sound effect and loop
     ToDo Complete mission and lore rewrite
     ToDo Improve Mimir AI by adding officer specific routines
         Aggressive:  Charge happy, aggressively uses it to close, not too worried about ramming though it still would prefer not to
@@ -38,13 +38,13 @@
         Total range covered should be 1.75 - 2.5 standard displacer hops
         Cycle time should be 1.25 - 2 displacer charging cycles
     ToDo Adjust beam behavior to work off new BeamAPI hooks
-        Deva and Murti - sweep across target ala FS2 "Slash" anti-ship beams
         Urumi - beams converge towards target
         Trishula - Three round burst with offset (anti-fighter beam behavior)
-    ToDo Spiff up system graphics (in particular, Yajna has some ugly ring graphics going on)
-    ToDo Make the SWACS system make fighters glow instead of their weapons
-    Test Give light CEPC and Chaingang AoE flak effect that only goes off at the end of their range
-
+    ToDo Improve Tartarus Siege Mode AI
+        Need to take some time to visualize how to improve it
+        Should use it when it is either a) in danger of being flanked or b) wants to get some extra range to focus down an enemy with
+        Should avoid using when it is retreating or trying to otherwise diesngage unless outnumbered by enemies massively faster than it is (i.e. most frigates, some destroyers)
+    
     Add the Eitri-class Modular Industrial Ship(todo: sprite partially finished):
         lots of variants; has a "Modular Industrial Tray" system that lets it fill multiple commercial/industrial applications
                 not actually a ship system

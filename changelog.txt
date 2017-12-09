@@ -1,7 +1,27 @@
+0.6.3 Changelog
+
+    Wraith refit time increased to 6 seconds (from 4) and Crawler beam dps reduced to 70 (from 85) and impact reduced to 15 (from 50)
+    Reduced Deva and Murti beam sweep offset to 5° (from 10°)
+    Reduced armor bonus and increased Health bonus of League Refit 
+        Armor values are now Frigates: 30, Destroyers: 100, Cruiser: 200, Capital: 400 (from 50, 200, 500, 1000)
+        Health values are now FF: 100, DD: 200, CV: 400, BB: 800 (from 25, 100, 250, 500)
+    Lambent:
+        Fuel capacity reduced to 450 (from 600), Crew required increased to 8 (from 2), supplies/month and supplies/rec increased to 6 (from 2)
+    Fixed a bug in the Clades retro drive AI which would cause a crash when the ship was fitted with a Shield Bypass
+    Adjusted the SWACS system visual effects
+    Added the Minarette-class missile destroyer
+        3 Medium Missile mounts, a missile autoforge... more than enough to explode anything that moves (twirls spoaceship)
+    Shamash's Phase Mass Projector range increased to 600 (from 500) and bug causing a damage overflow issue was resolved
+    Added the no flux hullmod to all SRA fighters
+    Neriad primary weapon arc broadened to 40° (from 5°)
+    Improved system graphics for the rings around Yajna
+    Anar now has bunches of Nebulae all over the place, oh no! Also got around to properly removing Berins Stash
+    Weapons sounds for the Urumi, Trishula, Splinter, Black Cap and Barrago have now been added (credit to MesoTroniks for his help)
+
 0.6.2c Changelog
 
     Deva and Murti now do a "cross slash" behavior, walking their beams inwards across their firing angles
-    Redid Barrago sprite
+    Redid Barrago LRM Launcher sprite
     Reduced particle count and particle lifespan for Storm Blaster flak burst effects
     Impact of the Wraiths Crawler Beam reduced to 50 (from 300)
     Added a sanity check to the Retro Drive AI to keep it from launching off the map
