@@ -3,6 +3,7 @@ package data.scripts.world.anar;
 import data.scripts.world.MS_Conditions;
 import data.scripts.world.AddMarketplace;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -16,13 +17,18 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
+import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.random;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin.AsteroidFieldParams;
+import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain.TileParams;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
+import com.fs.starfarer.api.impl.campaign.terrain.NebulaTerrainPlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.StarCoronaTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.lwjgl.util.vector.Vector2f;
 
 public class Anar {
     
@@ -178,9 +184,9 @@ public class Anar {
         system.addAsteroidBelt(anar, 200, 14000, 1400, 200, 300, Terrain.ASTEROID_BELT, "Ergan Belt");
         
         //add hidden pirate base here
-        SectorEntityToken berins_stash = system.addCustomEntity("berins_stash", "Berins Stash", "station_shi_hiddenPirateBase", "pirates");
-        berins_stash.setCircularOrbitPointingDown(system.getEntityById("anar"), 72, 20100, 260);
-        berins_stash.setCustomDescriptionId("berins_stash");
+        //SectorEntityToken berins_stash = system.addCustomEntity("berins_stash", "Berins Stash", "station_shi_hiddenPirateBase", "pirates");
+        //berins_stash.setCircularOrbitPointingDown(system.getEntityById("anar"), 72, 20100, 260);
+        //berins_stash.setCustomDescriptionId("berins_stash");
         
         /*AddMarketplace.addMarketplace("pirates",
         berins_stash,
@@ -215,11 +221,119 @@ public class Anar {
         jumpPoint.setStandardWormholeToHyperspaceVisual();
         system.addEntity(jumpPoint);
         
-        //StarSystemGenerator.addSystemwideNebula(system, StarAge.AVERAGE);
+        //StarSystemGenerator.addSystemwideNebula(system, StarAge.ANAR);
 
         system.autogenerateHyperspaceJumpPoints(true, true);
         
+        nebular(system);
         cleanup(system);
+    }
+    
+    void nebular(StarSystemAPI system) {
+        int w = 128;
+        int h = 128;
+        
+        StringBuilder string = new StringBuilder();
+	for (int y = h - 1; y >= 0; y--) {
+		for (int x = 0; x < w; x++) {
+			string.append("x");
+		}
+	}
+	SectorEntityToken nebula = system.addTerrain(Terrain.NEBULA, new TileParams(string.toString(),
+			w, h,
+			"terrain", "nebula_anar", 4, 4, null));
+	nebula.getLocation().set(0, 0);
+        
+        NebulaTerrainPlugin nebulaPlugin = (NebulaTerrainPlugin)((CampaignTerrainAPI)nebula).getPlugin();
+        NebulaEditor editor = new NebulaEditor(nebulaPlugin);
+        
+        editor.regenNoise();
+        
+        editor.noisePrune(0.75f);
+        
+        editor.regenNoise();
+        
+        for (PlanetAPI planet : system.getPlanets()) {
+				
+		if (planet.getOrbit() != null && planet.getOrbit().getFocus() != null &&
+			planet.getOrbit().getFocus().getOrbit() != null) {
+			// this planet is orbiting something that's orbiting something
+			// its motion will be relative to its parent moving
+			// don't clear anything out for this planet
+			continue;
+		}
+				
+		float clearThreshold = 0f; // clear everything by default
+		float clearInnerRadius = 0f;
+		float clearOuterRadius = 0f;
+		Vector2f clearLoc = null;
+	
+				
+		if (!planet.isStar() && !planet.isGasGiant()) {
+			clearThreshold = 1f - Math.min(0f, planet.getRadius() / 300f);
+			if (clearThreshold > 0.5f) clearThreshold = 0.5f;
+		}
+				
+		Vector2f loc = planet.getLocation();
+		if (planet.getOrbit() != null && planet.getOrbit().getFocus() != null) {
+			Vector2f focusLoc = planet.getOrbit().getFocus().getLocation();
+			float dist = Misc.getDistance(planet.getOrbit().getFocus().getLocation(), loc);
+			float width = planet.getRadius() * 4f + 100f;
+			if (planet.isStar()) {
+				StarCoronaTerrainPlugin corona = Misc.getCoronaFor(planet);
+				if (corona != null) {
+					width = corona.getParams().bandWidthInEngine * 4f;
+				}
+			}
+			clearLoc = focusLoc;
+			clearInnerRadius = dist - width / 2f;
+			clearOuterRadius = dist + width / 2f;
+		} else if (planet.getOrbit() == null) {
+			float width = planet.getRadius() * 4f + 100f;
+			if (planet.isStar()) {
+				StarCoronaTerrainPlugin corona = Misc.getCoronaFor(planet);
+				if (corona != null) {
+					width = corona.getParams().bandWidthInEngine * 4f;
+				}
+			}
+			clearLoc = loc;
+			clearInnerRadius = 0f;
+			clearOuterRadius = width;
+		}
+				
+		if (clearLoc != null) {
+			float min = nebulaPlugin.getTileSize() * 2f;
+			if (clearOuterRadius - clearInnerRadius < min) {
+				clearOuterRadius = clearInnerRadius + min;
+			}
+			editor.clearArc(clearLoc.x, clearLoc.y, clearInnerRadius, clearOuterRadius, 0, 360f, clearThreshold);
+		}
+        }		
+        
+        float angleOffset = random.nextFloat() * 360f;
+		editor.clearArc(0f, 0f, 30000, 31000 + 1000f * random.nextFloat(), 
+				angleOffset + 0f, angleOffset + 360f * (2f + random.nextFloat() * 2f), 0.01f, 0f);
+                
+        // do some random arcs
+	int numArcs = (int) (8f + 6f * random.nextFloat());
+        
+        for (int i = 0; i < numArcs; i++) {
+		//float dist = 4000f + 10000f * random.nextFloat();
+		float dist = 15000f + 15000f * random.nextFloat();
+		float angle = random.nextFloat() * 360f;
+			
+		Vector2f dir = Misc.getUnitVectorAtDegreeAngle(angle);
+		dir.scale(dist - (2000f + 8000f * random.nextFloat()));
+		
+		//float tileSize = nebulaPlugin.getTileSize();
+		//float width = tileSize * (2f + 4f * random.nextFloat());
+		float width = 800f * (1f + 2f * random.nextFloat());
+			
+		float clearThreshold = 0f + 0.5f * random.nextFloat();
+		//clearThreshold = 0f;
+			
+		editor.clearArc(dir.x, dir.y, dist - width/2f, dist + width/2f, 0, 360f, clearThreshold);
+	}
     }
     
     void cleanup(StarSystemAPI system){

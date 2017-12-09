@@ -35,7 +35,9 @@ public class Yajna {
         
         PlanetAPI yaj = system.initStar("Yajna", "star_orange", 600f, 400f, 17f, 2f, 3.5f);
         system.setLightColor(new Color(255, 230, 220));
-        system.addRingBand(yaj, "misc", "rings_asteroids0", 256f, 1, Color.white, 256f, 800, 40f, null, null);
+        system.addRingBand(yaj, "ringsMod", "rocky", 1024f, 1, Color.white, 512f, 950, 40f, null, null);
+        system.addRingBand(yaj, "ringsMod", "dusty", 1024f, 1, Color.white, 512f, 900, 60f, null, null);
+        system.addRingBand(yaj, "ringsMod", "dusty", 1024f, 1, Color.white, 512f, 1000, 70f, null, null);
         
         //Udgatri is a moonless gas giant which probably devoured all the inner system mass when the system formed
         PlanetAPI yaj1 = system.addPlanet("udgatri", yaj, "Udgatri", "ice_giant", 20, 500, 2100, 120);
