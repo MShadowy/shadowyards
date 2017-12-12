@@ -1,3 +1,11 @@
+0.6.3a Changelog
+
+    Fixed the Vardr's inexplicable and terrible default variants
+        How the hell did I manage this?
+    Fized a type in the Murti and Deva files which were causing the beams to occassionally glitch out
+    Fixed some strange issues with the descriptions messing up for some of the ship systems
+    Updated the graphics for the old missile launchers; the Shrike, Black Cap, Tusk and Splinter launchers are now all up to spec
+
 0.6.3 Changelog
 
     Wraith refit time increased to 6 seconds (from 4) and Crawler beam dps reduced to 70 (from 85) and impact reduced to 15 (from 50)
