@@ -32,15 +32,10 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
     private static final float PULSE_DURATION = 1.25f;
     private static final float PULSE_MAX_SCALE = 2.5f;
     private static final float PULSE_MIN_SCALE = 0.5f;
+    private static final float EMP_SHOCKWAVE_DURATION = 0.05f;
+    private static final float EMP_SHOCKWAVE_MAX_SCALE = 1f;
+    private static final float EMP_SHOCKWAVE_MIN_SCALE = 0.2f;
     private static final int SHOCKWAVE_SIZE = 256;
-    
-    /*private final static Set<String> vistas = new HashSet();
-    
-    static{
-    vistas.add("ms_phaseSpaceRift1");
-    vistas.add("ms_phaseSpaceRift2");
-    vistas.add("ms_phaseSpaceRift3");
-    }*/
 
     public static void createFlakShockwave(Vector2f location)
     {
@@ -66,6 +61,19 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
         final List<Shockwave> shockwaves = localData.shockwaves;
 
         shockwaves.add(new Shockwave(location, CONCUSSION_SHOCKWAVE_DURATION, CONCUSSION_SHOCKWAVE_MAX_SCALE, CONCUSSION_SHOCKWAVE_MIN_SCALE));
+    }
+    
+    public static void createEMPShockwave(Vector2f location)
+    {
+        final LocalData localData = (LocalData) Global.getCombatEngine().getCustomData().get(DATA_KEY);
+        if (localData == null)
+        {
+            return;
+        }
+
+        final List<Shockwave> shockwaves = localData.shockwaves;
+
+        shockwaves.add(new Shockwave(location, EMP_SHOCKWAVE_DURATION, EMP_SHOCKWAVE_MAX_SCALE, EMP_SHOCKWAVE_MIN_SCALE));
     }
     private CombatEngineAPI engine; // Assigned per combat
     

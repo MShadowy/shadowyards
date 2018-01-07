@@ -13,6 +13,7 @@ import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import java.awt.Color;
+//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -86,6 +87,15 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
         bigY.put(ShipAPI.HullSize.DESTROYER, 140f);
         bigY.put(ShipAPI.HullSize.CRUISER, 180f);
         bigY.put(ShipAPI.HullSize.CAPITAL_SHIP, 260f);
+    }
+    
+    private static final Map<ShipAPI.HullSize, Float> flicker = new HashMap<>();
+
+    static {
+        flicker.put(ShipAPI.HullSize.FRIGATE, 4f);
+        flicker.put(ShipAPI.HullSize.DESTROYER, 6f);
+        flicker.put(ShipAPI.HullSize.CRUISER, 8f);
+        flicker.put(ShipAPI.HullSize.CAPITAL_SHIP, 10f);
     }
     
     private static final Set<String> accShipSystems = new HashSet<>();
@@ -178,6 +188,15 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
                 }
             }
             
+            /*List<WeaponAPI> vectoring = ship.getAllWeapons();
+            
+            List<WeaponAPI> toRemove = new ArrayList<>();
+            for (WeaponAPI vector : vectoring) {
+                if (!vector.getSlot().getId().contains("CAP") || !vector.getSlot().getId().contains("THRUST")) {
+                    toRemove.add(vector);
+                }
+            }
+            vectoring.removeAll(toRemove);*/
             
             // check if the ship have listed engine mod ship system
             shipSystem = ship.getSystem();
@@ -857,6 +876,7 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
                     weapon.getSprite().setCenter(bigX / 2 * 10 / (offset + 10) * maxOutput * widthMult * randScale, bigY.get(ship.getHullSize()) / 2 * 10 / (offset + 10) * thrust * lengthMult * randScale);
                     weapon.getAnimation().setAlphaMult(alphaMult);
             }
+            
             
         }
     }

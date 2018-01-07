@@ -1,8 +1,34 @@
+0.6.4 Changelog
+    
+    Added derelict gates to Gigas and Yajna; Gigas' has been partly disassembeled by the SRA for research purposes
+    Further fixed Yajna's rings (I totally forgot about the ones dividing the system)
+    Implemented an improved version of the TAG system AI (tongo assisted)
+    Added the Anu-class Shuttle and the Cetus-class Freighter
+        Both fitted with Siren flares
+    Added the Skolopendra-class Phase Cruiser (an extensively modified Cetus)
+        Decently fast but has miserable acceleration
+        Comes with the Ammofeeder system
+    Added the Shikome-class Elite Fighter
+    The Southpaws shield efficiency has been improved to 0.9 (from 1.15)
+    The Potnia-bis basic stats have been modestly improved
+        Hitpoints to 3000 (from 2500), Armor to 350 (from 300), flux to 7000 (from 6000), dissipation to 300 (from 250)
+    The Ashnans "Loader" Drones have been renamed to being "Stevedore" drones
+    Improved the Mimir's Nidhoggr Lance weapon
+        Now applies even ticks of damage (20% of the shot base damage) at regular intervals
+        Added a sanity check that adjusts the shots damage downward as it penetrates through a ship
+        The weapon no longer autocharges, so the AI should hopefully waste less shots
+        Generally improved visual effects
+    Polarizers now function as a kind of EMP flak; their damage, emp, fire rate and flux usage has been adjusted considerably
+        Polarizer: 50 damage/shot, 500 emp/shot, 60 flux/shot, chargeup of 0.15 and cooldown of 0.6 (from 150, 800, 1000, 0.35, 5)
+        Heavy Polarizer: 150 damage/shot, 1500 emp/shot, 200 flux/shot, chargeup 0f 0.25 and cooldown of 0.75 (from 800, 4000, 2500, 0.35, 8)
+    Finally remembered to set up the Vardr's engine section correctly
+    New Explosion sound effects for SRA ships
+
 0.6.3a Changelog
 
     Fixed the Vardr's inexplicable and terrible default variants
         How the hell did I manage this?
-    Fized a type in the Murti and Deva files which were causing the beams to occassionally glitch out
+    Fixed a typo in the Murti and Deva files which were causing the beams to occasionally glitch out
     Fixed some strange issues with the descriptions messing up for some of the ship systems
     Updated the graphics for the old missile launchers; the Shrike, Black Cap, Tusk and Splinter launchers are now all up to spec
 

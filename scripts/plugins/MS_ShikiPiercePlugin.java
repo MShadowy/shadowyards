@@ -25,42 +25,7 @@ import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
 
-public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
-
-    /*So time to consider a general rewrite of this plugin to produce better effects.
-    
-    We'll use an intervalutil to only run the check at certain points (somewhere between 0.1 and 0.25 seconds, 
-    we'll use that value for both halves of the interval so it'll check consistently.) We'll also set up booleans
-    for doing damage this tick as well as for meeting the maximum damage limit, and a runOnce boolean for some
-    bookkeeping stuff.
-    
-    eg: 
-        boolean DID_DAMAGE;
-        boolean DAMAGE_LIMIT = false;
-    
-        if (interval.hasElapsed) {
-            boolean DID_DAMAGE = false;
-    
-            if (!DID_DAMAGE) {
-                DID_DAMAGE = true;
-    
-                apply damage stuff;
-            }
-        }
-    
-    When fired, we'll check the total damage of the projectile and assign this value to a MAX_DAMAGE variable
-    representing the upper limit that can be permitted.
-    
-    Damage will be divided into 20% chunks for the full NL and 50% chunks for the micro lance in a variable called 
-    DAMAGE_PER_TICK; we'll have two more variables for collating this, DAMAGE_REMAINING which will be 
-    MAX_DAMAGE - DAMAGE_TOTAL, which will count up the damage done at each tick. This is so that, if the projectile 
-    hits a shield it doesn't do its full amount of damage; the projectiles damage will be adjusted at each tick where 
-    it does damage so we don't have to worry about pre-empting it if it unexpectedly hits a shield between ticks.
-    
-    Finally if the projectile has done it's full damage (DAMAGE_REMAINING <= 0) we set it's colission back to the base 
-    colission so it'll despawn if it's inside something and set the projectile to fade out just in case it exits the 
-    target before it can be killed otherwise*/
-    
+public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     private static CombatEngineAPI engine;
     private static final Map<String, CollisionClass> originalCollisionClasses = new HashMap<>();
 
@@ -84,7 +49,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     private boolean runOnce = false;
 
     static {
-        PROJ_IDS.add("ms_rhpcblast");
+        PROJ_IDS.add("ms_microLanceBlast");
     }
 
     @Override
@@ -113,8 +78,8 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
                 runOnce = true;
                 
                 MAX_DAMAGE = (proj.getDamageAmount());
-                DAMAGE_PER_TICK = MAX_DAMAGE * 0.2f;
-                EMP_PER_TICK = proj.getEmpAmount() * 0.2f;
+                DAMAGE_PER_TICK = MAX_DAMAGE * 0.5f;
+                EMP_PER_TICK = proj.getEmpAmount() * 0.5f;
             }
             
             // Register the original collision class (used for shield hits)
@@ -127,7 +92,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             //Spawn random hit particles I guess
             //target a vector directly behind the proj
             //Vector2f dir;
-            Vector2f point = new Vector2f(-50f, 0f);
+            Vector2f point = new Vector2f(-30f, 0f);
             VectorUtils.rotate(point, proj.getFacing(), point);
             Vector2f.add(point, proj.getLocation(), point);
             
@@ -136,20 +101,20 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             float sharpDur = MathUtils.getRandomNumberInRange(0.2f, 0.6f);
             float smoothDur = MathUtils.getRandomNumberInRange(0.1f, 0.4f);
             
-            if (Math.random() > 0.08 && !engine.isPaused()) {
+            if (Math.random() > 0.24 && !engine.isPaused()) {
                 engine.addHitParticle(spawn, ZERO, size, MathUtils.getRandomNumberInRange(1f, 2f), sharpDur, COLOR2);
             }
-            if (Math.random() > 0.04 && !engine.isPaused()) {
+            if (Math.random() > 0.16 && !engine.isPaused()) {
                 engine.addSmoothParticle(spawn, ZERO, size * 2, MathUtils.getRandomNumberInRange(0.5f, 1f), smoothDur, COLOR1);
             }
-            if (Math.random() > 0.15 && !engine.isPaused()) {
+            if (Math.random() > 0.5 && !engine.isPaused()) {
                 engine.spawnEmpArc(proj.getSource(), spawn, null, new SimpleEntity(point), 
                         DamageType.ENERGY,
                         0.0f,
                         0.0f,
                         10000f,
                         null,
-                        10f,
+                        4f,
                         COLOR1,
                         COLOR1);
             }
@@ -233,7 +198,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
                 float tAlf = sprite.getAlphaMult();
                 sprite.setAlphaMult(tAlf);
             }
-            sprite.setSize(800, 100);
+            sprite.setSize(400, 50);
             sprite.setAdditiveBlend();
             sprite.renderAtCenter(Here.x, Here.y);
         }

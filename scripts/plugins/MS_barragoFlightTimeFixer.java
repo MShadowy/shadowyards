@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.MissileAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
 import java.util.List;
@@ -20,7 +19,7 @@ public class MS_barragoFlightTimeFixer extends BaseEveryFrameCombatPlugin {
     private static final String REAL = "ms_barrago_lrm_s2";
     private static final String SHATTER = "ms_barrago_lrm_shatter";
     
-    private Vector2f ZERO = new Vector2f(0,0);
+    private final Vector2f ZERO = new Vector2f(0,0);
     
     @Override
     public void advance(float amount, List<InputEventAPI> events) {

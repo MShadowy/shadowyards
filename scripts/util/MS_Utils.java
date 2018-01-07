@@ -6,6 +6,9 @@ import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.ShieldAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipEngineControllerAPI.ShipEngineAPI;
+import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.ShadowyardsModPlugin;
 import db.twiglib.TwigUtils;
@@ -53,9 +56,7 @@ public class MS_Utils {
     public static float estimateIncomingBeamDamage(ShipAPI ship, float damageWindowSeconds) {
         float accumulator = 0f;
 
-        for (Iterator iter = Global.getCombatEngine().getBeams().iterator(); iter.hasNext();) {
-            BeamAPI beam = (BeamAPI)iter.next();
-            
+        for (BeamAPI beam : Global.getCombatEngine().getBeams()) {
             if(beam.getDamageTarget() != ship) continue;
             
             float dps = beam.getWeapon().getDerivedStats().getDamageOver30Sec() / 30;
@@ -164,5 +165,43 @@ public class MS_Utils {
             }
             return Float.compare(dist1, dist2);
         }
+    }
+    
+    public static boolean isWithinEmpRange(Vector2f loc, float dist, ShipAPI ship)
+    {
+        float distSq = dist * dist;
+        if (ship.getShield() != null && ship.getShield().isOn() && ship.getShield().isWithinArc(loc))
+        {
+            if (MathUtils.getDistance(ship.getLocation(), loc) - ship.getShield().getRadius() <= dist)
+            {
+                return true;
+            }
+        }
+
+        for (WeaponAPI weapon : ship.getAllWeapons())
+        {
+            if (!weapon.getSlot().isHidden() && weapon.getSlot().getWeaponType() != WeaponType.DECORATIVE && weapon.getSlot().getWeaponType()
+                    != WeaponType.LAUNCH_BAY
+                    && weapon.getSlot().getWeaponType() != WeaponType.SYSTEM)
+            {
+                if (MathUtils.getDistanceSquared(weapon.getLocation(), loc) <= distSq)
+                {
+                    return true;
+                }
+            }
+        }
+
+        for (ShipEngineAPI engine : ship.getEngineController().getShipEngines())
+        {
+            if (!engine.isSystemActivated())
+            {
+                if (MathUtils.getDistanceSquared(engine.getLocation(), loc) <= distSq)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

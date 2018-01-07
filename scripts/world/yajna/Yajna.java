@@ -118,9 +118,9 @@ public class Yajna {
         yaj5_field.setCircularOrbit(yaj5, 0, 0, 100);
         
         //Thick rings bisecting the system
-        system.addRingBand(yaj, "misc", "rings_asteroids0", 256f, 1, Color.white, 256f, 7700, 40f, null, null);
-        system.addRingBand(yaj, "misc", "rings_asteroids0", 256f, 1, Color.white, 256f, 7900, 40f, null, null);
-        system.addRingBand(yaj, "misc", "rings_asteroids0", 256f, 1, Color.white, 256f, 8100, 40f, null, null);
+        system.addRingBand(yaj, "ringsMod", "dusty", 1024f, 1, Color.white, 1024f, 7700, 490f, null, null);
+        system.addRingBand(yaj, "ringsMod", "cloudy", 1024f, 1, Color.white, 1024f, 7900, 490f, null, null);
+        system.addRingBand(yaj, "ringsMod", "rocky", 1024f, 1, Color.white, 512f, 8100, 490f, null, null);
         system.addAsteroidBelt(yaj, 600, 7900, 1400, 600, 400, Terrain.ASTEROID_BELT, "Center Belt");
         
         //Mantra is a large Persean controlled colony; while difficult to inhabit it has good access to volatiles and some organics, indicating it once housed a primitive biosphere
@@ -180,9 +180,16 @@ public class Yajna {
 	relay.setCircularOrbit(system.getEntityById("yajna"), 218+60, 4800, 270);
         
         SectorEntityToken v = system.getEntityById("yajna");
-	JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("yajna_gate", "Yajna Gate");
+	JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("yajna_jump", "Yajna Jump");
 	jumpPoint.setCircularOrbit(v, 218-60, 4800, 270);
 	jumpPoint.setRelatedPlanet(jnana);
+        
+        //Yajna Gate
+	SectorEntityToken gate = system.addCustomEntity("yajna_gate", // unique id
+		"Yajna Gate", // name - if null, defaultName from custom_entities.json will be used
+		 "inactive_gate", // type of object, defined in custom_entities.json
+		 null); // faction
+	gate.setCircularOrbit(system.getEntityById("yajna"), 0, 6500, 218);
         
         jumpPoint.setStandardWormholeToHyperspaceVisual();
         system.addEntity(jumpPoint);

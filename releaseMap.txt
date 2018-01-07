@@ -5,12 +5,6 @@
 0.6.2 - 0.6.4 Roadmap
     
     
-    ToDo Rework all old weapon sprites
-        MUST DO: missile launchers
-        blackcap launchers
-        splinter launchers
-        tusk launchers
-        shrike launchers
     ToDo Sounds:
         Sounds for built in weapons (Phase Beam) *P4
         Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
@@ -93,14 +87,6 @@
                 Cautious: Will try to avoid using it except to avoid damage; only uses it for getting around if it's sure it won't hit anything, probably won't do so in combat
                 Timid: Hyper sensitive to incoming damage, never uses it to advance, has a special routine that tries to figure out if the vector will lead it further from enemies and use 
                 it if it does so
-    Sounds to do: 
-        Urumi *P2
-        Splinter rocket launch sounds *P3
-        Black Cap launch sounds *P3
-        Sounds for built in weapons (Phasegun*, Phase Beam) *P4
-        As well as sounds for new weapons (Barrago and Trishula) *P1
-        Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
-        Generic Sound effects still using vanilla sounds: Ship Explosions, Shields up/down, EMP Loop/Overload Explosions - 4; EMP - Start sound effect and loop
     (Address whatever balance issues come up)
     Add Prototype Fast Attack Cruiser (repurposed original Elysium sprite) as IBB Bounty
                 Tentative name: Asphodel
@@ -117,6 +103,14 @@
                 In exchange the cd becomes very short (something like 1/4 - 1/3 of a second) allowing it to be spammed at the risk of overloading
                 As an additional balancing measure when the ships right-click system goes offline, the F-key system is considered to have been used and must go through it's full cd
     
+    
+    ToDo: Add Utility ships
+        Tanker
+        Civilian Transport
+    Add HE missile system
+        Based off RPG 30, fires pilot round to distract pd with main round following behind
+    
+    
     ToDo:
         (Optional) Adjust Seski's ship system to be a "Fractal Displacer"; single charge at any given time, charges reasonably quickly (not sure how to implement)
                 Consists of several (6-10) short displacements chained together in a burst.  At each jump the ship gets the vector of the last jump (or initial vector) and modifies it
@@ -125,15 +119,6 @@
                 Individual jumps have a vey short duration, but the overal time taken should be longer than a wolf jumping three times rapidly
                 Total range covered should be 1.75 - 2.5 standard displacer hops
                 Cycle time should be 1.25 - 2 displacer charging cycles
-        (Optional) Finish Sounds
-                Urumi *P2
-                Splinter rocket launch sounds *P3
-                Black Cap launch sounds *P3
-                Sounds for built in weapons (Phasegun*, Phase Beam) *P4
-                As well as sounds for new weapons (Barrago and Trishula) *P1
-                Systems still using vanilla sounds: Booster Jets, Woop Drive, SWACS, Siege Mode, Afterburner, Jammer
-                Generic Sound effects still using vanilla sounds: Ship Explosions, Shields up/down, EMP Loop/Overload
-                        Explosions - 4; EMP - Start sound effect and loop
         Add visual effects for the TAG system (partial)
         (Optional) Improve the visual effects for the SWACs system (add ping effect at Sargasso)
         (Optional) Rewrite mission descriptions and go over lore to update them to current standards and improve mission scenario implementation if time permits

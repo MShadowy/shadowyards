@@ -12,7 +12,7 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
+public class MS_ShikiSoundPlugin implements EveryFrameWeaponEffectPlugin {
     
     private static final Color CHARGEUP_PARTICLE_COLOR = new Color(130, 190, 160, 100);
     private static final float CHARGEUP_PARTICLE_DISTANCE_MIN = 4.0f;
@@ -27,7 +27,7 @@ public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
     private static final Vector2f ZERO = new Vector2f();
     
     public static final float MAX_OFFSET = 5f; 
-    public static final float SWEEP_INTERVAL = 0.95f;
+    public static final float SWEEP_INTERVAL = 4.5f;
     private List <Float> ANGLES = new ArrayList();
     
     protected float timer = 0;
@@ -48,9 +48,9 @@ public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
         Vector2f point1 = new Vector2f(weapon.getLocation());
         Vector2f offset1 = new Vector2f();
         if (weapon.getSlot().isTurret()) {
-            offset1 = new Vector2f(17f, 9f);
+            offset1 = new Vector2f(0f, 19f);
         } else if (weapon.getSlot().isHardpoint()) {
-            offset1 = new Vector2f(20f, 9f);
+            offset1 = new Vector2f(0f, 19f);
         }
         VectorUtils.rotate(offset1, weapon.getCurrAngle(), offset1);
         Vector2f.add(offset1, point1,point1);
@@ -58,9 +58,9 @@ public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
         Vector2f point2 = new Vector2f(weapon.getLocation());
         Vector2f offset2 = new Vector2f();
         if (weapon.getSlot().isTurret()) {
-            offset2 = new Vector2f(17f, -9f);
+            offset2 = new Vector2f(0f, -19f);
         } else if (weapon.getSlot().isHardpoint()) {
-            offset2 = new Vector2f(20f, -9f);
+            offset2 = new Vector2f(0f, -19f);
         }
         VectorUtils.rotate(offset2, weapon.getCurrAngle(), offset2);
         Vector2f.add(offset2, point2,point2);
@@ -73,6 +73,7 @@ public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
             
             weapon.ensureClonedSpec();
         }
+        
                     
         if (restart) {
             for(int i=0; i<weapon.getSpec().getTurretAngleOffsets().size(); i++){
@@ -90,7 +91,7 @@ public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
                 weapon.getSpec().getTurretAngleOffsets().set(i, (-1+2*i)*MAX_OFFSET*-1*(float)FastTrig.cos(timer));            
                 weapon.getSpec().getHiddenAngleOffsets().set(i, (-1+2*i)*MAX_OFFSET*-1*(float)FastTrig.cos(timer));  
             }
-        }else if(!restart){
+        } else if (!restart){
             timer=0;
             restart=true;
         }
@@ -170,7 +171,7 @@ public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
         } else {
             if (weapon.getChargeLevel() >0f && weapon.getCooldownRemaining() <= 0f) {
                 charging = true;
-                Global.getSoundPlayer().playSound("ms_slowBeamM_charge", 1, 1, point1, weapon.getShip().getVelocity());
+                Global.getSoundPlayer().playSound("ms_slowBeamShi_charge", 1, 1, point1, weapon.getShip().getVelocity());
             }   
         }
         
