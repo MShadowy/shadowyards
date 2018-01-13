@@ -28,20 +28,22 @@ import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
+import data.scripts.ShadowyardsModPlugin;
+import data.scripts.hullmods.TEM_LatticeShield;
 
 public class MS_EMPFlakSmall extends BaseEveryFrameCombatPlugin {
     
     private static final float FLAK_DAMAGE = 50f; //Damage
-    private static final float FLAK_EMP_DAMAGE = 500f; //EMP Damage
-    private static final float EMP_SIZE = 70f; //Area of Effect
-    private static final float EMP_CORE = 50f; //Full damage area
+    private static final float FLAK_EMP_DAMAGE = 400f; //EMP Damage
+    private static final float EMP_SIZE = 25f; //Area of Effect
+    private static final float EMP_CORE = 18f; //Full damage area
     private static final Color effectColor1 = new Color(100, 200, 255, 215);
     private static final Color effectColor2 = new Color(35, 50, 85, 150);
     private static final float EMP_FLASH_DURATION = 0.25f;
     private static final float EMP_FUSE_RANGE = 30f; //"Detonation" radius
     private final static String MISS_IDS = "ms_lemp_shot";
-    private static final float EMP_VISUAL_SIZE = 75f;
-    private static final float EMP_CORE_VISUAL_SIZE = 50f;
+    private static final float EMP_VISUAL_SIZE = 15f;
+    private static final float EMP_CORE_VISUAL_SIZE = 12f;
     private static final float LOOK_AHEAD_TIME = 0.067f;    // Extrapolate projectile position for this long in look-ahead for collisions
     private static final Vector2f ZERO = new Vector2f();
 
@@ -71,7 +73,7 @@ public class MS_EMPFlakSmall extends BaseEveryFrameCombatPlugin {
         
         for (int i = 0; i < 3; i++) {
             float angle = (float) Math.random() * 360f;
-            float distance = (float) Math.random() * 90f + 45f;
+            float distance = (float) Math.random() * 10f + 20f;
             Vector2f point1 = MathUtils.getPointOnCircumference(point, distance, angle);
             Vector2f point2 = new Vector2f(point);
             engine.spawnEmpArc(projectile.getSource(), point1, new SimpleEntity(point1), new SimpleEntity(point2),
@@ -129,6 +131,7 @@ public class MS_EMPFlakSmall extends BaseEveryFrameCombatPlugin {
         
         ships = MS_Utils.getSortedAreaList(point, ships);
         targets.addAll(ships);
+        ShipAPI targ = null;
         
         for (CombatEntityAPI tgt : targets)
         {
@@ -148,6 +151,12 @@ public class MS_EMPFlakSmall extends BaseEveryFrameCombatPlugin {
             if (reduction <= 0f)
             {
                 continue;
+            }
+            
+            List<CombatEntityAPI> rocks = CombatUtils.getAsteroidsWithinRange(point, EMP_SIZE);
+            
+            if (!rocks.contains(tgt)) {
+                targ = (ShipAPI) tgt;
             }
 
             boolean shieldHit = false;
@@ -178,6 +187,7 @@ public class MS_EMPFlakSmall extends BaseEveryFrameCombatPlugin {
             {
                 damagePoint = point;
             }
+            
             engine.applyDamage(tgt, damagePoint, FLAK_DAMAGE * reduction, DamageType.ENERGY, FLAK_EMP_DAMAGE * reduction, false, false, projectile.getSource());
         }
         
@@ -201,6 +211,8 @@ public class MS_EMPFlakSmall extends BaseEveryFrameCombatPlugin {
             damagePoint = CollisionUtils.getCollisionPoint(point, projection, mtgt);
            
             //engine.applyDamage(mtgt, damagePoint, FLAK_DAMAGE * reduction, DamageType.ENERGY, FLAK_EMP_DAMAGE * reduction, false, false, projectile.getSource());
+            if (targ != null && (targ.getVariant().getHullMods().contains("tem_latticeshield") && ((!ShadowyardsModPlugin.templarsExist || TEM_LatticeShield.shieldLevel(targ) > 0f) || !targ.getVariant().getHullMods().contains("tem_latticeshield")))) {            
+            } else {
             engine.spawnEmpArc(projectile.getSource(), damagePoint, mtgt, mtgt,
                         DamageType.ENERGY,
                         10f * reduction,
@@ -209,7 +221,7 @@ public class MS_EMPFlakSmall extends BaseEveryFrameCombatPlugin {
                         null,
                         10f,
                         effectColor1,
-                        effectColor1);
+                        effectColor1);}
         }
         
         /* Don't want it exploding multiple times, do we?  Also cleans up the look of it */

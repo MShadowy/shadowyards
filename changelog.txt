@@ -1,3 +1,11 @@
+0.6.4a Changleog
+
+    Did a balance pass on the small Polarizer
+        AoE radius reduced to 25 (from 75), EMP amount reduced to 400 (from 500), range reduced to 500 (from 700)
+    Fixed a CTD bug that occurs when fighting Templars with the Polarizers
+    Rewrote the Polarizer descriptions to make their AoE nature more clear
+    Added the misisng Shikome ships system description
+
 0.6.4 Changelog
     
     Added derelict gates to Gigas and Yajna; Gigas' has been partly disassembeled by the SRA for research purposes
