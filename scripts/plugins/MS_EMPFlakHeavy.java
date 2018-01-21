@@ -92,7 +92,7 @@ public class MS_EMPFlakHeavy extends BaseEveryFrameCombatPlugin {
         
         List<ShipAPI> ships = CombatUtils.getShipsWithinRange(point, EMP_SIZE);
         List<CombatEntityAPI> targets = CombatUtils.getAsteroidsWithinRange(point, EMP_SIZE);
-        targets.addAll(CombatUtils.getMissilesWithinRange(point, EMP_SIZE));
+        //targets.addAll(CombatUtils.getMissilesWithinRange(point, EMP_SIZE));
         List<MissileAPI> missiles = CombatUtils.getMissilesWithinRange(point, EMP_SIZE);
         
         Iterator<ShipAPI> iter = ships.iterator();
@@ -154,6 +154,7 @@ public class MS_EMPFlakHeavy extends BaseEveryFrameCombatPlugin {
             }
             
             List<CombatEntityAPI> rocks = CombatUtils.getAsteroidsWithinRange(point, EMP_SIZE);
+            rocks.addAll(missiles);
             
             if (!rocks.contains(tgt)) {
                 targ = (ShipAPI) tgt;
@@ -211,17 +212,21 @@ public class MS_EMPFlakHeavy extends BaseEveryFrameCombatPlugin {
             damagePoint = CollisionUtils.getCollisionPoint(point, projection, mtgt);
            
             //engine.applyDamage(mtgt, damagePoint, FLAK_DAMAGE * reduction, DamageType.ENERGY, FLAK_EMP_DAMAGE * reduction, false, false, projectile.getSource());
-            if (targ != null && (targ.getVariant().getHullMods().contains("tem_latticeshield") && ((!ShadowyardsModPlugin.templarsExist || TEM_LatticeShield.shieldLevel(targ) > 0f) || !targ.getVariant().getHullMods().contains("tem_latticeshield")))) {            
+            if (targ != null && (targ.getVariant().getHullMods().contains("tem_latticeshield") && ((!ShadowyardsModPlugin.templarsExist || TEM_LatticeShield.shieldLevel(targ) > 0f) || !targ.getVariant().getHullMods().contains("tem_latticeshield"))))
+            {            
             } else {
-            engine.spawnEmpArc(projectile.getSource(), damagePoint, mtgt, mtgt,
-                        DamageType.ENERGY,
-                        30f * reduction,
-                        FLAK_EMP_DAMAGE * reduction,
-                        100f,
-                        null,
-                        10f,
-                        effectColor1,
-                        effectColor1);}
+                if (damagePoint != null) {
+                engine.spawnEmpArc(projectile.getSource(), damagePoint, mtgt, mtgt,
+                    DamageType.ENERGY,
+                    30f * reduction,
+                    FLAK_EMP_DAMAGE * reduction,
+                    100f,
+                    null,
+                    10f,
+                    effectColor1,
+                    effectColor1);
+                }
+            }  
         }
         
         /* Don't want it exploding multiple times, do we?  Also cleans up the look of it */
