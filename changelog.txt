@@ -1,8 +1,25 @@
+0.7 Changelog
+
+    Added the Semele-class Tanker
+    Added the Delphi-class Cruiser
+    Adjusted the Sargassos fuel/ly to 2.2 (from 1.45) and supplies per month and deployment to 12 (from 8)
+    Added Civilian Grade Hull hullmod to the Cetus
+    Enlils Medium Synergy hardpoint changed to Energy
+    Inanna changes:
+        Slot layout changed to 2x medium, 2x small (from 1x medium, 4x small)
+        High Energy Focus changed to GAt system
+    CEPC OP cost increased to 6 (from 5)
+    Ships variants updated
+    Adjusted the stats of the Shikome's Combat Shell system
+        Time Dilation speed reduced to 3x (from 4x)
+        Active time reduced to 4 seconds, down time reduced to 1 second (from 5, 2)
+    Find and fix incorrect text entries for the Deva and elsewhere
+
 0.6.4b Changelog
 
     Fire rate of both Polarizers reduced to 30 shots/minute
     Small Polarizer AoE increased to 30 (from 25)
-    Fixed a bug with the Polarizers that could cause a ctd when fighting Templars
+    Fixed another bug with the Polarizers that could cause a ctd when fighting Templars
     Added the Lockdown HMG (weapon courtesy of Soren)
         A collaboration between the League and the SRA, the lockdown is a ballistic mounted emp machine gun
 
