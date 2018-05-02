@@ -120,8 +120,10 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
             /* if incoming damage would overload the ship, or if shields are down and the 
             damage is more than 25% of its remaining hitpoints, or if the ship has been ordered to
             retreat and enemy ships are too close, use the system*/
-            if (!nearbyThreats.isEmpty() && ship.getShield().isOn() && fluxer.getCurrFlux() >= fluxer.getMaxFlux() * 0.8f
-                    && incoming >= fluxer.getMaxFlux() * 0.2f || !nearbyThreats.isEmpty() && ship.getShield().isOff() && incoming >=
+            boolean shield_on = false;
+            if (ship.getShield() != null) shield_on = ship.getShield().isOn();
+            if (!nearbyThreats.isEmpty() && shield_on && ship.getShield().isOn() && fluxer.getCurrFlux() >= fluxer.getMaxFlux() * 0.8f
+                    && incoming >= fluxer.getMaxFlux() * 0.2f || !nearbyThreats.isEmpty() && !shield_on && ship.getShield().isOff() && incoming >=
                             (ship.getHitpoints() * 0.25f ) || ship.getAIFlags().hasFlag(ShipwideAIFlags.AIFlags.RUN_QUICKLY) &&
                                     !AIUtils.getNearbyEnemies(ship, RANGE_TO_CHECK).isEmpty() && clear == true)
             {
