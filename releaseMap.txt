@@ -1,5 +1,15 @@
-0.6.5 Roadmap
+0.7.1 + Roadmap
     Add Enkidu-class special actions frigate
+    Add Heavy Destroyer
+    Add Liner
+    Add SRA Stations
+    Add Large Missile Launchers
+        2x Large Launchers
+        1st, Area of effect anti-fighter warhead, saturates local area with blackcap missiles, basically a FS2 anti-fighter bomb
+        2nd, another AoE weapon, larger missilized version of the Shamashes phase gun
+
+0.6.5 Roadmap
+    
 
 
 0.6.2 - 0.6.4 Roadmap

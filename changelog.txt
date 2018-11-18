@@ -1,3 +1,16 @@
+0.7.0.1
+
+    Updated compatibility for 0.9a
+    Scatter CEPC flux cost per shot reduced to 800 (from 1100)
+    Delphi fuel use/ly reduce to 2.75 and supply per month/recovery reduct to 18 (from 3, 20)
+    Fixed the Vectored Thruster Script so that it should no longer freeze up
+    Added MagicLib trail effects to the Nidhoggr Lace and Mini Lance
+    Finally fixed the Barrago AI, which should make it cosiderably more annoying
+        First stage now quickly acquires it target and separates appropriately
+        Due to a typo the second stage AI wasn't active; this has been resolved
+    Tightened up the shot accuracy for Scatter CEPC
+    Fixed the Particle effects on the SWACs system to be less demanding
+
 0.7 Changelog
 
     Added the Semele-class Tanker
@@ -13,7 +26,7 @@
     Adjusted the stats of the Shikome's Combat Shell system
         Time Dilation speed reduced to 3x (from 4x)
         Active time reduced to 4 seconds, down time reduced to 1 second (from 5, 2)
-    Find and fix incorrect text entries for the Deva and elsewhere
+    Fixed incorrect lore text for the Deva
 
 0.6.4b Changelog
 
