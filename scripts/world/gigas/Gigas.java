@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipD
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
@@ -59,8 +60,9 @@ public class Gigas {
                 auris_grip,  
                 null,  
                 "Auris Grip",  
-                4,  
-                new ArrayList<>(Arrays.asList(Conditions.ORBITAL_STATION, Conditions.ORE_COMPLEX, Conditions.FREE_PORT, Conditions.ORGANIZED_CRIME, Conditions.POPULATION_4)),  
+                5,  
+                new ArrayList<>(Arrays.asList(Conditions.FREE_PORT, Conditions.ORGANIZED_CRIME, Conditions.POPULATION_5)),  
+                new ArrayList<>(Arrays.asList(Industries.MINING, Industries.ORBITALSTATION, Industries.SPACEPORT, Industries.POPULATION)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),  
                 0.3f  
         );
@@ -108,7 +110,6 @@ public class Gigas {
 	addDerelict(system, vel, "kite_Standard", ShipCondition.BATTERED, 4545f, false);
         addDerelict(system, vel, "wolf_d_pirates_Attack", ShipCondition.WRECKED, 4877f, false);
         
-        
         PlanetAPI vel2 = system.addPlanet("leviathan", vel, "Leviathan", "gas_giant", 92, 400f, 8600f, 170f);
         //vel2.setCustomDescriptionId("planet_leviathan");
         //moons, 1 gas shrouded (sturmvald) 1 large frozen (stillness), rings
@@ -142,8 +143,10 @@ public class Gigas {
                 null,  
                 "Stillness",  
                 5,
-                new ArrayList<>(Arrays.asList(Conditions.ICE, Conditions.THIN_ATMOSPHERE, Conditions.SPACEPORT, Conditions.ORE_REFINING_COMPLEX, Conditions.ORE_REFINING_COMPLEX, Conditions.VOLATILES_COMPLEX,
-                        Conditions.LIGHT_INDUSTRIAL_COMPLEX, Conditions.LARGE_REFUGEE_POPULATION, Conditions.POPULATION_5)),  
+                new ArrayList<>(Arrays.asList(Conditions.ICE, Conditions.THIN_ATMOSPHERE, Conditions.VOLATILES_PLENTIFUL,
+                        Conditions.LARGE_REFUGEE_POPULATION, Conditions.POPULATION_5)),  
+                new ArrayList<>(Arrays.asList(Industries.PATROLHQ, Industries.LIGHTINDUSTRY, Industries.REFINING, Industries.GROUNDDEFENSES, 
+                        Industries.SPACEPORT, Industries.POPULATION)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f  
         );
@@ -161,7 +164,8 @@ public class Gigas {
                 null,  
                 "Lance Base",  
                 3,  
-                new ArrayList<>(Arrays.asList(Conditions.FRONTIER, Conditions.ORBITAL_STATION, Conditions.MILITARY_BASE, Conditions.OUTPOST, Conditions.POPULATION_3)),  
+                new ArrayList<>(Arrays.asList(Conditions.FRONTIER, Conditions.OUTPOST, Conditions.POPULATION_3)),  
+                new ArrayList<>(Arrays.asList(Industries.MILITARYBASE, Industries.BATTLESTATION, Industries.POPULATION, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),  
                 0.3f  
         );
@@ -172,8 +176,15 @@ public class Gigas {
 		"shadow_industry"); // faction
 	relay.setCircularOrbit(system.getEntityById("gigas"), 160+60, 1900, 210);
         
+        //a gate, derelict, disassembeled
+        SectorEntityToken gate = system.addCustomEntity("gigas_wrecked", // unique id
+				 "Gigas Gate", // name - if null, defaultName from custom_entities.json will be used
+				 "wrecked_gate", // type of object, defined in custom_entities.json
+				 null); // faction
+	gate.setCircularOrbit(system.getEntityById("gigas"), 0, 6600, 110);
+        
         SectorEntityToken v = system.getEntityById("gigas");
-	JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("gigas_gate", "Gigas Gate");
+	JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("gigas_gate", "Gigas Jump Node");
 	jumpPoint.setCircularOrbit(v, 160-60, 1900, 210);
 	jumpPoint.setRelatedPlanet(vel1);
         

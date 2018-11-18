@@ -4,9 +4,10 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import data.campaign.econ.MS_industries;
 import data.scripts.world.AddMarketplace;
-import data.scripts.world.MS_Conditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -28,8 +29,8 @@ public class Outposter {
                 null,
                 "Outpost Tiger",
                 3,
-                new ArrayList<>(Arrays.asList(Conditions.OUTPOST, Conditions.ORBITAL_STATION, Conditions.MILITARY_BASE,
-                        Conditions.STEALTH_MINEFIELDS, Conditions.HYDROPONICS_COMPLEX, Conditions.POPULATION_3)),
+                new ArrayList<>(Arrays.asList(Conditions.OUTPOST, Conditions.STEALTH_MINEFIELDS, Conditions.POPULATION_3)),
+                new ArrayList<>(Arrays.asList(Industries.HEAVYBATTERIES, Industries.MILITARYBASE, Industries.STARFORTRESS_HIGH, Industries.SPACEPORT, Industries.POPULATION)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.GENERIC_MILITARY, Submarkets.SUBMARKET_OPEN)),
                 0.3f);
         
@@ -44,9 +45,9 @@ public class Outposter {
                 null,
                 "Udana Station",
                 5,
-                new ArrayList<>(Arrays.asList(Conditions.ORBITAL_STATION, Conditions.LIGHT_INDUSTRIAL_COMPLEX,
-                        Conditions.LARGE_REFUGEE_POPULATION, MS_Conditions.MEDCENTER, Conditions.HYDROPONICS_COMPLEX,
-                                Conditions.URBANIZED_POLITY, Conditions.POPULATION_5)),
+                new ArrayList<>(Arrays.asList(Conditions.LARGE_REFUGEE_POPULATION, Conditions.URBANIZED_POLITY, Conditions.POPULATION_5)),
+                new ArrayList<>(Arrays.asList(Industries.ORBITALSTATION_HIGH, Industries.LIGHTINDUSTRY, MS_industries.MEDICALCENTER, 
+                        Industries.PATROLHQ, Industries.POPULATION, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f);
     }
