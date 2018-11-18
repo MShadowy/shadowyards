@@ -170,6 +170,11 @@ public class MS_PandoraEmitter implements EveryFrameWeaponEffectPlugin {
         @Override
         public void setCollisionRadius(float f) {
         }
+
+        @Override
+        public Object getAI() {
+            return null;
+        }
     }
     //</editor-fold>
 }

@@ -6,7 +6,6 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
-import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.ViewportAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
@@ -18,12 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
-import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
+
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
 
@@ -70,6 +72,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     // Keep track of the original collision class (used for shield hits)
     private static final Color COLOR1 = new Color(165, 215, 145, 150);
     private static final Color COLOR2 = new Color(155, 255, 155, 150);
+    private static final Color COLOR3 = new Color(115, 185, 165, 150);
     
     private static final Vector2f ZERO = new Vector2f();
     
@@ -82,6 +85,14 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     
     private final IntervalUtil interval = new IntervalUtil(0.05f, 0.05f);
     private boolean runOnce = false;
+    
+    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs = new WeakHashMap<>();
+
+    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs2 = new WeakHashMap<>();
+    
+    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs3 = new WeakHashMap<>();
+
+    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs4 = new WeakHashMap<>();
 
     static {
         PROJ_IDS.add("ms_rhpcblast");
@@ -112,7 +123,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             if (!runOnce) {
                 runOnce = true;
                 
-                MAX_DAMAGE = (proj.getDamageAmount());
+                MAX_DAMAGE = proj.getDamageAmount();
                 DAMAGE_PER_TICK = MAX_DAMAGE * 0.2f;
                 EMP_PER_TICK = proj.getEmpAmount() * 0.2f;
             }
@@ -131,28 +142,48 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             VectorUtils.rotate(point, proj.getFacing(), point);
             Vector2f.add(point, proj.getLocation(), point);
             
-            Vector2f spawn = MathUtils.getRandomPointInCircle(proj.getLocation(), proj.getCollisionRadius());
-            float size = MathUtils.getRandomNumberInRange(20f, 10f);
-            float sharpDur = MathUtils.getRandomNumberInRange(0.2f, 0.6f);
-            float smoothDur = MathUtils.getRandomNumberInRange(0.1f, 0.4f);
+            if (projectileTrailIDs.get(proj) == null)
+            {
+                projectileTrailIDs.put(proj, MagicTrailPlugin.getUniqueID());
+            }
             
-            if (Math.random() > 0.08 && !engine.isPaused()) {
-                engine.addHitParticle(spawn, ZERO, size, MathUtils.getRandomNumberInRange(1f, 2f), sharpDur, COLOR2);
+            if (projectileTrailIDs2.get(proj) == null)
+            {
+                projectileTrailIDs2.put(proj, MagicTrailPlugin.getUniqueID());
             }
-            if (Math.random() > 0.04 && !engine.isPaused()) {
-                engine.addSmoothParticle(spawn, ZERO, size * 2, MathUtils.getRandomNumberInRange(0.5f, 1f), smoothDur, COLOR1);
+            
+            if (projectileTrailIDs3.get(proj) == null)
+            {
+                projectileTrailIDs3.put(proj, MagicTrailPlugin.getUniqueID());
             }
-            if (Math.random() > 0.15 && !engine.isPaused()) {
-                engine.spawnEmpArc(proj.getSource(), spawn, null, new SimpleEntity(point), 
-                        DamageType.ENERGY,
-                        0.0f,
-                        0.0f,
-                        10000f,
-                        null,
-                        10f,
-                        COLOR1,
-                        COLOR1);
+            
+            if (projectileTrailIDs4.get(proj) == null)
+            {
+                projectileTrailIDs4.put(proj, MagicTrailPlugin.getUniqueID());
             }
+            //Vector2f offsetPoint = new Vector2f((float) Math.cos(Math.toRadians(proj.getFacing()) * 16f), (float) Math.sin(Math.toRadians(proj.getFacing())));
+            //Vector2f spawnPosition = new Vector2f(offsetPoint.x + proj.getLocation().x, offsetPoint.y + proj.getLocation().y);
+            
+            // Then, actually spawn a trail
+            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs.get(proj), Global.getSettings().getSprite("sra_trails",
+                        "rhpcb_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 120f, 
+                    25f, 3f, 32f, 10f, COLOR2, COLOR3, 0.6f, 0f, 0.25f, 0.75f, GL_SRC_ALPHA, GL_ONE, 
+                    128, 1000, new Vector2f(0,0), null);
+            
+            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs2.get(proj), Global.getSettings().getSprite("sra_trails",
+                        "rhpcb_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() + 120f, 
+                    25f, 3f, 32f, 10f, COLOR2, COLOR3, 0.6f, 0f, 0.15f, 0.6f, GL_SRC_ALPHA, GL_ONE, 
+                    128, 1000, new Vector2f(0,0), null);
+            
+            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs3.get(proj), Global.getSettings().getSprite("sra_trails",
+                        "rhpcb_secondary_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 120f, 
+                    28f, 5f, 64f, 10f, COLOR3, new Color(60, 90, 120), 0.4f, 0f, 0.25f, 0.75f, GL_SRC_ALPHA, GL_ONE, 
+                    128, 1000, new Vector2f(0,0), null);
+            
+            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs4.get(proj), Global.getSettings().getSprite("sra_trails",
+                        "rhpcb_secondary_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() + 120f, 
+                    28f, 5f, 64f, 10f, COLOR3, new Color(60, 90, 120), 0.4f, 0f, 0.15f, 0.6f, GL_SRC_ALPHA, GL_ONE, 
+                    128, 1000, new Vector2f(0,0), null);
 
             // Find nearby ships, missiles and asteroids
             List<CombatEntityAPI> toCheck = new ArrayList<>();

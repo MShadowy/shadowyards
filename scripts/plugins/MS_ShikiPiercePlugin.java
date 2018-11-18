@@ -18,12 +18,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
+
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     private static CombatEngineAPI engine;
@@ -35,6 +39,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     // Keep track of the original collision class (used for shield hits)
     private static final Color COLOR1 = new Color(165, 215, 145, 150);
     private static final Color COLOR2 = new Color(155, 255, 155, 150);
+    private static final Color COLOR3 = new Color(115, 185, 165, 150);
     
     private static final Vector2f ZERO = new Vector2f();
     
@@ -47,6 +52,10 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     
     private final IntervalUtil interval = new IntervalUtil(0.05f, 0.05f);
     private boolean runOnce = false;
+    
+    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs = new WeakHashMap<>();
+
+    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs2 = new WeakHashMap<>();
 
     static {
         PROJ_IDS.add("ms_microLanceBlast");
@@ -101,23 +110,25 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
             float sharpDur = MathUtils.getRandomNumberInRange(0.2f, 0.6f);
             float smoothDur = MathUtils.getRandomNumberInRange(0.1f, 0.4f);
             
-            if (Math.random() > 0.24 && !engine.isPaused()) {
-                engine.addHitParticle(spawn, ZERO, size, MathUtils.getRandomNumberInRange(1f, 2f), sharpDur, COLOR2);
+            if (projectileTrailIDs.get(proj) == null)
+            {
+                projectileTrailIDs.put(proj, MagicTrailPlugin.getUniqueID());
             }
-            if (Math.random() > 0.16 && !engine.isPaused()) {
-                engine.addSmoothParticle(spawn, ZERO, size * 2, MathUtils.getRandomNumberInRange(0.5f, 1f), smoothDur, COLOR1);
+            
+            if (projectileTrailIDs2.get(proj) == null)
+            {
+                projectileTrailIDs2.put(proj, MagicTrailPlugin.getUniqueID());
             }
-            if (Math.random() > 0.5 && !engine.isPaused()) {
-                engine.spawnEmpArc(proj.getSource(), spawn, null, new SimpleEntity(point), 
-                        DamageType.ENERGY,
-                        0.0f,
-                        0.0f,
-                        10000f,
-                        null,
-                        4f,
-                        COLOR1,
-                        COLOR1);
-            }
+            // Then, actually spawn a trail
+            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs.get(proj), Global.getSettings().getSprite("sra_trails",
+                        "rhpcb_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 180f, 
+                    0f, 0f, 16f, 0f, COLOR2, COLOR3, 0.6f, 0f, 0.1f, 0.3f, GL_SRC_ALPHA, GL_ONE, 
+                    128, 500, new Vector2f(0,0), null);
+            
+            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs2.get(proj), Global.getSettings().getSprite("sra_trails",
+                        "rhpcb_secondary_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 180f, 
+                    0f, 0f, 24f, 0f, COLOR3, new Color(60, 90, 120), 0.4f, 0f, 0.15f, 0.35f, GL_SRC_ALPHA, GL_ONE, 
+                    128, 500, new Vector2f(0,0), null);
 
             // Find nearby ships, missiles and asteroids
             List<CombatEntityAPI> toCheck = new ArrayList<>();

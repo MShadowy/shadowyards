@@ -24,8 +24,8 @@ public class MS_Barrago_S2_AI implements MissileAIPlugin, GuidedMissileAI
     private static final float MIRV_SPEED = 150f;
     private static final float VELOCITY_DAMPING_FACTOR = 0.15f;
     private static final Vector2f ZERO = new Vector2f();
-    private static final String MIRV_ID = "ms_barrago_lrm_shatter";
-    private static final String SOUND_ID = "flak_fire";
+    private static final String MIRV_ID = "ms_barrago_lrm_shatter_clone";
+    private static final String SOUND_ID = "barrago_stage_three_fire";
     private final MissileAPI missile;
     private float nearestHorizonAngle = 180f;
     private CombatEntityAPI target;
@@ -316,7 +316,15 @@ public class MS_Barrago_S2_AI implements MissileAIPlugin, GuidedMissileAI
         Global.getSoundPlayer().playSound(SOUND_ID, 1f, 1f, missile.getLocation(), ZERO);
         Global.getCombatEngine().applyDamage(missile, missile.getLocation(), missile.getHitpoints() * 100f, DamageType.FRAGMENTATION, 0f, false, false, missile);
         Vector2f location = MathUtils.getPointOnCircumference(missile.getLocation(), 5f, missile.getFacing());
-        Global.getCombatEngine().spawnProjectile(missile.getSource(), missile.getWeapon(), MIRV_ID, location, missile.getFacing(), missile.getVelocity());
+        Vector2f vel = missile.getVelocity();
+        int shotCount = (20);
+        for (int j = 0; j < shotCount; j++) {
+            Vector2f randomVel = MathUtils.getRandomPointOnCircumference(null, MathUtils.getRandomNumberInRange(10f, 20f));
+            randomVel.x += vel.x;
+            randomVel.y += vel.y;
+            //spec + "_clone" means is, if its got the same name in its name (except the "_clone" part) then it must be that weapon.
+            Global.getCombatEngine().spawnProjectile(missile.getSource(), missile.getWeapon(), MIRV_ID, location, missile.getFacing(), randomVel);
+        }
     }
 
     private static Vector2f quad(float a, float b, float c)

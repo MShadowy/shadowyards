@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignPlugin;
 import com.fs.starfarer.api.combat.MissileAIPlugin;
 import com.fs.starfarer.api.combat.MissileAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import data.scripts.ai.MS_Barrago_S1_AI;
 import data.scripts.ai.WindingMissileAI;
 import data.scripts.ai.WindingRocketAI;
 import data.scripts.ai.MS_SimpleMissileAI;
@@ -25,7 +26,8 @@ public class ShadowyardsModPlugin extends BaseModPlugin {
     public static final String SIDEWINDER_MISSILE = "ms_tusk_bomblet";
     public static final String SIDEWINDER_ROCKET = "ms_splinter_rocket";
     public static final String SIMPLE_SHRIKE = "ms_shrike";
-    public static final String BARRAGO_LRM_S2 = "ma_barrago_lrm_s2";
+    public static final String BARRAGO_LRM_S1 = "ms_barrago_lrm_s1";
+    public static final String BARRAGO_LRM_S2 = "ms_barrago_lrm_s2";
     public static final String BLACKCAP_AFM = "ms_blackcap";
     
     public static boolean hasTwigLib;
@@ -77,6 +79,8 @@ public class ShadowyardsModPlugin extends BaseModPlugin {
                 return new PluginPick<MissileAIPlugin>(new WindingRocketAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SET);
             case SIMPLE_SHRIKE:
                 return new PluginPick<MissileAIPlugin>(new MS_SimpleMissileAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SET);
+            case BARRAGO_LRM_S1:
+                return new PluginPick<MissileAIPlugin>(new MS_Barrago_S1_AI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SET);
             case BARRAGO_LRM_S2:
                 return new PluginPick<MissileAIPlugin>(new MS_Barrago_S2_AI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SET);
             case BLACKCAP_AFM:
