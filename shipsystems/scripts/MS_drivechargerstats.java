@@ -3,11 +3,11 @@ package data.shipsystems.scripts;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class MS_drivechargerstats implements ShipSystemStatsScript {
+public class MS_drivechargerstats extends BaseShipSystemScript {
     
     private Vector2f vel=new Vector2f();
     

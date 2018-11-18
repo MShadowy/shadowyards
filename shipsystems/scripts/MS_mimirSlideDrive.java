@@ -6,7 +6,7 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import com.fs.starfarer.api.util.IntervalUtil;
 import static java.lang.Math.PI;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 
-public class MS_mimirSlideDrive implements ShipSystemStatsScript {
+public class MS_mimirSlideDrive extends BaseShipSystemScript {
     
     //Animation stuff for the effects
     

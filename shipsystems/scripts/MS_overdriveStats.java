@@ -1,9 +1,9 @@
 package data.shipsystems.scripts;
 
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 
-public class MS_overdriveStats implements ShipSystemStatsScript {
+public class MS_overdriveStats extends BaseShipSystemScript {
 
     public static final float ROF_BONUS = 1f;
     public static final float FLUX_MULT = 0.8f;

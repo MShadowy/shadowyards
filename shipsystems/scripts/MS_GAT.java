@@ -4,10 +4,10 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import java.util.List;
 
-public class MS_GAT implements ShipSystemStatsScript {
+public class MS_GAT extends BaseShipSystemScript {
     //GAT system; increases damage, ROF, and increases inaccuracy of energy weapons
     //Makes missiles launch speed a bit faster
     
@@ -59,12 +59,15 @@ public class MS_GAT implements ShipSystemStatsScript {
     public StatusData getStatusData(int index, State state, float effectLevel) {
         float mult = 1f + ROF_BONUS * effectLevel;
         float bonusPercent = (int) (mult - 1f) * 100f;
-        if (index == 0) {
-            return new StatusData("all weapons rate of fire +" + (int) bonusPercent + "%", false);
-        } else if (index == 1) {
-            return new StatusData("energy weapon damage increased", false);
-        } else if (index == 2) {
-            return new StatusData("weapon accuracy decreased", false);
+        switch (index) {
+            case 0:
+                return new StatusData("all weapons rate of fire +" + (int) bonusPercent + "%", false);
+            case 1:
+                return new StatusData("energy weapon damage increased", false);
+            case 2:
+                return new StatusData("weapon accuracy decreased", false);
+            default:
+                break;
         }
         return null;
     }

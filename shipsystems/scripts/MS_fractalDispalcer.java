@@ -7,10 +7,10 @@ package data.shipsystems.scripts;
 
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import org.lwjgl.util.vector.Vector2f;
 
-public class MS_fractalDispalcer implements ShipSystemStatsScript {
+public class MS_fractalDispalcer extends BaseShipSystemScript {
     
     private static final Vector2f ZERO = new Vector2f();
     
@@ -35,7 +35,4 @@ public class MS_fractalDispalcer implements ShipSystemStatsScript {
 
         return null;
     }
-
-    @Override
-    public void unapply(MutableShipStatsAPI mssapi, String string) {}
 }

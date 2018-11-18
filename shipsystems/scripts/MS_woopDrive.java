@@ -4,14 +4,14 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import java.util.HashMap;
 import java.util.Map;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 
-public class MS_woopDrive implements ShipSystemStatsScript {
+public class MS_woopDrive extends BaseShipSystemScript {
     
     //ship system for the Clade; will very likely require a custom AI
     //Makes the ship go backwards basically like a reverse Burn Drive

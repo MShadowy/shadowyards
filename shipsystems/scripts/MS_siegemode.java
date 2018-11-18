@@ -3,9 +3,9 @@ package data.shipsystems.scripts;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 
-public class MS_siegemode implements ShipSystemStatsScript {
+public class MS_siegemode extends BaseShipSystemScript {
 
     private static final float RANGE_BONUS = 200f;
     private static final float COST_BONUS = -20f;

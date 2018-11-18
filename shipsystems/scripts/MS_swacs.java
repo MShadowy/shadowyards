@@ -14,6 +14,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.dark.shaders.util.ShaderLib;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -36,13 +37,13 @@ public class MS_swacs extends BaseShipSystemScript {
     private static final Vector2f ZERO = new Vector2f();
 
     //Creates a hashmap that keeps track of what ships are receiving the benefits.
-    private static final Map<ShipAPI, ShipAPI> receiving = new HashMap<>();
+    private static final Map<ShipAPI, ShipAPI> RECIEVING = new HashMap<>();
 
     @Override
     public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {
         if (engine != Global.getCombatEngine()) {
             engine = Global.getCombatEngine();
-            receiving.clear();
+            RECIEVING.clear();
         }
         
         ShipAPI ship = null;
@@ -75,7 +76,7 @@ public class MS_swacs extends BaseShipSystemScript {
                         fStats.getMaxTurnRate().modifyPercent(id, AGILITY_BONUS);
                         fStats.getTurnAcceleration().modifyPercent(id, AGILITY_BONUS);
 				
-			if (jitterLevel > 0) {
+			if (jitterLevel > 0 && ShaderLib.isOnScreen(ZERO, 100f)) {
 				//fighter.setWeaponGlow(effectLevel, new Color(255,50,0,125), EnumSet.allOf(WeaponType.class));
 				fighter.setWeaponGlow(effectLevel, Misc.setAlpha(JITTER_UNDER_COLOR, 255), EnumSet.allOf(WeaponType.class));
 					
@@ -87,7 +88,7 @@ public class MS_swacs extends BaseShipSystemScript {
                                     if (engines.isDisabled() == false) {
                                     float size;
                                     for (int i = 0; i < 5; i++) {
-                                        size = MathUtils.getRandomNumberInRange(8f, 2f);
+                                        size = MathUtils.getRandomNumberInRange(4f, 1f);
                                         Vector2f spawn = MathUtils.getRandomPointInCircle(ship.getLocation(), ship.getCollisionRadius());
                             
                                         if (Math.random() > 0.9 && !engine.isPaused()) {

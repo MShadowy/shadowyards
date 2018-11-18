@@ -5,12 +5,12 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.ShipSystemAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MS_phaseanchorStats implements ShipSystemStatsScript {
+public class MS_phaseanchorStats extends BaseShipSystemScript {
 
     public static final Color JITTER_COLOR = new Color(255,175,255,255);
     public static final float JITTER_FADE_TIME = 0.5f;

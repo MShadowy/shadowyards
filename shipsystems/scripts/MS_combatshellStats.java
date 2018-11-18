@@ -3,10 +3,10 @@ package data.shipsystems.scripts;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import java.awt.Color;
 
-public class MS_combatshellStats implements ShipSystemStatsScript {
+public class MS_combatshellStats extends BaseShipSystemScript {
     
     public static final float MAX_TIME_MULT = 3f;
     public static final float MIN_TIME_MULT = 0.1f;
