@@ -12,8 +12,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetGoal;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.mission.FleetSide;
@@ -343,26 +344,22 @@ public class BaseRandomSRAMissionDefinition implements MissionDefinitionPlugin {
     {
         MarketAPI market = Global.getFactory().createMarket(String.valueOf((new Random()).nextLong()), String.valueOf((new Random()).nextLong()), 4);
         market.setFactionId(faction.getId());
-        market.setBaseSmugglingStabilityValue(0);
-        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(new FleetParams(
+        FleetParamsV3 params = new FleetParamsV3(
+                market, 
                 null,
-                market,
-                market.getFactionId(),
-                null, // fleet's faction, if different from above, which is also used for source market picking
+                market.getFactionId(), // quality will always be reduced by non-market-faction penalty, which is what we want 
+                null,
                 FleetTypes.PATROL_LARGE,
                 minFP, // combatPts
-                0f, // freighterPts
+                0f, // freighterPts 
                 0f, // tankerPts
                 0f, // transportPts
                 0f, // linerPts
-                0f, // civilianPts
                 0f, // utilityPts
-                0f, // qualityBonus
-                qf, // qualityOverride
-                1f, // officer num mult
-                0 // officer level bonus
-                ));
-
+                0f // qualityMod
+                );
+                
+        CampaignFleetAPI fleet = FleetFactoryV3.createFleet(params);
         List<FleetMemberAPI> fleetList = fleet.getFleetData().getMembersListCopy();
         Collections.sort(fleetList, PRIORITY);
         
