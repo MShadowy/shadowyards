@@ -5,7 +5,26 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.util.Pair;
 
 public class MS_radiationAbsorbers extends BaseIndustry {
+        @Override
+	public boolean isHidden() {
+		return !market.getFactionId().equals("shadow_industry");
+	}
+	
+	@Override
+	public boolean isFunctional() {
+		return super.isFunctional() && market.getFactionId().equals("shadow_industry");
+	}
         
+        @Override
+	public boolean isAvailableToBuild() {
+		return false;
+	}
+	
+        @Override
+	public boolean showWhenUnavailable() {
+		return false;
+	}
+    
         @Override
         public void apply() {
             super.apply(true);
