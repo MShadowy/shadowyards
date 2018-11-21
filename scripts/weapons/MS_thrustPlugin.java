@@ -3,53 +3,35 @@
 //Modified by MShadowy with permission
 package data.scripts.weapons;
  
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipEngineControllerAPI;
 import com.fs.starfarer.api.combat.ShipEngineControllerAPI.ShipEngineAPI;
-import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import java.awt.Color;
 //import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.lazywizard.lazylib.FastTrig;
 import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
  
 public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
    
-    private float target = 0.0f;
-    private boolean runOnce = false;
-    //private static float arc = 0.0f;
-    //private static float arcFacing = 0.0f;
-    private static ShipAPI ship;
-    private static ShipEngineControllerAPI engines;
-    private static ShipEngineAPI bindEngine;
-    private static ShipSystemAPI shipSystem;
-    private static int shipSystemAccDir = 0;
-    private static int shipSystemAcc = 0;
-    private float checkDrive = 5f * 5f;
-    private final float tinX = 6;
-    private final float smallX = 10;
-    private final float midX = 18;
-    private final float bigX = 26;
-    private float throttle = 100f;
-    private float lengthMult;
-    private final float widthMult = 1.25f;
-    float maxOutput;
+    private boolean runOnce=false, accel=false, turn=false;
+    private ShipAPI SHIP;
+    private ShipEngineAPI thruster;
+    private ShipEngineControllerAPI EMGINES;
+    private float time=0, previousThrust=0;
     
-    float aim;
+    //Smooth thrusting prevents instant changes in directions and levels of thrust, lower is smoother
+    private final float FREQ=0.05f, SMOOTH_THRUSTING=0.25f;        
+    private float TURN_RIGHT_ANGLE=0, THRUST_TO_TURN=0, NEUTRAL_ANGLE=0, FRAMES=0, OFFSET=0;
+    //sprite size, could be scaled with the engine width to allow variable engine length
+    private Vector2f size= new Vector2f(8,74);
     
-    private final Color NoColor = new Color(0, 0, 0, 0);
-    private Color NormalColor = new Color(255, 185, 155, 255);
-    
-    private static final Map<ShipAPI.HullSize, Float> tinY = new HashMap<>();
+    /*private static final Map<ShipAPI.HullSize, Float> tinY = new HashMap<>();
 
     static {
         tinY.put(ShipAPI.HullSize.FIGHTER, 15f);
@@ -115,769 +97,245 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
         THRUST.put(1, Global.getSettings().getSprite("thrusts", "SRA_Vectored_Thrust01"));
         THRUST.put(2, Global.getSettings().getSprite("thrusts", "SRA_Vectored_Thrust02"));
         THRUST.put(3, Global.getSettings().getSprite("thrusts", "SRA_Vectored_Thrust03"));
-    }
+    }*/
     
-    /*
-    Thruster behavior is defined from the Weapon Slot name in a selected ships hull file.
-    
-    Vectoring thrusters are broken into two components, an optional CAP which puts a
-    rotating cover in place and the not optional THRUST which emits the flames.
-    These are also separated by size: Tiny, Small, Medium and Large (T, S, M, and L)
-    which are placed as prefixes to THRUST and CAP--e.g LTHRUST or MCAP, etc
-    
-    Following the THRUST or CAP distinctions come behaviors and modifiers.
-    Behaviors are _MAIN, _RETRO, and _MR.
-    
-    MAIN: focused on pushing the ship forward, and depending on position turning in certain
-    directions/conditions, assumed to be to the aft
-    RETRO: very similar to main, these thrusters handle deceleration and reverse movement,
-    conversely assumed to be on the front end of a ship
-    MR: These are a hybrid position which perform the functions of both MAIN and RETRO thruster types.
-    
-    These are modified by positional notes--_CL(Centerline), _PORT, and _STBD for _MAIN
-    and _RETRO. _MR thrusters are always presumed to be either on port ot starboard
-    sides, notation being either _P or _S for side, followed by F, or A for Fore or 
-    Aft respectively.
-    
-    For example "THRUST_MR_PF" is a Portside Forward located hybrid thruster, while "THRUST_MAIN_CL"
-    represents a thruster meant to push the ship forward, located at or very near the center of mass.
-    
-    EXAMPLE WEAPON SLOT
-        {
-            "angle": 95,
-            "arc": 110,
-            "id": "MTHRUST_MR_PA_02",
-            "locations": [
-               -59.5,
-               22
-            ],
-            "mount": "TURRET",
-            "size": "SMALL",
-            "type": "DECORATIVE"
-        },
-    
-    Note 1 - Port is left and Starboard is right relative to ship facing, Fore is to
-    the Front and Aft is the Back
-    Note 2 - In terms of coordinates, Port and Fore are positive; Starboard and Aft
-    are negative
-    
-    -MShadowy
-    */
-   
     @Override
-    public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {        
-        final SpriteAPI theSprite = weapon.getSprite();
+    public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
+        if(!runOnce){
+            runOnce=true;
+            
+            SHIP=weapon.getShip();
+            EMGINES=SHIP.getEngineController();     
+            if(weapon.getAnimation()!=null){
+                FRAMES = weapon.getAnimation().getNumFrames();
+            }
+            
+            //find the ship engine associated with the deco thruster
+            for(ShipEngineAPI e : SHIP.getEngineController().getShipEngines()){
+                if(MathUtils.isWithinRange(e.getLocation(), weapon.getLocation(), 2)){
+                    thruster=e;
+                }                
+            }
+            
+            switch (weapon.getSlot().getSlotSize()) {
+                case LARGE:
+                    size = new Vector2f(20, 232);
+                    break;
+                case MEDIUM:
+                    size = new Vector2f(12, 140);
+                    break;
+                default:
+                    size= new Vector2f(8,74);
+                    break;
+            }
+            
+            //desync the engines wobble
+            OFFSET=(float)(Math.random()*MathUtils.FPI);
+            
+            //"rest" angle when not in use
+            NEUTRAL_ANGLE=weapon.getSlot().getAngle();
+            //ideal aim angle to rotate the ship (allows free-form placement on the hull)
+            TURN_RIGHT_ANGLE=MathUtils.clampAngle(VectorUtils.getAngle(SHIP.getLocation(), weapon.getLocation()));
+            //is the thruster performant at turning the ship? Engines closer to the center of mass will concentrate more on dealing with changes of velocity.
+            THRUST_TO_TURN=smooth(MathUtils.getDistance(SHIP.getLocation(), weapon.getLocation())/SHIP.getCollisionRadius());            
+        }
         
-        // Don't bother with any checks if the game is paused
-        if (engine.isPaused()) {
+        if (engine.isPaused() || SHIP.getOriginalOwner()==-1) {
             return;
         }
-       
-        if (!runOnce) {
-            ship = weapon.getShip();
-            engines = ship.getEngineController();
-            
-            // get nearest engine to weapon before anything
-            List<ShipEngineAPI> shipEngines = ship.getEngineController().getShipEngines();
-            for (ShipEngineAPI shipEngine : shipEngines) {
-                Vector2f shipEngineLocation = shipEngine.getLocation();
-                float distanceSq = MathUtils.getDistanceSquared(shipEngineLocation, weapon.getLocation());
-                if (distanceSq <= checkDrive) {
-                    bindEngine = shipEngine;
-                    checkDrive = distanceSq;
-                }
+        
+        if(!SHIP.isAlive() || (thruster!=null && thruster.isDisabled())) {
+            if (weapon.getAnimation()==null) {
+                return;
             }
-            
-            /*List<WeaponAPI> vectoring = ship.getAllWeapons();
-            
-            List<WeaponAPI> toRemove = new ArrayList<>();
-            for (WeaponAPI vector : vectoring) {
-                if (!vector.getSlot().getId().contains("CAP") || !vector.getSlot().getId().contains("THRUST")) {
-                    toRemove.add(vector);
-                }
-            }
-            vectoring.removeAll(toRemove);*/
-            
-            // check if the ship have listed engine mod ship system
-            shipSystem = ship.getSystem();
-            if (shipSystem != null) {
-                if (accShipSystems.contains(ship.getSystem().getId())) {
-                    shipSystemAccDir = 1;
-                }
-                if (accBackShipSystems.contains(ship.getSystem().getId())) {
-                    shipSystemAccDir = -1;
-                }
-            }
-            
-            //Get the base maximum speed of the vessel
-            if (ship.getVariant().getHullMods().contains("safetyoverrides")){
-                NormalColor=new Color(255, 200, 225, 255);
-            }
-            runOnce=true;
+            weapon.getAnimation().setFrame(0);
+            previousThrust = 0;
+            return;
         }
         
-        //the maximum increase in throttle per frame
-        float maxThrottleDelta = 0.85f;
-        
-        //the rate at which it returns to idle
-        float maxReturnToIdleDelta = 2f;
-        
-        //the idle throttle
-        float idleThrottle = 26.5f;
-
-        // check the ship system
-        if (shipSystemAccDir != 0 && shipSystem.isActive()) {
-            shipSystemAcc = shipSystemAccDir;
-        } else {
-            shipSystemAcc = 0;
-        }
-        if (ship.getTravelDrive().isActive()) {
-            shipSystemAcc = 1;
-        }
-        
-        if (bindEngine.isDisabled() || !ship.isAlive()) {
-            float angle = weapon.getCurrAngle();
-
-            weapon.setCurrAngle(angle);
-            if (weapon.getSlot().getId().contains("THRUST")) {
-                theSprite.setColor(NoColor);
-            }
-        } else if (!bindEngine.isDisabled()) {
-            theSprite.setColor(NormalColor);
-            float angle = weapon.getCurrAngle();
-            float arcFacing = weapon.getArcFacing();
-            float arc = weapon.getArc();
-            float shipFacing = ship.getFacing();
-
-            if (!engine.isPaused() && weapon.getSlot().getId().contains("THRUST") && Math.random()>0.1f){
-                weapon.getAnimation().setFrame(MathUtils.getRandomNumberInRange(1, 3));
+        //20FPS
+        time+=amount;
+        if(time>=FREQ){
+            time=0;                
+            
+            //check what the ship is doing
+            float accelerateAngle=NEUTRAL_ANGLE;
+            float turnAngle=NEUTRAL_ANGLE;
+            float thrust=0;
+            
+            if(EMGINES.isAccelerating()){
+                accelerateAngle=180;
+                thrust=1.5f;
+                accel=true;
+            } else if (EMGINES.isAcceleratingBackwards()){
+                accelerateAngle=0;
+                thrust=1.5f;
+                accel=true;
+            } else  if (EMGINES.isDecelerating()){
+                accelerateAngle=NEUTRAL_ANGLE;
+                thrust=0.5f;
+                accel=true;
+            } else {                
+                accel=false;
             }
             
-            //here we define the behavior based on positional modifiers
-            //main
-            if (weapon.getSlot().getId().contains("MAIN_CL")) {
-                //centerline main engines; goes forward and does some left or right -while going forward-
-                if (engines.isAccelerating() && (engines.isStrafingLeft() || engines.isTurningRight())
-                        && (!engines.isAcceleratingBackwards() || !engines.isDecelerating() || !engines.isStrafingRight()
-                        || !engines.isTurningLeft())) {
-                    aim = shipFacing + arcFacing + arc * 0.25f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.75f;
-                        if (throttle < 75f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
+            if (EMGINES.isStrafingLeft()){
+                if(thrust==0){
+                    accelerateAngle=-90;
                 } else {
-                    if (engines.isAccelerating() && (engines.isStrafingRight() || engines.isTurningLeft())
-                            && (!engines.isAcceleratingBackwards() || !engines.isDecelerating() || !engines.isStrafingLeft()
-                            || !engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.75f;
-                            if (throttle < 75f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else if (engines.isAccelerating() && (!engines.isStrafingRight() || !engines.isStrafingRight()
-                            || !engines.isStrafingLeft() || !engines.isTurningLeft() || !engines.isAcceleratingBackwards() 
-                            || !engines.isDecelerating()) || shipSystemAcc == 1 ) {
-                        //assumed to be aiming at or very close to 180° (within ~15-20°) 
-                        aim = shipFacing + arcFacing;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.9f;
-                            if (throttle <= 99f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else //idle
-                    {
-                        aim = shipFacing + arcFacing;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.3f;
-                            
-                            if (throttle >= idleThrottle){
-                                throttle -= maxReturnToIdleDelta;
-                            }
-                        }
-                    }
+                    accelerateAngle = MathUtils.getShortestRotation(accelerateAngle, -90)/2 + accelerateAngle;
                 }
+                thrust=Math.max(1, thrust);
+                accel=true;
+            } else if (EMGINES.isStrafingRight()){
+                if(thrust==0){
+                    accelerateAngle=90;
+                } else {
+                    accelerateAngle = MathUtils.getShortestRotation(accelerateAngle, 90)/2 + accelerateAngle;
+                }
+                thrust=Math.max(1, thrust);
+                accel=true;
             }
             
-            if (weapon.getSlot().getId().contains("MAIN_STBD")) {
-                //starboard side main engines; goes forward, helps turn right or strafe left
-                //if only turning or strafing
-                if (!engines.isAccelerating() && (engines.isStrafingLeft() || engines.isTurningRight())
-                        || (engines.isDecelerating() || engines.isAcceleratingBackwards()) && (engines.isStrafingLeft()
-                        || engines.isTurningRight()|| engines.isStrafingLeft() && engines.isTurningRight())) {
-                    aim = shipFacing - 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    //if turning/strafing while accelerating
-                    if (engines.isAccelerating() && (engines.isStrafingLeft() || engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } //going straight forward
-                    else if (engines.isAccelerating() || shipSystemAcc == 1) {
-                        aim = shipFacing + arcFacing - arc * 0.5f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.8f;
-                            if (throttle <= 99f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else //idle
-                    {
-                        aim = shipFacing + arcFacing;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.3f;
-                            
-                            if (throttle >= idleThrottle){
-                                throttle -= maxReturnToIdleDelta;
-                            }
-                        }
-                    }
-                }
+            if (EMGINES.isTurningRight()){
+                turnAngle=TURN_RIGHT_ANGLE;
+                thrust=Math.max(1, thrust);
+                turn=true;
+            } else if (EMGINES.isTurningLeft()){
+                turnAngle=MathUtils.clampAngle(180+TURN_RIGHT_ANGLE);
+                thrust=Math.max(1, thrust);
+                turn=true;
+            } else {
+                turn=false;
             }
             
-            if (weapon.getSlot().getId().contains("MAIN_PORT")) {
-                //port main engines; goes forward, helps turn left or strafe right
-                //if only turning or strafing
-                if (!engines.isAccelerating() && (engines.isStrafingRight() || engines.isTurningLeft())
-                        || (engines.isDecelerating() || engines.isAcceleratingBackwards()) && (engines.isStrafingRight()
-                        || engines.isTurningLeft() || engines.isStrafingRight() && engines.isTurningLeft())) {
-                    aim = shipFacing + 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    //if turning/strafing while accelerating
-                    if (engines.isAccelerating() && (engines.isStrafingRight() || engines.isTurningLeft())) {
-                        aim = shipFacing + arcFacing + arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } //going straight forward
-                    else if (engines.isAccelerating() || shipSystemAcc == 1) {
-                        aim = shipFacing + arcFacing + arc * 0.5f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.8f;
-                            if (throttle <= 99f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else //idle
-                    {
-                        aim = shipFacing + arcFacing;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.3f;
-                            
-                            if (throttle >= idleThrottle){
-                                throttle -= maxReturnToIdleDelta;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            //retro
-            if (weapon.getSlot().getId().contains("RETRO_CL")) {
-                //centerline retro engines; reverses thrust and does some left or right -while reversing-
-                if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) && (engines.isStrafingLeft() || engines.isTurningRight())
-                        && (!engines.isAccelerating() || !engines.isStrafingRight() || !engines.isTurningLeft())) {
-                    aim = shipFacing + arcFacing + arc * 0.25f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.75f;
-                        if (throttle < 75f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) && (engines.isStrafingRight() || engines.isTurningLeft())
-                            && (!engines.isAccelerating() || !engines.isStrafingLeft() || !engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.75f;
-                            if (throttle < 75f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                            && (!engines.isStrafingRight() || !engines.isStrafingRight() || !engines.isStrafingLeft() || !engines.isTurningLeft() 
-                            || !engines.isAccelerating()) || shipSystemAcc == -1 ) {
-                        //assumed to be aiming at or very close to 0° (within ~15-20°) {
-                        aim = shipFacing + arcFacing;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.9f;
-                            if (throttle <= 99f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else {
-                        aim = shipFacing + arcFacing;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.3f;
-                            
-                            if (throttle >= idleThrottle){
-                                throttle -= maxReturnToIdleDelta;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (weapon.getSlot().getId().contains("RETRO_STBD")) {
-                //starboard side retro engines; reverse thrust, helps turn or strafe left
-                //if only turning or strafing
-                if ((!engines.isAcceleratingBackwards() || !engines.isDecelerating()) && (engines.isStrafingLeft() 
-                        || engines.isTurningLeft()) || engines.isAccelerating() && (engines.isStrafingLeft() 
-                        || engines.isTurningLeft() || engines.isStrafingLeft() && engines.isTurningLeft())) {
-                    aim = shipFacing - 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    //if turning/strafing while decelerating
-                    if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                            && (engines.isStrafingLeft() || engines.isTurningLeft() || engines.isStrafingLeft()
-                            && engines.isTurningLeft())) {
-                        aim = shipFacing + arcFacing + arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else { //going reverse
-                        if ((engines.isAcceleratingBackwards() || engines.isDecelerating())
-                                && (!engines.isStrafingLeft() || !engines.isTurningLeft())
-                                || shipSystemAcc == -1 ) {
-                            aim = shipFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else { //idle
-                            aim = shipFacing + arcFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.3f;
-                            
-                                if (throttle >= idleThrottle){
-                                    throttle -= maxReturnToIdleDelta;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (weapon.getSlot().getId().contains("RETRO_PORT")) {
-                //port side retro engines; reverse thrust, helps turn or strafe right
-                //if only turning or strafing
-                if ((!engines.isAcceleratingBackwards() || !engines.isDecelerating()) && (engines.isStrafingRight() 
-                        || engines.isTurningRight()) || engines.isAccelerating() && (engines.isStrafingRight() 
-                        || engines.isTurningRight() || engines.isStrafingRight() && engines.isTurningRight())) {
-                    aim = shipFacing + 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    //if turning/strafing while decelerating
-                    if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                            && (engines.isStrafingRight() || engines.isTurningRight() || engines.isStrafingRight()
-                            && engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else { //going reverse
-                        if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                                && (!engines.isStrafingRight()|| !engines.isTurningRight())
-                                || shipSystemAcc == -1 ) {
-                            aim = shipFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else {//idle
-                            aim = shipFacing + arcFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.3f;
-                            
-                                if (throttle >= idleThrottle){
-                                    throttle -= maxReturnToIdleDelta;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            //calculate the corresponding vector thrusting            
+            if(thrust>0){
                 
-            //MR thrusters represent an edge case which can be both a main and retro thruster
-            //Have Front and Aft as positions mainly so we get them to do turns/strafing correctly
-            if (weapon.getSlot().getId().contains("MR_SF")) {
-                //MR thrusters prioritize movement, only devoting fully to turning when doing nothing else
-                if ((!engines.isAccelerating() || !engines.isAcceleratingBackwards() || !engines.isDecelerating())
-                        && (engines.isStrafingLeft() || engines.isTurningLeft() || engines.isStrafingLeft()
-                        && engines.isTurningLeft())) {
-                    aim = shipFacing - 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    if (engines.isAccelerating() && (engines.isStrafingLeft() || engines.isTurningLeft()
-                            || engines.isStrafingLeft() && engines.isTurningLeft())) {
-                        aim = shipFacing + arcFacing + arc * 0.25f;
-                    } else if ((engines.isAcceleratingBackwards()|| engines.isDecelerating())
-                            && (engines.isStrafingLeft() || engines.isTurningLeft()
-                            || engines.isStrafingLeft() && engines.isTurningLeft())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                    } else {
-                        if (engines.isAccelerating() && (!engines.isStrafingLeft() || !engines.isTurningLeft()
-                                || !engines.isStrafingLeft() && !engines.isTurningLeft())
-                                || shipSystemAcc == 1 ) {
-                            aim = shipFacing +  arcFacing + arc * 0.5f;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                                && (!engines.isStrafingLeft() || !engines.isTurningLeft()
-                                || !engines.isStrafingLeft() && !engines.isTurningLeft())
-                                || shipSystemAcc == -1 ) {
-                            aim = shipFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else {
-                            aim = shipFacing + arcFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.3f;
-                            
-                                if (throttle >= idleThrottle){
-                                    throttle -= maxReturnToIdleDelta;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (weapon.getSlot().getId().contains("MR_PF")) {
-                //MR thrusters prioritize movement, only devoting fully to turning when doing nothing else
-                if ((!engines.isAccelerating() || !engines.isAcceleratingBackwards() || !engines.isDecelerating())
-                        && (engines.isStrafingRight() || engines.isTurningRight() || engines.isStrafingRight()
-                        && engines.isTurningRight())) {
-                    aim = shipFacing - 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    if (engines.isAccelerating() && (engines.isStrafingRight() || engines.isTurningRight()
-                            || engines.isStrafingRight() && engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else if ((engines.isAcceleratingBackwards()|| engines.isDecelerating())
-                            && (engines.isStrafingRight() || engines.isTurningRight()
-                            || engines.isStrafingRight() && engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing + arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else {
-                        if (engines.isAccelerating() && (!engines.isStrafingRight() || !engines.isTurningRight()
-                                || !engines.isStrafingRight() && !engines.isTurningRight())
-                                || shipSystemAcc == 1 ) {
-                            aim = shipFacing + arcFacing - arc * 0.5f;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                                && (!engines.isStrafingRight() || !engines.isTurningRight()
-                                || !engines.isStrafingRight() && !engines.isTurningRight())
-                                || shipSystemAcc == -1 ) {
-                            aim = shipFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else {
-                            aim = shipFacing + arcFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.3f;
-                            
-                                if (throttle >= idleThrottle){
-                                    throttle -= maxReturnToIdleDelta;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (weapon.getSlot().getId().contains("MR_SA")) {
-                //MR thrusters prioritize movement, only devoting fully to turning when doing nothing else
-                if ((!engines.isAccelerating() || !engines.isAcceleratingBackwards() || !engines.isDecelerating())
-                        && (engines.isStrafingLeft() || engines.isTurningRight() || engines.isStrafingLeft()
-                        && engines.isTurningRight())) {
-                    aim = shipFacing - 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    if (engines.isAccelerating() && (engines.isStrafingLeft() || engines.isTurningRight()
-                            || engines.isStrafingLeft() && engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else if ((engines.isAcceleratingBackwards()|| engines.isDecelerating())
-                            && (engines.isStrafingLeft() || engines.isTurningRight()
-                            || engines.isStrafingLeft() && engines.isTurningRight())) {
-                        aim = shipFacing + arcFacing + arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else {
-                        if (engines.isAccelerating() && (!engines.isStrafingLeft() || !engines.isTurningRight()
-                                || !engines.isStrafingLeft() && !engines.isTurningRight())
-                                || shipSystemAcc == 1 ) {
-                            aim = shipFacing + arcFacing - arc * 0.5f;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                                && (!engines.isStrafingLeft() || !engines.isTurningRight()
-                                || !engines.isStrafingLeft() && !engines.isTurningRight())
-                                || shipSystemAcc == -1 ) {
-                            aim = shipFacing + arcFacing + arc * 0.5f;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else {
-                            aim = shipFacing + arcFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.3f;
-                            
-                                if (throttle >= idleThrottle){
-                                    throttle -= maxReturnToIdleDelta;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (weapon.getSlot().getId().contains("MR_PA")) {
-                //MR thrusters prioritize movement, only devoting fully to turning when doing nothing else
-                if ((!engines.isAccelerating() || !engines.isAcceleratingBackwards() || !engines.isDecelerating())
-                        && (engines.isStrafingRight() || engines.isTurningLeft() || engines.isStrafingRight()
-                        && engines.isTurningLeft())) {
-                    aim = shipFacing + 90f;
-                    if (weapon.getSlot().getId().contains("THRUST")) {
-                        maxOutput = 0.8f;
-                        if (throttle <= 99f) {
-                            throttle += maxThrottleDelta;
-                        }
-                    }
-                } else {
-                    if (engines.isAccelerating() && (engines.isStrafingRight() || engines.isTurningLeft()
-                            || engines.isStrafingRight() && engines.isTurningLeft())) {
-                        aim = shipFacing + arcFacing + arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else if ((engines.isAcceleratingBackwards()|| engines.isDecelerating())
-                            && (engines.isStrafingRight() || engines.isTurningLeft()
-                            || engines.isStrafingRight() && engines.isTurningLeft())) {
-                        aim = shipFacing + arcFacing - arc * 0.25f;
-                        if (weapon.getSlot().getId().contains("THRUST")) {
-                            maxOutput = 0.5f;
-                            if (throttle < 60f) {
-                                throttle += maxThrottleDelta;
-                            }
-                        }
-                    } else {
-                        if (engines.isAccelerating() && (!engines.isStrafingRight() || !engines.isTurningLeft()
-                                || !engines.isStrafingRight() && !engines.isTurningLeft())
-                                || shipSystemAcc == 1 ) {
-                            aim = shipFacing + arcFacing + arc * 0.5f;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else if ((engines.isAcceleratingBackwards() || engines.isDecelerating()) 
-                                && (!engines.isStrafingRight() || !engines.isTurningLeft()
-                                || !engines.isStrafingRight() && !engines.isTurningLeft())
-                                || shipSystemAcc == -1 ) {
-                            aim = shipFacing + arcFacing - arc * 0.5f;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.8f;
-                                if (throttle <= 99f) {
-                                    throttle += maxThrottleDelta;
-                                }
-                            }
-                        } else {
-                            aim = shipFacing + arcFacing;
-                            if (weapon.getSlot().getId().contains("THRUST")) {
-                                maxOutput = 0.3f;
-                            
-                                if (throttle >= idleThrottle){
-                                    throttle -= maxReturnToIdleDelta;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            target = angle + MathUtils.getShortestRotation(angle, aim);
-            int size;
-            if (weapon.getSlot().getId().contains("LCAP") || weapon.getSlot().getId().contains("LTHRUST")) {
-                size = 24;
-            } else  if (weapon.getSlot().getId().contains("MCAP") || weapon.getSlot().getId().contains("MTHRUST")) {
-                size = 12;
-            } else  if (weapon.getSlot().getId().contains("SCAP") || weapon.getSlot().getId().contains("STHRUST")) {
-                size = 6;
-            } else {
-                size = 3;
-            }
-
-            //TURN TO THE TARGET  
-            weapon.setCurrAngle(angle + (amount * size * ((target - angle))));
+                //DEBUG
+                Vector2f offset = new Vector2f(weapon.getLocation().x-SHIP.getLocation().x,weapon.getLocation().y-SHIP.getLocation().y);
+                VectorUtils.rotate(offset, -SHIP.getFacing(), offset);
                 
-            if (engines.isAccelerating() && throttle >= 99f) {
-                throttle = 100f;
-            }
-            
-            if ((!engines.isAccelerating() || !engines.isAcceleratingBackwards() || !engines.isDecelerating()) && throttle <= idleThrottle) {
-                throttle = idleThrottle;
-            }
-            
-            float thrust = throttle / 100;
-            
-            if (ship.getVariant().getHullMods().contains("safetyoverrides")){
-                if (shipSystemAcc != 0 || ship.getTravelDrive().isActive()) {
-                    lengthMult=4f;
+                if(!turn){
+                    //thrust only, easy.
+                    thrust(weapon, accelerateAngle, thrust*(SHIP.getMutableStats().getAcceleration().computeMultMod()), SMOOTH_THRUSTING);                    
                 } else {
-                    lengthMult=2.25f;
+                    if(!accel){                        
+                        //turn only, easy too.
+                        thrust(weapon, turnAngle, thrust*(SHIP.getMutableStats().getTurnAcceleration().computeMultMod()), SMOOTH_THRUSTING);                          
+                        
+                    } else {
+                        //combined turn and thrust, aka the funky part.
+                        
+                        //aim-to-mouse clamp, helps to avoid flickering when the ship is almost facing the cursor and not turning much.
+                        float clampedThrustToTurn=THRUST_TO_TURN*Math.min(1, Math.abs(SHIP.getAngularVelocity())/10);
+                        clampedThrustToTurn=smooth(clampedThrustToTurn);
+                        
+                        //start from the neutral angle
+                        float combinedAngle=NEUTRAL_ANGLE;
+                        
+                        //adds both thrust and turn angle at their respective thrust-to-turn ratio. Gives a "middleground" angle
+                        combinedAngle = MathUtils.clampAngle(combinedAngle + MathUtils.getShortestRotation(NEUTRAL_ANGLE,accelerateAngle));                        
+                        combinedAngle = MathUtils.clampAngle(combinedAngle + clampedThrustToTurn*MathUtils.getShortestRotation(accelerateAngle,turnAngle));  
+                                                
+                        //get the total thrust with mults
+                        float combinedThrust=thrust;
+                        combinedThrust*=(SHIP.getMutableStats().getTurnAcceleration().computeMultMod() + SHIP.getMutableStats().getAcceleration().computeMultMod())/2;
+                        
+                        //calculate how much appart the turn and thrust angle are
+                        //bellow 90 degrees, the engine is kept at full thrust
+                        //if they are further appart, the engine is less useful and it's output get reduced
+                        float offAxis = Math.abs(MathUtils.getShortestRotation(turnAngle, accelerateAngle));
+                        offAxis=Math.max(0, offAxis-90);
+                        offAxis/=45;
+                        
+                        combinedThrust*= 1 - Math.max(0,Math.min(1,offAxis));
+                        
+                        //combined thrust is finicky, thus twice smoother                        
+                        if(FRAMES==0){
+                            //non animated weapons like covers are just oriented
+                            rotate(weapon, combinedAngle, combinedThrust, SMOOTH_THRUSTING/2);
+                        } else {
+                            thrust(weapon, combinedAngle, combinedThrust, SMOOTH_THRUSTING/2);
+                        }
+                    }
                 }
+                
             } else {
-                if (shipSystemAcc != 0 || ship.getTravelDrive().isActive()) {
-                    lengthMult=3.25f;
+                if(FRAMES==0){          
+                    //non animated weapons like covers are just oriented          
+                    rotate(weapon, NEUTRAL_ANGLE, 0, SMOOTH_THRUSTING);
                 } else {
-                    lengthMult=1.65f;
+                    thrust(weapon, NEUTRAL_ANGLE, 0, SMOOTH_THRUSTING);
                 }
             }
-            
-            //set the sprite transparency
-            float alphaMult;
-            if ((lengthMult - 0.5f) > 1f){
-                    alphaMult = 0.85f;
-            } else {
-                    alphaMult = lengthMult - 0.5f;
-            }
-        
-            float offset = Math.abs(MathUtils.getShortestRotation(weapon.getCurrAngle(), target));
-            float randScale = MathUtils.getRandomNumberInRange(0.9f, 1.1f);
-            if (weapon.getSlot().getId().contains("TTHRUST")) {
-                    weapon.getSprite().setHeight(tinY.get(ship.getHullSize()) * 10 / (offset + 10) * thrust * lengthMult * randScale );
-                    weapon.getSprite().setWidth(tinX * 10 / (offset + 10) * maxOutput * widthMult * randScale);
-                    weapon.getSprite().setCenter(tinX / 2 * 10 / (offset + 10) * maxOutput * widthMult * randScale, tinY.get(ship.getHullSize()) / 2 * 10 / (offset + 10) * thrust * lengthMult * randScale);
-                    weapon.getAnimation().setAlphaMult(alphaMult);
-            }
-            if (weapon.getSlot().getId().contains("STHRUST")) {
-                    weapon.getSprite().setHeight(smallY.get(ship.getHullSize()) * 10 / (offset + 10) * thrust * lengthMult * randScale );
-                    weapon.getSprite().setWidth(smallX * 10 / (offset + 10) * maxOutput * widthMult * randScale);
-                    weapon.getSprite().setCenter(smallX / 2 * 10 / (offset + 10) * maxOutput * widthMult * randScale, smallY.get(ship.getHullSize()) / 2 * 10 / (offset + 10) * thrust * lengthMult * randScale);
-                    weapon.getAnimation().setAlphaMult(alphaMult);
-            }
-            if (weapon.getSlot().getId().contains("MTHRUST")) {
-                    weapon.getSprite().setHeight(midY.get(ship.getHullSize()) * 10 / (offset + 10) * thrust * lengthMult * randScale );
-                    weapon.getSprite().setWidth(midX * 10 / (offset + 10) * maxOutput * widthMult * randScale);
-                    weapon.getSprite().setCenter(midX / 2 * 10 / (offset + 10) * maxOutput * widthMult * randScale, midY.get(ship.getHullSize()) / 2 * 10 / (offset + 10) * thrust * lengthMult * randScale);
-                    weapon.getAnimation().setAlphaMult(alphaMult);
-            }
-            if (weapon.getSlot().getId().contains("LTHRUST")) {
-                    weapon.getSprite().setHeight(bigY.get(ship.getHullSize()) * 10 / (offset + 10) * thrust * lengthMult * randScale);
-                    weapon.getSprite().setWidth(bigX * 10 / (offset + 10) * maxOutput * widthMult * randScale);
-                    weapon.getSprite().setCenter(bigX / 2 * 10 / (offset + 10) * maxOutput * widthMult * randScale, bigY.get(ship.getHullSize()) / 2 * 10 / (offset + 10) * thrust * lengthMult * randScale);
-                    weapon.getAnimation().setAlphaMult(alphaMult);
-            }
-            
-            
         }
     }
+    
+    private void rotate(WeaponAPI weapon, float angle, float thrust, float smooth){
+        //target angle
+        float aim=angle+SHIP.getFacing();
+        
+        //how far from the target angle the engine is aimed at
+        aim=MathUtils.getShortestRotation(weapon.getCurrAngle(), aim);
+        
+        //engine wooble
+        aim+=5*FastTrig.cos(SHIP.getFullTimeDeployed()*5*thrust+OFFSET);
+        aim*=smooth;        
+        weapon.setCurrAngle(MathUtils.clampAngle(weapon.getCurrAngle()+aim));
+    }
+    
+    private void thrust(WeaponAPI weapon, float angle, float thrust, float smooth){
+        
+        if (weapon.getAnimation()==null) {
+            return;
+        }
+        //random sprite
+        int frame = (int)(Math.random() * (FRAMES - 1)) + 1;
+        if(frame==weapon.getAnimation().getNumFrames()){
+            frame=1;
+        }
+        weapon.getAnimation().setFrame(frame);
+        SpriteAPI sprite = weapon.getSprite();
+        
+        
+        //target angle
+        float aim=angle+SHIP.getFacing();
+        float length=thrust;        
+        
+        //how far from the target angle the engine is aimed at
+        aim=MathUtils.getShortestRotation(weapon.getCurrAngle(), aim);
+        
+        //thrust is reduced while the engine isn't facing the target angle, then smoothed
+        length*=Math.max(0,1-(Math.abs(aim)/90));
+        length-=previousThrust;
+        length*=smooth;
+        length+=previousThrust;
+        previousThrust=length;
+        
+        //engine wooble
+        aim+=2*FastTrig.cos(SHIP.getFullTimeDeployed()*5*thrust+OFFSET);
+        aim*=smooth;        
+        weapon.setCurrAngle(MathUtils.clampAngle(weapon.getCurrAngle()+aim));
+        
+        //finally the actual sprite manipulation
+        float width=length*size.x/2+size.x/2;
+        float height=length*size.y+(float)Math.random()*3+3;        
+        sprite.setSize(width, height);
+        sprite.setCenter(width/2, height/2);
+        
+        //clamp the thrust then color stuff
+        length=Math.max(0, Math.min(1, length));
+        sprite.setColor(new Color(1f, 0.5f+length/2, 0.5f+length/4));
+    }
+        
+    //////////////////////////////////////////
+    //                                      //
+    //           SMOOTH DAT MOVE            //
+    //                                      //
+    //////////////////////////////////////////
+    
+    public float smooth (float x){
+        return 0.5f - ((float)(Math.cos(x*MathUtils.FPI) /2 ));
+    }  
 }

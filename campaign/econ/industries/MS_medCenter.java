@@ -2,9 +2,9 @@ package data.campaign.econ.industries;
 
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -12,7 +12,7 @@ import com.fs.starfarer.api.util.Pair;
 import data.campaign.econ.MS_commodities;
 import java.awt.Color;
 
-public class MS_medCenter extends BaseIndustry {
+public class MS_medCenter extends BaseIndustry implements MarketImmigrationModifier {
     
     @Override
     public void apply() {
@@ -60,21 +60,21 @@ public class MS_medCenter extends BaseIndustry {
             Color h = Misc.getHighlightColor();
             float opad = 10f;
 	
-            float bonus = getImmigrationBonus();
-            float max = getMaxImmigrationBonus();
+            float bonus = getPopulationGrowthBonus();
+            float max = getMaxPopGrowthBonus();
 	
             tooltip.addPara("Population growth: %s (max for colony size: %s)", opad, h, "+" + Math.round(bonus), "+" + Math.round(max));
 	}
     }
     
+    @Override
     public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
 	if (isFunctional()) {
-            incoming.add(Factions.NEUTRAL, getImmigrationBonus() * 1.5f);
-            incoming.getWeight().modifyFlat(getModId(), getImmigrationBonus(), getNameForModifier());
+            incoming.getWeight().modifyFlat(getModId(), getPopulationGrowthBonus(), getNameForModifier());
         }
     }
 
-    protected float getImmigrationBonus() {
+    protected float getPopulationGrowthBonus() {
 	Pair<String, Integer> deficit = getMaxDeficit(Commodities.ORGANICS);
 	float demand = getDemand(Commodities.ORGANICS).getQuantity().getModifiedValue();
 	float def = deficit.two;
@@ -85,11 +85,11 @@ public class MS_medCenter extends BaseIndustry {
 			mult = (demand - def) / demand;
 		}
 		
-		return getMaxImmigrationBonus() * mult;
+		return getMaxPopGrowthBonus() * mult;
     }
 	
-    protected float getMaxImmigrationBonus() {
+    protected float getMaxPopGrowthBonus() {
 	//return market.getSize() * 10f;
-	return getSizeMult() * 10f;
-    }    
+	return getSizeMult() * 0.5f;
+    }
 }

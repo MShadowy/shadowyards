@@ -159,14 +159,21 @@ public class MS_Barrago_S2_AI implements MissileAIPlugin, GuidedMissileAI
             Vector2f.sub(mirvTarget, target.getLocation(), mirvTarget);
             mirvTarget.scale(guidance * 0.3f);
             Vector2f.add(mirvTarget, target.getLocation(), mirvTarget);
-
             float mirvAngularDistance = MathUtils.getShortestRotation(missile.getFacing(), VectorUtils.getAngle(missile.getLocation(), mirvTarget));
             float offBy = (float) Math.sin(Math.toRadians(mirvAngularDistance)) * distance;
-            if (!target.getShield().isOn() && target.getCollisionClass() != CollisionClass.NONE && distance <= MIRV_DISTANCE + 
+
+            if (target.getShield() != null) {
+                if (!target.getShield().isOn() && target.getCollisionClass() != CollisionClass.NONE && distance <= MIRV_DISTANCE + 
                     target.getCollisionRadius() + missile.getCollisionRadius() && offBy <= target.getCollisionRadius() && timeLive >= 1f ||
                 target.getShield().isOn() && target.getCollisionClass() != CollisionClass.NONE && distance <= MIRV_DISTANCE + 
                     target.getCollisionRadius() + missile.getCollisionRadius() && offBy <= target.getShield().getRadius() && timeLive >= 1f)
-            {
+                {
+                    timeLive = -99999f;
+                    mirv(missile);
+                    return;
+                }
+            } else if (target.getShield() == null && target.getCollisionClass() != CollisionClass.NONE && distance <= MIRV_DISTANCE + 
+                    target.getCollisionRadius() + missile.getCollisionRadius() && offBy <= target.getCollisionRadius() && timeLive >= 1f) {
                 timeLive = -99999f;
                 mirv(missile);
                 return;

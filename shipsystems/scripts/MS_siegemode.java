@@ -10,12 +10,24 @@ public class MS_siegemode extends BaseShipSystemScript {
     private static final float RANGE_BONUS = 200f;
     private static final float COST_BONUS = -20f;
     private static final float SHIELD_BONUS = 10f;
+    private float SPEED_MALUS;
 
     @Override
     public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {
         CombatEntityAPI entity = stats.getEntity();
+        ShipAPI ship = null;
         if (!(entity instanceof ShipAPI)) {
             return;
+        } else if (entity instanceof ShipAPI) {
+            ship = (ShipAPI) stats.getEntity();
+        }
+        
+        if (ship != null) {
+            if (ship.getVariant().getHullMods().contains("safetyoverrides")) {
+                SPEED_MALUS = -90f;
+            } else {
+                SPEED_MALUS = -55f;
+            }
         }
         
         // boost turn rate - no need to fiddle with acceleration due to low top speed.
@@ -26,7 +38,7 @@ public class MS_siegemode extends BaseShipSystemScript {
         stats.getEnergyWeaponFluxCostMod().modifyPercent(id, COST_BONUS * effectLevel);
         stats.getBallisticWeaponFluxCostMod().modifyPercent(id, COST_BONUS * effectLevel);
 
-        stats.getMaxSpeed().modifyPercent(id, -80f * effectLevel);
+        stats.getMaxSpeed().modifyFlat(id, SPEED_MALUS * effectLevel);
         stats.getZeroFluxSpeedBoost().modifyMult(id, 1f -0.5f * effectLevel); // this very quietly mostly-disables the zero flux speed boost.
 
         stats.getShieldAbsorptionMult().modifyPercent(id, -1 * effectLevel * SHIELD_BONUS);

@@ -1,3 +1,12 @@
+0.7.0.1rc3 Changelog
+
+    Fixed a showstopper bug with the Barrago Missile AI that would occur when targeting ships without shields
+    Modular Fabricators can now have Nanoforges installed correctly
+    The Medical Center now correctly applies its population growth bonus
+    Implemented the correct vectored thruster plugin
+    The Tartarus' ship system now adjusts its speed malus depending on whether is has Safety Overrides installed
+    Went over the descriptions to fix a number of typos, weird sentence structures and also the Enlil's incorrect reference to having Universal hardpoints
+
 0.7.0.1rc2 Changelog
 
     Reduced weighted picker chance for all SRA Pirate Ships
@@ -34,7 +43,7 @@
     Enlils Medium Synergy hardpoint changed to Energy
     Inanna changes:
         Slot layout changed to 2x medium, 2x small (from 1x medium, 4x small)
-        High Energy Focus changed to GAt system
+        High Energy Focus changed to GAT system
     CEPC OP cost increased to 6 (from 5)
     Ships variants updated
     Adjusted the stats of the Shikome's Combat Shell system
