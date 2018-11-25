@@ -175,6 +175,11 @@ public class Gigas {
 		"comm_relay", // type of object, defined in custom_entities.json
 		"shadow_industry"); // faction
 	relay.setCircularOrbit(system.getEntityById("gigas"), 160+60, 1900, 210);
+        SectorEntityToken loc = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL);
+	loc.setCircularOrbitPointingDown( system.getEntityById("gigas"), 200, 5000, 400);
+        
+        SectorEntityToken nav = system.addCustomEntity(null, null, "nav_buoy_makeshift", Factions.HEGEMONY);
+	nav.setCircularOrbitPointingDown( system.getEntityById("gigas"), 45, 12500, 222);
         
         //a gate, derelict, disassembeled
         SectorEntityToken gate = system.addCustomEntity("gigas_wrecked", // unique id

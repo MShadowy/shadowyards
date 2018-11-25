@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
@@ -74,7 +75,7 @@ public class Yajna {
                 "Jnana",
                 5,
                 new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.HABITABLE, Conditions.POPULATION_5)),
-                new ArrayList<>(Arrays.asList(Industries.MILITARYBASE, Industries.REFINING, Industries.FUELPROD, Industries.GROUNDDEFENSES, 
+                new ArrayList<>(Arrays.asList(Industries.MILITARYBASE, Industries.REFINING, Industries.FUELPROD, Industries.LIGHTINDUSTRY,
                         MS_industries.MODULARFACTORIES, Industries.POPULATION, Industries.SPACEPORT, Industries.BATTLESTATION_HIGH)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
@@ -158,7 +159,7 @@ public class Yajna {
                 "Karma",
                 4,
                 new ArrayList<>(Arrays.asList(Conditions.THIN_ATMOSPHERE, Conditions.COLD, Conditions.RARE_ORE_MODERATE, 
-                        Conditions.ORE_MODERATE, Conditions.POPULATION_4)),
+                        Conditions.ORE_ABUNDANT, Conditions.VOLATILES_DIFFUSE, Conditions.POPULATION_4)),
                 new ArrayList<>(Arrays.asList(Industries.MINING, Industries.GROUNDDEFENSES, Industries.PATROLHQ, Industries.POPULATION,
                         Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
@@ -186,6 +187,12 @@ public class Yajna {
 		"comm_relay", // type of object, defined in custom_entities.json
 		"shadow_industry"); // faction
 	relay.setCircularOrbit(system.getEntityById("yajna"), 218+60, 4800, 270);
+        
+        SectorEntityToken sensor = system.addCustomEntity(null, null, "sensor_array", "shadow_industry");
+	sensor.setCircularOrbitPointingDown( system.getEntityById("yajna"), 215, 700, 680);
+        
+        SectorEntityToken nav = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL);
+	nav.setCircularOrbitPointingDown( system.getEntityById("yajna"), 320, 2100, 120);
         
         SectorEntityToken v = system.getEntityById("yajna");
 	JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("yajna_jump", "Yajna Jump");

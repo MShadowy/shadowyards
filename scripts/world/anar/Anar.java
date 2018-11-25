@@ -88,18 +88,24 @@ public class Anar {
                 8,
                 new ArrayList<>(Arrays.asList(MS_Conditions.SEMI_ARID, Conditions.HABITABLE, Conditions.FARMLAND_ADEQUATE, Conditions.ORE_MODERATE, 
                         Conditions.RARE_ORE_SPARSE, Conditions.REGIONAL_CAPITAL, Conditions.POPULATION_8)),
-                new ArrayList<>(Arrays.asList(Industries.STARFORTRESS_HIGH, Industries.PATROLHQ, MS_industries.MEDICALCENTER,
+                new ArrayList<>(Arrays.asList(Industries.STARFORTRESS_HIGH, Industries.PATROLHQ, MS_industries.MEDICALCENTER, Industries.FARMING,
                     Industries.REFINING, Industries.LIGHTINDUSTRY, Industries.MEGAPORT, Industries.HEAVYBATTERIES, Industries.POPULATION)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f
         );
-        euripidesMarket.addIndustry(Industries.ORBITALWORKS, new ArrayList<>(Arrays.asList(Items.PRISTINE_NANOFORGE)));
+        euripidesMarket.addIndustry(MS_industries.PARALLEL_PRODUCTION, new ArrayList<>(Arrays.asList(Items.PRISTINE_NANOFORGE)));
         
         SectorEntityToken relay = system.addCustomEntity("anar_relay", // unique id
 		"Anar Relay", // name - if null, defaultName from custom_entities.json will be used
-		"comm_relay", // type of object, defined in custom_entities.json
+		"comm_relay_makeshift", // type of object, defined in custom_entities.json
 		"shadow_industry"); // faction
 	relay.setCircularOrbit( system.getEntityById("anar"), 240+60, 3750, 381);
+        
+        SectorEntityToken sensor = system.addCustomEntity(null, null, "sensor_array_makeshift", "shadow_industry");
+	sensor.setCircularOrbitPointingDown( system.getEntityById("anar"), 200, 8250, 560);
+        
+        SectorEntityToken nav = system.addCustomEntity(null, null, "nav_buoy_makeshift", "shadow_industry");
+	nav.setCircularOrbitPointingDown( system.getEntityById("anar"), 120, 2500, 222);
         
         SectorEntityToken neb1 = system.addTerrain(Terrain.NEBULA, new BaseTiledTerrain.TileParams(
                 "   xx" +
@@ -168,13 +174,13 @@ public class Anar {
                 "Theramin",
                 6,
                 new ArrayList<>(Arrays.asList(MS_Conditions.IRRADIATED_TERRAN, Conditions.HABITABLE, Conditions.EXTREME_WEATHER, 
-                        Conditions.ORGANICS_COMMON, Conditions.FARMLAND_RICH, Conditions.POPULATION_6)),
+                        Conditions.ORGANICS_COMMON, Conditions.FARMLAND_RICH, Conditions.RARE_ORE_ABUNDANT, Conditions.POPULATION_6)),
                 new ArrayList<>(Arrays.asList(Industries.ORBITALSTATION_HIGH, Industries.HEAVYBATTERIES, Industries.HIGHCOMMAND, 
                         Industries.FARMING, Industries.MINING, Industries.POPULATION, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
         );
-        theraminMarket.addIndustry(Industries.HEAVYINDUSTRY, new ArrayList<>(Arrays.asList(Items.CORRUPTED_NANOFORGE)));
+        theraminMarket.addIndustry(MS_industries.MODULARFACTORIES, new ArrayList<>(Arrays.asList(Items.CORRUPTED_NANOFORGE)));
         
         AddMarketplace.addMarketplace(Factions.INDEPENDENT,
                 melancholia,
@@ -182,8 +188,8 @@ public class Anar {
                 "Melancholia",
                 3,
                 new ArrayList<>(Arrays.asList(Conditions.ICE, Conditions.THIN_ATMOSPHERE, Conditions.FRONTIER, Conditions.VOLATILES_PLENTIFUL, 
-                        Conditions.VICE_DEMAND, Conditions.FARMLAND_POOR, Conditions.POPULATION_3)),
-                new ArrayList<>(Arrays.asList(Industries.LIGHTINDUSTRY, Industries.POPULATION, Industries.SPACEPORT)),
+                        Conditions.ORE_SPARSE, Conditions.RARE_ORE_SPARSE, Conditions.VICE_DEMAND, Conditions.FARMLAND_POOR, Conditions.POPULATION_3)),
+                new ArrayList<>(Arrays.asList(Industries.LIGHTINDUSTRY, Industries.MINING, Industries.POPULATION, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)), 
                 0.3f
         );

@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AddMarketplace{
 
@@ -14,11 +13,12 @@ public class AddMarketplace{
         EconomyAPI globalEconomy = Global.getSector().getEconomy();  
         String planetID = primaryEntity.getId();  
         String marketID = planetID;
+        
               
         MarketAPI newMarket = Global.getFactory().createMarket(marketID, name, size);  
         newMarket.setFactionId(factionID);  
         newMarket.setPrimaryEntity(primaryEntity);  
-        newMarket.getTariff().modifyFlat("generator", tarrif);  
+        newMarket.getTariff().modifyFlat("generator", tarrif); 
               
         if (null != submarkets){  
             for (String market : submarkets){  

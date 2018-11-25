@@ -9,8 +9,9 @@ import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import data.campaign.econ.MS_commodities;
+import data.campaign.econ.MS_items;
 import java.awt.Color;
+//import java.util.List;
 
 public class MS_medCenter extends BaseIndustry implements MarketImmigrationModifier {
     
@@ -23,11 +24,56 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
         demand(Commodities.CREW, size -3);
         demand(Commodities.ORGANICS, size -1);
         
-        supply(MS_commodities.GUTS, size -1);
+        supply(MS_items.GUTS, size -4);
+        
+        /*int SUPPLY;
+            
+        switch (market.getSize()) {
+            case 3:
+            case 4:
+            case 5:
+                SUPPLY = 1;
+                break;
+            case 6:
+            case 7:
+            case 8:
+                SUPPLY = 2;
+                break;
+            case 9:
+            case 10:
+                SUPPLY = 3;
+                break;
+            default:
+                SUPPLY = 0;
+                break;
+        }
+        
+        List<CommodityOnMarketAPI> WIDGET = market.getAllCommodities();
+        
+        for (CommodityOnMarketAPI w : WIDGET) {
+            if (!w.getId().contains(Commodities.ORGANS) || !w.getId().contains(MS_items.GUTS)) {
+                continue;
+            }
+            
+            if (w.getId().contains(Commodities.ORGANS)) {
+                w.setMaxDemand(w.getMaxDemand() - SUPPLY);
+            }
+            if (w.getId().contains(MS_items.GUTS)) {
+                w.setMaxDemand(SUPPLY);
+            }
+        }*/
+        
+        /*if (WIDGET.equals(Commodities.ORGANS)) {
+            ITEM.setMaxDemand(ITEM.getMaxDemand() - SUPPLY);
+        }
+        
+        if (WIDGET.equals(MS_items.GUTS)) {
+            ITEM.setMaxDemand(SUPPLY);
+        }*/
         
         Pair<String, Integer> deficit = getMaxDeficit(Commodities.CREW, Commodities.ORGANICS);
         
-        applyDeficitToProduction(1, deficit, MS_commodities.GUTS);
+        applyDeficitToProduction(1, deficit, MS_items.GUTS);
         
         if (!isFunctional()) {
             supply.clear();
@@ -90,6 +136,6 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
 	
     protected float getMaxPopGrowthBonus() {
 	//return market.getSize() * 10f;
-	return getSizeMult() * 0.5f;
+	return getSizeMult() * 2f;
     }
 }

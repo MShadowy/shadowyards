@@ -20,7 +20,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Pair;
-import data.campaign.econ.MS_commodities;
+import data.campaign.econ.MS_items;
 import data.campaign.econ.MS_industries;
 import data.campaign.econ.industries.MS_NanoforgePlugin.MS_NanoforgeEffect;
 
@@ -40,7 +40,7 @@ public class MS_modularFac extends BaseIndustry {
                 
                 demand(Commodities.METALS, size -1);
                 demand(Commodities.RARE_METALS, size -3);
-                //demand(MS_commodities.BATTERIES, size -6);
+                demand(MS_items.BATTERIES, size -5);
                 
                 supply(Commodities.HEAVY_MACHINERY, size - 3);
 		supply(Commodities.SUPPLIES, size - 3);
@@ -50,7 +50,7 @@ public class MS_modularFac extends BaseIndustry {
 			supply(1, Commodities.SHIPS, shipBonus, "Massively parallel fabricators");
 		}
                 
-                Pair<String, Integer> deficit = getMaxDeficit(Commodities.METALS, Commodities.RARE_METALS, /*MS_commodities.BATTERIES*/);
+                Pair<String, Integer> deficit = getMaxDeficit(Commodities.METALS, Commodities.RARE_METALS, MS_items.BATTERIES);
 		int maxDeficit = size -4;
                 if (deficit.two > maxDeficit) deficit.two = maxDeficit;
 
@@ -233,6 +233,6 @@ public class MS_modularFac extends BaseIndustry {
 	public float getPatherInterest() {
 		float base = 2f;
 		if (nanoforge != null) base += 4f;
-		return base + super.getPatherInterest();
+		return 2f + super.getPatherInterest();
 	}
 }
