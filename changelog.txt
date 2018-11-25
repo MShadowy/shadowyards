@@ -1,3 +1,13 @@
+0.7.0.1rc4 Changelog
+
+    Solar Collector Arrays now correctly export High Capacitance Storage
+    Solar Collector Arrays now also have bonus production depending on Star class
+    Modular Fabricators may now demand batteries in order to keep up with production demand.
+    Med Centers have had the population growth boosted to Pop Size * 2 (from 50% Pop Size), as well as a reduction in Cloned Organs produced (from size - 2 to size -4)
+    Fixed an oversight in the SRA faction file that was keeping Yardie civilian ships from appearing on the open market
+    The SRA has had it's rules text expanded, so more interactions now have custom flavor text
+    Fixed a bug with the Potnia's MARCOM hullmod that was preventing it from correctly applying it ground attack bonus
+
 0.7.0.1rc3 Changelog
 
     Fixed a showstopper bug with the Barrago Missile AI that would occur when targeting ships without shields
