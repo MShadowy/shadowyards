@@ -1,3 +1,18 @@
+0.8 Changelog
+
+    Reduced price of the Cetus to 32500 (from 45000)
+    High Maintenance has been removed from the Scylla and Shamash
+        Both ships now have a "Phase Anchor Interface" hullmod, with reduces their sensor signature by 20%
+    The SRA now has their own custom station type
+    The Raksahsa's skimmer is now technically a teleporter
+    Added the Lobatus class Heavy Destroyer
+        Designed for heavy escort duty and defense, the Lobatus is equipped with the siege mode system
+    Adjusted fighter attack ranges so the should hopefully be a bit less passive
+    The Kobold has had some tweaks so it should hopefully return to rearm a bit more readily
+        It also now has decoy flares rather than missile defense flares
+    Wraith wing OP cost increased to 2 (from 0)
+    Variants gone over and cleaned up (again)
+
 0.7.0.1rc4 Changelog
 
     Solar Collector Arrays now correctly export High Capacitance Storage

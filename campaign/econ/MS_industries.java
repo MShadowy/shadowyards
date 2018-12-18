@@ -6,4 +6,8 @@ public class MS_industries {
     public static final String SOLAR = "ms_supersolar";
     public static final String MEDICALCENTER = "ms_medCenter";
     public static final String RADBLOCKERS = "ms_radiationAbsorbers";
+    
+    public static final String ORBITAL1 = "ms_orbitalstation";
+    public static final String ORBITAL2 = "ms_battlestation";
+    public static final String ORBITAL3 = "ms_starfortress";
 }
