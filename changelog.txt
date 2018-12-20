@@ -1,3 +1,9 @@
+0.8rc2 Changelog
+
+    Fixed an oversight that was causing the SRA station to upgrade (and downgrade) to the wrong type of station
+    Instituted a sanity check to prevent Modular Fabricators and Heavy Industries (and their attendant upgrades) from being built on the same planet
+    The SRA station now requires blueprints or a Shadowyards faction relationship of Welcoming to be able to build
+
 0.8 Changelog
 
     Reduced price of the Cetus to 32500 (from 45000)

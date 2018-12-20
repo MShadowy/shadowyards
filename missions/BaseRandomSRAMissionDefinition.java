@@ -21,7 +21,6 @@ import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
 import com.fs.starfarer.api.mission.MissionDefinitionPlugin;
-import com.fs.starfarer.api.util.WeightedRandomPicker;
 import java.util.Collections;
 import java.util.Comparator;
 import org.lazywizard.lazylib.MathUtils;
@@ -29,38 +28,6 @@ import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class BaseRandomSRAMissionDefinition implements MissionDefinitionPlugin {
-    private static final WeightedRandomPicker<String> FACTIONS = new WeightedRandomPicker<>();
-    private static final WeightedRandomPicker<String> ROLES = new WeightedRandomPicker<>();
-    
-    static {
-        ROLES.add(ShipRoles.COMBAT_SMALL, 4f);
-        ROLES.add(ShipRoles.COMBAT_MEDIUM, 5f);
-        ROLES.add(ShipRoles.COMBAT_LARGE, 4f);
-        ROLES.add(ShipRoles.COMBAT_CAPITAL, 3f);
-        ROLES.add(ShipRoles.PHASE_SMALL, 0.2f);
-        ROLES.add(ShipRoles.PHASE_MEDIUM, 0.25f);
-        ROLES.add(ShipRoles.PHASE_LARGE, 0.2f);
-        ROLES.add(ShipRoles.PHASE_CAPITAL, 0.15f);
-        ROLES.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2f);
-        ROLES.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2.5f);
-        ROLES.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 2f);
-        ROLES.add(ShipRoles.CIV_RANDOM, 0.5f);
-        ROLES.add(ShipRoles.CARRIER_SMALL, 1f);
-        ROLES.add(ShipRoles.CARRIER_MEDIUM, 1.25f);
-        ROLES.add(ShipRoles.CARRIER_LARGE, 1f);
-        ROLES.add(ShipRoles.FREIGHTER_SMALL, 0.5f);
-        ROLES.add(ShipRoles.FREIGHTER_MEDIUM, 0.625f);
-        ROLES.add(ShipRoles.FREIGHTER_LARGE, 0.5f);
-        ROLES.add(ShipRoles.TANKER_SMALL, 0.5f);
-        ROLES.add(ShipRoles.TANKER_MEDIUM, 0.625f);
-        ROLES.add(ShipRoles.TANKER_LARGE, 0.5f);
-        ROLES.add(ShipRoles.PERSONNEL_SMALL, 0.5f);
-        ROLES.add(ShipRoles.PERSONNEL_MEDIUM, 0.625f);
-        ROLES.add(ShipRoles.PERSONNEL_LARGE, 0.5f);
-        ROLES.add(ShipRoles.TUG, 0.5f);
-        ROLES.add(ShipRoles.CRIG, 0.5f);
-        ROLES.add(ShipRoles.UTILITY, 0.5f);
-    }
     
     public static final Comparator<FleetMemberAPI> PRIORITY = new Comparator<FleetMemberAPI>()
     {
@@ -379,13 +346,16 @@ public class BaseRandomSRAMissionDefinition implements MissionDefinitionPlugin {
     {
         MarketAPI market = Global.getFactory().createMarket(String.valueOf((new Random()).nextLong()), String.valueOf((new Random()).nextLong()), 4);
         market.setFactionId(faction.getId());
+        
+        float combat = Math.round(10f + (float) Math.random() * 10f);
+        
         FleetParamsV3 params = new FleetParamsV3(
                 market, 
                 null,
                 market.getFactionId(), // quality will always be reduced by non-market-faction penalty, which is what we want 
                 null,
                 FleetTypes.PATROL_LARGE,
-                minFP, // combatPts
+                combat, // combatPts
                 0f, // freighterPts 
                 0f, // tankerPts
                 0f, // transportPts
