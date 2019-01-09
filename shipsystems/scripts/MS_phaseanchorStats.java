@@ -60,8 +60,8 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
     
     @Override
     public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {
-        ShipAPI ship = null;
-        boolean player = false;
+        ShipAPI ship;
+        boolean player;
         if (stats.getEntity() instanceof ShipAPI) {
             ship = (ShipAPI) stats.getEntity();
             player = ship == Global.getCombatEngine().getPlayerShip();
@@ -127,7 +127,7 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
 
     @Override
     public void unapply(MutableShipStatsAPI stats, String id) {
-        ShipAPI ship = null;
+        ShipAPI ship;
 	//boolean player = false;
 	if (stats.getEntity() instanceof ShipAPI) {
 		ship = (ShipAPI) stats.getEntity();

@@ -10,29 +10,32 @@ import java.util.Map;
 
 public class MS_harShields extends BaseHullMod {
     
-    private static final Map<HullSize, Float> mag = new HashMap<>();
+    private static final Map<HullSize, Float> MAG = new HashMap<>();
+    public static String HS_ICON = "graphics/shi/icons/tactical/ms_hsConduitIcon.png";
+    public static String HS_BUFFID = "ms_harShields";
+    public static String HS_NAME = "Harmonic Shield Conduits";
     
     static {
-        mag.put(HullSize.FIGHTER, 0.8f);
-        mag.put(HullSize.FRIGATE, 0.8f);
-        mag.put(HullSize.DESTROYER, 0.6f);
-        mag.put(HullSize.CRUISER, 0.5f);
-        mag.put(HullSize.CAPITAL_SHIP, 0.4f);
+        MAG.put(HullSize.FIGHTER, 0.8f);
+        MAG.put(HullSize.FRIGATE, 0.8f);
+        MAG.put(HullSize.DESTROYER, 0.6f);
+        MAG.put(HullSize.CRUISER, 0.5f);
+        MAG.put(HullSize.CAPITAL_SHIP, 0.4f);
     }
     
     @Override
     public String getDescriptionParam(int index, HullSize hullSize) {
         if (index == 0) {
-            return "" + (int) (mag.get(HullSize.FRIGATE) * 100f);
+            return "" + (int) (MAG.get(HullSize.FRIGATE) * 100f);
         }
         if (index == 1) {
-            return "" + (int) (mag.get(HullSize.DESTROYER) * 100f);
+            return "" + (int) (MAG.get(HullSize.DESTROYER) * 100f);
         }
         if (index == 2) {
-            return "" + (int) (mag.get(HullSize.CRUISER) * 100f);
+            return "" + (int) (MAG.get(HullSize.CRUISER) * 100f);
         }
         if (index == 3) {
-            return "" + (int) (mag.get(HullSize.CAPITAL_SHIP) * 100f);
+            return "" + (int) (MAG.get(HullSize.CAPITAL_SHIP) * 100f);
         }
         return null;
     }
@@ -49,9 +52,13 @@ public class MS_harShields extends BaseHullMod {
         }
         
         FluxTrackerAPI fluxTracker = ship.getFluxTracker();
-        //float debugValue = 100f * (getHullSizeMult(ship) * (getFluxCurve(fluxTracker.getHardFlux() / fluxTracker.getMaxFlux(), 1.4f)));
+        float harShieldsBonus = 100f * (MAG.get(ship.getHullSize()) * (getFluxCurve(fluxTracker.getHardFlux() / fluxTracker.getMaxFlux(), 1.4f)));
 
-        ship.getMutableStats().getFluxDissipation().modifyPercent("harShields", 100f * (mag.get(ship.getHullSize()) * (getFluxCurve(fluxTracker.getHardFlux() / fluxTracker.getMaxFlux(), 1.4f))));
+        ship.getMutableStats().getFluxDissipation().modifyPercent("harShields", 100f * (MAG.get(ship.getHullSize()) * (getFluxCurve(fluxTracker.getHardFlux() / fluxTracker.getMaxFlux(), 1.4f))));
+        
+        if (ship == Global.getCombatEngine().getPlayerShip() && fluxTracker.getHardFlux() > 0) {
+            Global.getCombatEngine().maintainStatusForPlayerShip(HS_BUFFID, HS_ICON, HS_NAME, "Flux dissipation increased by"+(int) harShieldsBonus+"%", true);
+        }
     }
     
     private static float getFluxCurve(float ratio, float curveStrength) {

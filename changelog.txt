@@ -1,3 +1,18 @@
+0.8.1 Changelog
+
+    Added 4 custom starts
+        Play as the leader of a small salvage coop, a bold partisan fighter, a dashing pirate rogue or a down on your luck mercenary
+    Corrected the position of the Yajna Sensor Array
+    Updated the Charybdis' sprite to ease out some of the roughness and incorporate some new design ideas
+    Some adjustments to the economies of planets added by the mod
+    Fixed an oversight which was causing the T3 SRA Station to spawn without a Nidhoggr Lance
+    Fixed a crash issue with Solar Arrays
+    Solar Arrays now have a sanity check to prevent from being built in unsuitable systems
+    Added a flux monitor that displays the additional flux dissipation Harmonic Shield Conduits provides and rewrote the hullmod description to make it's function clearer
+    Fixed the math for the Phase Anchor Interface hullmod so it will now display the correct signature reduction
+    The Skolopendra has had the phasefield hullmod added
+    Nexerelin compatibility handled
+
 0.8rc2 Changelog
 
     Fixed an oversight that was causing the SRA station to upgrade (and downgrade) to the wrong type of station

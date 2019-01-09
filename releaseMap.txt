@@ -1,8 +1,11 @@
-0.7.1 + Roadmap
+
+0.8x + Roadmap
+    TODO add pirate fighter/interceptor, bomber, and light carrier
+    TODO get Med Center spoof export script working
+    TODO add Solar array industries to some vanilla markets
+    TODO add a couple markets to vanilla factions with modular fabs
     Add Enkidu-class special actions frigate
-    Add Heavy Destroyer
     Add Liner
-    Add SRA Stations
     Add Large Missile Launchers
         2x Large Launchers
         1st, Area of effect anti-fighter warhead, saturates local area with blackcap missiles, basically a FS2 anti-fighter bomb
