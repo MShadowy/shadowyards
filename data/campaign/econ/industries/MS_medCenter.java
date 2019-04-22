@@ -1,5 +1,6 @@
 package data.campaign.econ.industries;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
@@ -9,9 +10,10 @@ import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+import data.campaign.econ.MS_industries;
 import data.campaign.econ.MS_items;
 import java.awt.Color;
-//import java.util.List;
+import java.util.List;
 
 public class MS_medCenter extends BaseIndustry implements MarketImmigrationModifier {
     
@@ -26,25 +28,32 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
         
         supply(MS_items.GUTS, size -4);
         
-        /*int SUPPLY;
+        int WANT;
+        int DEMAND = 0;
+        int SUPPLY = size -4;
+        float COST = 0;
             
         switch (market.getSize()) {
+            case 1:
+            case 2:
             case 3:
             case 4:
             case 5:
-                SUPPLY = 1;
+                WANT = 1;
                 break;
             case 6:
+                WANT = 2;
+                break;
             case 7:
             case 8:
-                SUPPLY = 2;
+                WANT = 3;
                 break;
             case 9:
             case 10:
-                SUPPLY = 3;
+                WANT = 4;
                 break;
             default:
-                SUPPLY = 0;
+                WANT = 0;
                 break;
         }
         
@@ -56,20 +65,28 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
             }
             
             if (w.getId().contains(Commodities.ORGANS)) {
-                w.setMaxDemand(w.getMaxDemand() - SUPPLY);
+                for (MarketAPI m : Global.getSector().getEconomy().getMarketsCopy()) {
+                    if (m != null) {
+                        if (SUPPLY >= WANT) {
+                            DEMAND += w.getMaxDemand() - WANT;
+                        } else {
+                            DEMAND += SUPPLY;
+                        }
+                    }
+                }
             }
             if (w.getId().contains(MS_items.GUTS)) {
-                w.setMaxDemand(SUPPLY);
+                COST = w.getCommodity().getBasePrice();
             }
-        }*/
-        
-        /*if (WIDGET.equals(Commodities.ORGANS)) {
-            ITEM.setMaxDemand(ITEM.getMaxDemand() - SUPPLY);
         }
         
-        if (WIDGET.equals(MS_items.GUTS)) {
-            ITEM.setMaxDemand(SUPPLY);
-        }*/
+        float CREDS = (DEMAND * COST);
+        float export = Global.getSettings().getIndustrySpec(id).getIncome();
+        
+        if (CREDS != 0) {
+            export += CREDS;
+            Global.getSettings().getIndustrySpec(id).setIncome(export);
+        }
         
         Pair<String, Integer> deficit = getMaxDeficit(Commodities.CREW, Commodities.ORGANICS);
         

@@ -12,10 +12,17 @@ public class MissionDefinition implements MissionDefinitionPlugin {
     Extend mission definition with a plugin which strips armor from a set of cells selected around a vector on the ships outer edge
     and reduces hitpoints by a set amount
     
+    Still dunno how to sett this up, though
     */
 
     @Override
     public void defineMission(MissionDefinitionAPI api) {
+        /*They Might Be Giants
+        
+        The Yardies retreat from the disastrous second battle at Gigas Gate
+        Two Elysiums which managed to avoid the worst are handling the rear guard
+        as the rest of the fleet withdraws*/
+        
         api.initFleet(FleetSide.PLAYER, "SYS", FleetGoal.ESCAPE, false, 5);
         api.initFleet(FleetSide.ENEMY, "HSS", FleetGoal.ATTACK, true, 5);
 

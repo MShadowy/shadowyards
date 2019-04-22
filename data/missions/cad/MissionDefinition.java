@@ -10,27 +10,29 @@ public class MissionDefinition implements MissionDefinitionPlugin {
 
     @Override
     public void defineMission(MissionDefinitionAPI api) {
-		// Set up the fleets so we can add ships and fighter wings to them.
-        // In this scenario, the fleets are attacking each other, but
-        // in other scenarios, a fleet may be defending or trying to escape
-        api.initFleet(FleetSide.PLAYER, "ISS", FleetGoal.ATTACK, false);
+        /*Cease and Desist
+        A cocky pirate lord in the very first Thresher takes on some bounty hunting chumps*/
+        
+        api.initFleet(FleetSide.PLAYER, "", FleetGoal.ATTACK, false);
         api.initFleet(FleetSide.ENEMY, "ISS", FleetGoal.ATTACK, true);
 
 		// Set a small blurb for each fleet that shows up on the mission detail and
         // mission results screens to identify each side.
-        api.setFleetTagline(FleetSide.PLAYER, "ISS Thresher and her escorts");
+        api.setFleetTagline(FleetSide.PLAYER, "Thresher and her escorts");
         api.setFleetTagline(FleetSide.ENEMY, "Bounty Hunters");
 
 		// These show up as items in the bulleted list under 
         // "Tactical Objectives" on the mission detail screen
         api.addBriefingItem("Destroy these fools.");
-        api.addBriefingItem("The ISS Thresher must survive.");
+        api.addBriefingItem("The Thresher must survive.");
 
 		// Set up the player's fleet.  Variant names come from the
         // files in data/variants and data/variants/fighters
-        api.addToFleet(FleetSide.PLAYER, "msp_thresher_Common", FleetMemberType.SHIP, "ISS Thresher", true);
+        api.addToFleet(FleetSide.PLAYER, "msp_thresher_Common", FleetMemberType.SHIP, "Thresher", true);
         api.addToFleet(FleetSide.PLAYER, "msp_potniaBis_CS", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.PLAYER, "condor_Attack", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.PLAYER, "msp_carmine_Common", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.PLAYER, "msp_carmine_Common", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.PLAYER, "msp_carmine_Raider", FleetMemberType.SHIP, "Clayton", false);
         api.addToFleet(FleetSide.PLAYER, "msp_southpaw_Assault", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.PLAYER, "msp_southpaw_Balanced", FleetMemberType.SHIP, false);
 
@@ -41,8 +43,11 @@ public class MissionDefinition implements MissionDefinitionPlugin {
 
 		// Set up the enemy fleet.
         // It's got more ships than the player's, but they're not as strong.
-        api.addToFleet(FleetSide.ENEMY, "heron_Standard", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "hammerhead_Elite", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "heron_Strike", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "hammerhead_Support", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "hammerhead_Balanced", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "sunder_CS", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "lasher_Assault", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.ENEMY, "brawler_Assault", FleetMemberType.SHIP, false);

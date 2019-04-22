@@ -11,52 +11,39 @@ public class MissionDefinition implements MissionDefinitionPlugin {
     @Override
     public void defineMission(MissionDefinitionAPI api) {
 		// Set up the fleets so we can add ships and fighter wings to them.
-        // In this scenario, the fleets are attacking each other, but
-        // in other scenarios, a fleet may be defending or trying to escape
+        /*Nuts to This
+        An SRA Techmining expedition returning from the outer reaches is ambushed by a
+        plausibly deniable Tri-Tachyon mercenary group*/
         api.initFleet(FleetSide.PLAYER, "SYS", FleetGoal.ATTACK, false);
-        api.initFleet(FleetSide.ENEMY, "TTS", FleetGoal.ATTACK, true);
+        api.initFleet(FleetSide.ENEMY, "ISS", FleetGoal.ATTACK, true);
 
 		// Set a small blurb for each fleet that shows up on the mission detail and
         // mission results screens to identify each side.
         api.setFleetTagline(FleetSide.PLAYER, "Shadowyards Techmining Detail");
-        api.setFleetTagline(FleetSide.ENEMY, "Tri-Tachyon Claim Jumpers");
+        api.setFleetTagline(FleetSide.ENEMY, "Tri-Tachyon Mercenaries");
 
 		// These show up as items in the bulleted list under 
         // "Tactical Objectives" on the mission detail screen
         api.addBriefingItem("Defeat all enemy forces");
 
-		// Set up the player's fleet.  Variant names come from the
-        // files in data/variants and data/variants/fighters
-        api.addToFleet(FleetSide.PLAYER, "ms_morningstar_Standard", FleetMemberType.SHIP, "SYS Silius", true);
-        api.addToFleet(FleetSide.PLAYER, "ms_sargasso_LRM", FleetMemberType.SHIP, "SYS Stunt Double", false);
+		// Set up the player's fleet.
+        // An SRA techmining detail returning from the the black
+        api.addToFleet(FleetSide.PLAYER, "ms_minos_standard", FleetMemberType.SHIP, "SYS Silius", true);
+        api.addToFleet(FleetSide.PLAYER, "ms_solidarity_Fast", FleetMemberType.SHIP, "SYS Stunt Double", false);
+        api.addToFleet(FleetSide.PLAYER, "ms_lambent_Standard", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.PLAYER, "ms_enlil_Standard", FleetMemberType.SHIP, "SYS Traveler", false);
         api.addToFleet(FleetSide.PLAYER, "ms_enlil_AF", FleetMemberType.SHIP, "SYS Bad Star", false);
         api.addToFleet(FleetSide.PLAYER, "ms_seski_Standard", FleetMemberType.SHIP, "SYS Off White", false);
-		//api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-
-		// Mark both ships as essential - losing either one results
-        // in mission failure. Could also be set on an enemy ship,
-        // in which case destroying it would result in a win.
+        
 		// Set up the enemy fleet.
-        // Since it's a Tri-Tach force they should be about equal.
+        // TriTachyon funded mercenaries, they're looking for something
         api.addToFleet(FleetSide.ENEMY, "medusa_CS", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "gemini_Standard", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "wolf_CS", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "drover_Strike", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.ENEMY, "wolf_CS", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.ENEMY, "wolf_Strike", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "brawler_tritachyon_Standard", FleetMemberType.SHIP, false);
         api.addToFleet(FleetSide.ENEMY, "tempest_Attack", FleetMemberType.SHIP, false);
 
-		//api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false).getCaptain().setPersonality("suicidal");
-        //api.addToFleet(FleetSide.ENEMY, "hound_Assault", FleetMemberType.SHIP, false);
-        //api.addToFleet(FleetSide.ENEMY, "broadsword_wing", FleetMemberType.FIGHTER_WING, false);
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-
-		//api.addToFleet(FleetSide.ENEMY, "talon_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-		// Set up the map.
-        // 12000x8000 is actually somewhat small, making for a faster-paced mission.
         float width = 24000f;
         float height = 20000f;
         api.initMap((float) -width / 2f, (float) width / 2f, (float) -height / 2f, (float) height / 2f);
@@ -80,20 +67,10 @@ public class MissionDefinition implements MissionDefinitionPlugin {
             api.addNebula(x, y, radius);
         }
 
-		// Add objectives. These can be captured by each side
-        // and provide stat bonuses and extra command points to
-        // bring in reinforcements.
-        // Reinforcements only matter for large fleets - in this
-        // case, assuming a 100 command point battle size,
-        // both fleets will be able to deploy fully right away.
         api.addObjective(minX + width * 0.25f, minY + height * 0.5f, "nav_buoy");
         api.addObjective(minX + width * 0.75f, minY + height * 0.5f, "nav_buoy");
 
-		// Add an asteroid field going diagonally across the
-        // battlefield, 2000 pixels wide, with a maximum of 
-        // 100 asteroids in it.
-        // 20-70 is the range of asteroid speeds.
-        // Add some planets.  These are defined in data/config/planets.json.
+	
         api.addPlanet(minX + width * 0.55f, minY + height * 0.25f, 200f, "cryovolcanic", 200f);
     }
 }

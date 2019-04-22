@@ -23,7 +23,7 @@ public class MS_supersolar extends BaseIndustry {
         SectorEntityToken stationTarget;
         PlanetAPI star; 
         
-        if (planet != null) {
+        if (planet != null && planet.getOrbitFocus() != null) {
             if (!planet.getOrbitFocus().isStar()) {
                 stationTarget = planet.getOrbitFocus();
                 star = stationTarget.getStarSystem().getStar();
@@ -94,7 +94,7 @@ public class MS_supersolar extends BaseIndustry {
             SectorEntityToken stationTarget;
             PlanetAPI star; 
         
-            if (planet != null) {
+            if (planet != null && planet.getOrbitFocus() != null) {
                 if (!planet.getOrbitFocus().isStar()) {
                     stationTarget = planet.getOrbitFocus();
                     star = stationTarget.getStarSystem().getStar();
@@ -147,45 +147,45 @@ public class MS_supersolar extends BaseIndustry {
 	return true;
     }
         
-        @Override
-	public boolean isAvailableToBuild() {
-		if (!super.isAvailableToBuild()) return false;
+    @Override
+    public boolean isAvailableToBuild() {
+	if (!super.isAvailableToBuild()) return false;
                 
-                boolean notStar = false;
-                PlanetAPI planet = market.getPlanetEntity();
-                SectorEntityToken stationTarget;
-                PlanetAPI star; 
+        boolean notStar = false;
+        PlanetAPI planet = market.getPlanetEntity();
+        SectorEntityToken stationTarget;
+        PlanetAPI star; 
         
-                if (planet != null) {
-                if (!planet.getOrbitFocus().isStar()) {
-                    stationTarget = planet.getOrbitFocus();
-                    star = stationTarget.getStarSystem().getStar();
-                } else {
-                    star = planet.getStarSystem().getStar();
-                }
-                } else {
-                    star = planet;
-                }
+        if (planet != null && planet.getOrbitFocus() != null) {
+            if (!planet.getOrbitFocus().isStar()) {
+                stationTarget = planet.getOrbitFocus();
+                star = stationTarget.getStarSystem().getStar();
+            } else {
+                star = planet.getStarSystem().getStar();
+            }
+        } else {
+            star = planet;
+        }
+               
+        if (star != null && (star.getTypeId().contains("nebula_center_old") || star.getTypeId().contains("nebula_center_average")
+                || star.getTypeId().contains("nebula_center_young") || star.getTypeId().contains("star_neutron") ||
+                    star.getTypeId().contains("black_hole") || !star.isStar())) {
+            notStar = true;
+        }
                 
-                if (star != null && (star.getTypeId().contains("nebula_center_old") || star.getTypeId().contains("nebula_center_average")
-                        || star.getTypeId().contains("nebula_center_young") || star.getTypeId().contains("star_neutron") ||
-                            star.getTypeId().contains("black_hole") || !star.isStar())) {
-                    notStar = true;
-                }
+        if (notStar) {
+            return false;
+        } else if (!notStar) {
+            return true;
+        }
                 
-                if (notStar) {
-                    return false;
-                } else if (!notStar) {
-                    return true;
-                }
-                
-		return false;
-	}
+	return false;
+    }
 
-	@Override
-	public String getUnavailableReason() {
-		if (!super.isAvailableToBuild()) return super.getUnavailableReason();
+    @Override
+    public String getUnavailableReason() {
+	if (!super.isAvailableToBuild()) return super.getUnavailableReason();
                 
-		return "Can only build around a stable star";
-	}
+	return "Can only build around a stable star";
+    }
 }

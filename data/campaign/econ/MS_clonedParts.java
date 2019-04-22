@@ -6,11 +6,15 @@ public class MS_clonedParts extends BaseMarketConditionPlugin {
     
     @Override
     public void apply(String id) {
-        market.getCommodityData("ms_clonedParts").getCommodityMarketData();
+        super.apply(id);
+        market.getCommodityData(id).getCommodityMarketData();
+        market.getCommodityData(id).getUtilityOnMarket();
+        market.getCommodityData(id).getDemand();
+        market.getCommodityData(id).getExportIncome();
     }
     
     @Override
     public void unapply(String id) {
-        market.getCommodityData("ms_clonedParts").addToStockpile(0);
+        super.unapply(id);
     }
 }

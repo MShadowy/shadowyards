@@ -54,7 +54,7 @@ public class Yajna {
                 "Pillager Point",
                 5,
                 new ArrayList<>(Arrays.asList(Conditions.VOLATILES_DIFFUSE, Conditions.ORGANIZED_CRIME, Conditions.FREE_PORT, Conditions.POPULATION_5)),
-                new ArrayList<>(Arrays.asList(Industries.ORBITALSTATION, Industries.MILITARYBASE, Industries.POPULATION, Industries.SPACEPORT)),
+                new ArrayList<>(Arrays.asList(Industries.ORBITALSTATION, Industries.MILITARYBASE, Industries.POPULATION, MS_industries.SOLAR, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
         );
@@ -65,6 +65,7 @@ public class Yajna {
         PlanetAPI yaj2a = system.addPlanet("saptapadi", yaj2, "Saptapadi", "barren_castiron", 35, 18, 200, 22);
         
         //Jnana is the SRA's major port in system and home to a major military base positioned to ward off Hegemony attack
+        //The planet has abundant natural resources but they have yet to be exploited due to the hostile biosphere and focus on military ]
         PlanetAPI jnana = system.addPlanet("jnana", yaj, "Jnana", "desert1", 218, 85, 4800, 270);
         PlanetAPI yaj3a = system.addPlanet("kanda", jnana, "Kanda", "barren3", 235, 30, 500, 90);
         jnana.setCustomDescriptionId("planet_jnana");
@@ -74,9 +75,9 @@ public class Yajna {
                 null,
                 "Jnana",
                 5,
-                new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.HABITABLE, Conditions.POPULATION_5)),
-                new ArrayList<>(Arrays.asList(Industries.MILITARYBASE, Industries.REFINING, Industries.FUELPROD, Industries.LIGHTINDUSTRY,
-                        MS_industries.MODULARFACTORIES, Industries.POPULATION, Industries.SPACEPORT, Industries.BATTLESTATION_HIGH)),
+                new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.HABITABLE, Conditions.VOLATILES_DIFFUSE, Conditions.ORGANICS_COMMON, Conditions.ORE_SPARSE, Conditions.POPULATION_5)),
+                new ArrayList<>(Arrays.asList(Industries.MILITARYBASE, Industries.REFINING, Industries.FUELPROD,  
+                        MS_industries.MODULARFACTORIES, Industries.POPULATION, Industries.SPACEPORT, MS_industries.ORBITAL2)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
         );
@@ -142,9 +143,9 @@ public class Yajna {
                 "Mantra",
                 6,
                 new ArrayList<>(Arrays.asList(Conditions.TOXIC_ATMOSPHERE, Conditions.COLD, Conditions.ORGANICS_TRACE, 
-                    Conditions.VOLATILES_DIFFUSE, Conditions.POPULATION_6)),
-                new ArrayList<>(Arrays.asList(Industries.ORBITALSTATION_MID, Industries.LIGHTINDUSTRY, Industries.POPULATION, Industries.MILITARYBASE, 
-                        Industries.GROUNDDEFENSES, Industries.POPULATION, Industries.SPACEPORT)),
+                    Conditions.VOLATILES_DIFFUSE, Conditions.ORE_SPARSE, Conditions.POPULATION_6)),
+                new ArrayList<>(Arrays.asList(Industries.ORBITALSTATION_MID, Industries.LIGHTINDUSTRY, Industries.POPULATION, Industries.PATROLHQ, 
+                        Industries.MINING, Industries.GROUNDDEFENSES, Industries.POPULATION, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f
         );
@@ -159,7 +160,7 @@ public class Yajna {
                 "Karma",
                 4,
                 new ArrayList<>(Arrays.asList(Conditions.THIN_ATMOSPHERE, Conditions.COLD, Conditions.RARE_ORE_MODERATE, 
-                        Conditions.ORE_ABUNDANT, Conditions.VOLATILES_DIFFUSE, Conditions.POPULATION_4)),
+                        Conditions.ORE_ABUNDANT, Conditions.POPULATION_4)),
                 new ArrayList<>(Arrays.asList(Industries.MINING, Industries.GROUNDDEFENSES, Industries.PATROLHQ, Industries.POPULATION,
                         Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
@@ -189,7 +190,7 @@ public class Yajna {
 	relay.setCircularOrbit(system.getEntityById("yajna"), 218+60, 4800, 270);
         
         SectorEntityToken sensor = system.addCustomEntity(null, null, "sensor_array", "shadow_industry");
-	sensor.setCircularOrbitPointingDown( system.getEntityById("yajna"), 215, 700, 680);
+	sensor.setCircularOrbitPointingDown( system.getEntityById("yajna"), 215, 7000, 680);
         
         SectorEntityToken nav = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL);
 	nav.setCircularOrbitPointingDown( system.getEntityById("yajna"), 320, 2100, 120);

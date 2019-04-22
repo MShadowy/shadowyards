@@ -1,8 +1,11 @@
 package data.scripts.weapons;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.combat.BeamAPI;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
+import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
+import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -44,6 +47,20 @@ public class MS_MurtiSoundPlugin implements EveryFrameWeaponEffectPlugin {
         if (engine.isPaused()) {
             return;
         }
+        
+        /*BeamAPI beam = (BeamAPI) weapon;
+        CombatEntityAPI targ = beam.getDamageTarget();
+        ShipAPI target = null;
+        
+        if (targ instanceof ShipAPI) {
+            target = (ShipAPI) targ;
+        }
+        
+        if (beam !=null && target != null && target.isStation()) {
+            if (beam.didDamageThisFrame()) {
+                //beam.getDamageTarget().
+            }
+        }*/
         
         Vector2f point1 = new Vector2f(weapon.getLocation());
         Vector2f offset1 = new Vector2f();

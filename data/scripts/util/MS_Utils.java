@@ -1,6 +1,8 @@
 package data.scripts.util;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.BeamAPI;
 import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
@@ -203,5 +205,37 @@ public class MS_Utils {
         }
 
         return false;
+    }
+    
+    public static int getStarBonus (int BONUS, MarketAPI market) {
+        
+        PlanetAPI planet = market.getPlanetEntity();
+        PlanetAPI star = planet.getStarSystem().getStar();
+        
+        if (star == null) {
+            star = market.getPlanetEntity().getStarSystem().getStar();
+        }
+        
+        switch (star.getTypeId()) {
+            case "star_orange":
+            case "star_orange_giant":
+                BONUS = 1;
+                break;
+            case "star_yellow":
+                BONUS = 2;
+                break;
+            case "star_blue_giant":
+            case "star_blue_supergiant":
+                BONUS = 3;
+                break;
+            case "star_red_dwarf":
+                BONUS = -1;
+                break;
+            default:
+                BONUS = 0;
+                break;
+        }
+        
+        return BONUS;
     }
 }

@@ -1,3 +1,45 @@
+0.8.6 Changelog
+
+    New Ships:
+        The Eir-class Passenger Liner, a massive ship capable of moving large numbers of people in style and comfort
+        The Carmine-class Light Carrier, a fast ship designed for raiding that has somehow gotten into pirate hands
+    New Fighters:
+        The Heckler-class Heavy Interceptor, which has a very long attack range and blistering if incredibly short ranged firepower
+        The Vulgar-class Bomber, slow and immaneuverable, little more than a shuttle for Hammer Torpedoes
+    Detrimental built-in hullmodds removed from SRA pirate ships
+    Changes to the Enlil:
+        Ship system changed to the Booster Jets system
+        Top speed increased to 160 (from 150)
+    Changes to the Inanna:
+        Top speed reduced to 140 (from 150)
+        Now has a built in Integrated Targeting Unit
+        The Inanna was somehow lacking core variants, and many of it's variants had minor issues, which have been fixed
+    Changes to the Shikome:
+        Reduced odds of appearing in fleets
+        CAS Assault Beam chargedown increased to 0.6 (from 0.4); total firing cycle time increased to 1.4 (from 1.2)
+        Beam damage and energy weapon RoF while system is active reduced by 66%
+    The GAT system now applies a more sizeable buff for the Delphi (and cruiser sized ships in general), and has had its status text improved
+    The Scylla's HEF has been replaced with the GAT system
+    The Clade's retro drive AI has been adjusted to account for the speed boost from Safety Overrides and should crash into ships behind it less often
+    Shadowyards ships now have custom d-mod decals
+    The REIS system has been changed to an On Hit effect, with a chance of piercing shields based on flux of the target ship, that applies heavy EMP strikes to the targets engines
+    Fixed an NPE crash with Massive Solar Arrays that would occur in Nebulas for some reason
+    A number of ships have had their prices adjusted
+        Enlil - to 10,000 credits (from 14,000)
+        Seski - to 8,000 credits (from 10,000)
+        Shamash - to 36,000 credits (from 24,000)
+        Inanna - to 12,000 credits (from 16,000)
+        Southpaw - to 9,000 credits (from 16,000)
+        Clade - to 26,000 credits (from 30,000)
+        Minarette - to 24,000 credits (from 28,000)
+        Lobatus - to 25,000 credits (from 28,000)
+        Tartarus - to 60,000 credits (from 65,000)
+        Delphi - to 42,000 credits (from 55,000)
+        Minos - to 44,500 credits (from 52,500)
+        Skadi - to 235,000 credits (from 250,000)
+    SRA related IBB Bounties no longer use the autofit system
+    An oversight which was causing the Belet-seri and Seski to fail to construct properly has been fixed
+
 0.8.1 Changelog
 
     Added 4 custom starts

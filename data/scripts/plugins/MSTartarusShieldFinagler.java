@@ -18,7 +18,7 @@ public class MSTartarusShieldFinagler extends BaseEveryFrameCombatPlugin {
 
         if (engine != null) {
             for (ShipAPI ship : engine.getShips()) {
-                if ("ms_tartarus".equals(ship.getHullSpec().getHullId())) {
+                if ("ms_tartarus".equals(ship.getHullSpec().getHullId()) || "ms_lobatus".equals(ship.getHullSpec().getHullId())) {
                     ShipSystemAPI system = ship.getSystem();
                     //MutableShipStatsAPI stats = ship.getMutableStats();
                     ShieldAPI shield = ship.getShield();

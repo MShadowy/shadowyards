@@ -90,7 +90,6 @@ public class ShadowyardsModPlugin extends BaseModPlugin {
         }
     }
     
-    
     private static void initShadowyards() {
         new SHIGen().generate(Global.getSector());
     }

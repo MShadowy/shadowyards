@@ -36,11 +36,18 @@ public class MS_combatshellStats extends BaseShipSystemScript {
 			jitterLevel = 1f;
 		}
 		jitterRangeBonus = jitterLevel * maxRangeBonus;
+                
+                stats.getBeamWeaponDamageMult().modifyPercent(id, 33f * effectLevel);
+                stats.getEnergyRoFMult().modifyPercent(id, 33f * effectLevel);
 	} else if (state == State.ACTIVE) {
 		jitterLevel = 1f;
 		jitterRangeBonus = maxRangeBonus;
+                stats.getBeamWeaponDamageMult().modifyPercent(id, 33f * effectLevel);
+                stats.getEnergyRoFMult().modifyPercent(id, 33f * effectLevel);
 	} else if (state == State.OUT) {
 		jitterRangeBonus = jitterLevel * maxRangeBonus;
+                stats.getBeamWeaponDamageMult().modifyPercent(id, 33f * effectLevel);
+                stats.getEnergyRoFMult().modifyPercent(id, 33f * effectLevel);
 	}
 	jitterLevel = (float) Math.sqrt(jitterLevel);
 	effectLevel *= effectLevel;
@@ -78,6 +85,9 @@ public class MS_combatshellStats extends BaseShipSystemScript {
 		
 	stats.getHullDamageTakenMult().unmodify(id);
 	stats.getArmorDamageTakenMult().unmodify(id);
+        
+        stats.getBeamWeaponDamageMult().unmodify(id);
+        stats.getEnergyRoFMult().unmodify(id);
     }
 	
     @Override

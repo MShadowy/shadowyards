@@ -28,6 +28,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.Debri
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
+import data.campaign.econ.MS_industries;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,14 +56,15 @@ public class Gigas {
         SectorEntityToken auris_grip = system.addCustomEntity("auris_grip", "Auris Grip", "station_pirate_type", "pirates");
         auris_grip.setCircularOrbitPointingDown(system.getEntityById("rubicante"), 45, 400, 50);
         auris_grip.setCustomDescriptionId("station_auris");
-        
+        //SRA doctrine places industrial centers to "directly support" military facilities
+        //The Modular Fabricators here survived the destruction relatively intact and were salvaged by the Pirates on Auris Grip
         AddMarketplace.addMarketplace("pirates",  
                 auris_grip,  
                 null,  
                 "Auris Grip",  
                 5,  
                 new ArrayList<>(Arrays.asList(Conditions.FREE_PORT, Conditions.ORGANIZED_CRIME, Conditions.POPULATION_5)),  
-                new ArrayList<>(Arrays.asList(Industries.MINING, Industries.ORBITALSTATION, Industries.SPACEPORT, Industries.POPULATION)),
+                new ArrayList<>(Arrays.asList(Industries.MINING, MS_industries.MODULARFACTORIES, Industries.ORBITALSTATION, Industries.SPACEPORT, Industries.POPULATION)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),  
                 0.3f  
         );
@@ -81,7 +83,7 @@ public class Gigas {
         rubicanteDebrisField.setDiscoverable(null);
         rubicanteDebrisField.setCircularOrbit(vel, 170f, 2200f, 210f);
         
-        //a masiive asteroid field and dust could with patchy orange nebulae dominates the system center
+        //a massive asteroid field and dust could with patchy orange nebulae dominates the system center
         system.addAsteroidBelt(vel, 400, 4500, 1400, 600, 400, Terrain.ASTEROID_BELT, "Clashed Belt");
         system.addAsteroidBelt(vel, 400, 4900, 1400, 600, 400, Terrain.ASTEROID_BELT, "Clashed Belt");
         system.addAsteroidBelt(vel, 400, 5300, 1400, 600, 400, Terrain.ASTEROID_BELT, "Clashed Belt");
@@ -143,10 +145,10 @@ public class Gigas {
                 null,  
                 "Stillness",  
                 5,
-                new ArrayList<>(Arrays.asList(Conditions.ICE, Conditions.THIN_ATMOSPHERE, Conditions.VOLATILES_PLENTIFUL,
+                new ArrayList<>(Arrays.asList(Conditions.ICE, Conditions.THIN_ATMOSPHERE, Conditions.VOLATILES_ABUNDANT,
                         Conditions.LARGE_REFUGEE_POPULATION, Conditions.POPULATION_5)),  
-                new ArrayList<>(Arrays.asList(Industries.PATROLHQ, Industries.LIGHTINDUSTRY, Industries.REFINING, Industries.GROUNDDEFENSES, 
-                        Industries.SPACEPORT, Industries.POPULATION)),
+                new ArrayList<>(Arrays.asList(Industries.PATROLHQ, Industries.LIGHTINDUSTRY, Industries.MINING, Industries.REFINING, 
+                        Industries.GROUNDDEFENSES, Industries.SPACEPORT, Industries.POPULATION)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f  
         );

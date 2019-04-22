@@ -2,6 +2,7 @@ package data.missions.drumsinthedeep;
 
 import com.fs.starfarer.api.fleet.FleetGoal;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.Personalities;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
 import com.fs.starfarer.api.mission.MissionDefinitionPlugin;
@@ -11,58 +12,50 @@ public class MissionDefinition implements MissionDefinitionPlugin {
     @Override
     public void defineMission(MissionDefinitionAPI api) {
 		// Set up the fleets so we can add ships and fighter wings to them.
-        // In this scenario, the fleets are attacking each other, but
-        // in other scenarios, a fleet may be defending or trying to escape
-        api.initFleet(FleetSide.PLAYER, "SYS", FleetGoal.ATTACK, false);
-        api.initFleet(FleetSide.ENEMY, "ISS", FleetGoal.ATTACK, true);
+        /*Drums in the Deep; Pather Radicals launch a virus bomb attack on Euripides
+        a few years after their success at Mayasura and some failed attempts to kill Tri-Tachyon*/
+        
+        api.initFleet(FleetSide.PLAYER, "", FleetGoal.ATTACK, false);
+        api.initFleet(FleetSide.ENEMY, "SYS", FleetGoal.ATTACK, true);
 
 		// Set a small blurb for each fleet that shows up on the mission detail and
         // mission results screens to identify each side.
-        api.setFleetTagline(FleetSide.PLAYER, "Shadowyards Security Patrol");
-        api.setFleetTagline(FleetSide.ENEMY, "Cult of Lud Harrasers");
+        api.setFleetTagline(FleetSide.PLAYER, "Pather Crusaders");
+        api.setFleetTagline(FleetSide.ENEMY, "SRA Patrol Group");
 
 		// These show up as items in the bulleted list under 
         // "Tactical Objectives" on the mission detail screen
-        api.addBriefingItem("Defeat all enemy forces");
+        api.addBriefingItem("Overcome the Shadowyards Heretics");
+        api.addBriefingItem("The Verdance carries our intrument of divine punishment; do not allow it to be destroyed");
+        api.addBriefingItem("Carry out your holy mission");
 
-		// Set up the player's fleet.  Variant names come from the
-        // files in data/variants and data/variants/fighters
-        api.addToFleet(FleetSide.PLAYER, "ms_shamash_Attack", FleetMemberType.SHIP, "SYS Blinder", true);
-        api.addToFleet(FleetSide.PLAYER, "ms_shamash_EMP", FleetMemberType.SHIP, "SYS Ghastly", false);
-        api.addToFleet(FleetSide.PLAYER, "ms_inanna_CS", FleetMemberType.SHIP, "SYS Sinister and Gauche", false);
-        api.addToFleet(FleetSide.PLAYER, "ms_enlil_Standard", FleetMemberType.SHIP, "SYS Hopeful Acquaitance", false);
-        api.addToFleet(FleetSide.PLAYER, "ms_sargasso_Balanced", FleetMemberType.SHIP, "SYS Inverterate", false);
-		//api.addToFleet(FleetSide.PLAYER, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-
-		// Mark both ships as essential - losing either one results
-        // in mission failure. Could also be set on an enemy ship,
-        // in which case destroying it would result in a win.
-		// Set up the enemy fleet.
-        // It's got more ships than the player's, but they're not as strong.
-        api.addToFleet(FleetSide.ENEMY, "enforcer_Outdated", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "condor_Attack", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "lasher_Strike", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "hound_Standard", FleetMemberType.SHIP, false);
-        api.addToFleet(FleetSide.ENEMY, "hound_Standard", FleetMemberType.SHIP, false);
-
-		//api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false).getCaptain().setPersonality("suicidal");
-        //api.addToFleet(FleetSide.ENEMY, "hound_Assault", FleetMemberType.SHIP, false);
-        //api.addToFleet(FleetSide.ENEMY, "broadsword_wing", FleetMemberType.FIGHTER_WING, false);
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-		//api.addToFleet(FleetSide.ENEMY, "talon_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-		// Set up the map.
-        // 12000x8000 is actually somewhat small, making for a faster-paced mission.
+	//The pather genociders carrying the virus bomb
+        //Your ships a pretty numerous, but not that much more numerous
+        //General force inferiority will probably see you take heavy casualties but should be winnable
+        api.addToFleet(FleetSide.PLAYER, "brawler_pather_Raider", FleetMemberType.SHIP, "Verdance", true);
+        api.addToFleet(FleetSide.PLAYER, "brawler_pather_Raider", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
+        api.addToFleet(FleetSide.PLAYER, "lasher_luddic_path_Raider", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.PLAYER, "lasher_luddic_path_Raider", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.PLAYER, "cerberus_luddic_path_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
+        api.addToFleet(FleetSide.PLAYER, "cerberus_luddic_path_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
+        api.addToFleet(FleetSide.PLAYER, "cerberus_luddic_path_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.PLAYER, "hound_luddic_path_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.PLAYER, "hound_luddic_path_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
+        api.addToFleet(FleetSide.PLAYER, "hound_luddic_path_Attack", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.PLAYER, "hound_luddic_path_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
+        
+        api.defeatOnShipLoss("Verdance");
+        //The SRA patrol group; their ships are broadly superior and they have destroyers
+        //More than that, they have fighter cover, and you don't
+        //But there are fewer of them overall; you'll have to work fast to overwhelm them and break through
+        api.addToFleet(FleetSide.ENEMY, "ms_morningstar_Standard", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "ms_morningstar_PD", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "ms_shamash_EMP", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "ms_inanna_CS", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.CAUTIOUS);
+        api.addToFleet(FleetSide.ENEMY, "ms_enlil_Standard", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "ms_enlil_Balanced", FleetMemberType.SHIP, false);
+        api.addToFleet(FleetSide.ENEMY, "ms_sargasso_Balanced", FleetMemberType.SHIP, false);
+        
         float width = 24000f;
         float height = 20000f;
         api.initMap((float) -width / 2f, (float) width / 2f, (float) -height / 2f, (float) height / 2f);
@@ -86,6 +79,9 @@ public class MissionDefinition implements MissionDefinitionPlugin {
             float radius = 100f + (float) Math.random() * 400f;
             api.addNebula(x, y, radius);
         }
+        //We're in hyperspace, just outside of Anar so set the bg to hyperspace
+        api.setBackgroundSpriteName("graphics/backgrounds/hyperspace_bg_cool.jpg");
+        api.setHyperspaceMode(true);
 
 		// Add objectives. These can be captured by each side
         // and provide stat bonuses and extra command points to
@@ -102,6 +98,9 @@ public class MissionDefinition implements MissionDefinitionPlugin {
         // 100 asteroids in it.
         // 20-70 is the range of asteroid speeds.
         // Add some planets.  These are defined in data/config/planets.json.
-        api.addPlanet(minX + width * 0.8f, minY + height * 0.8f, 256f, "desert", 250f);
+        //throw in three hyperspace jump nodes
+        api.addPlanet(minX + width * 0.4f, minY + height * 0.3f, 150f, "star_yellow", 40f); //Anar
+        api.addPlanet(minX + width * 0.5f, minY + height * 0.5f, 400f, "planet_euripides", 100f); //Euripides
+        api.addPlanet(minX + width * 0.7f, minY + height * 0.7f, 100f, "ice_giant", 60f); //Calleach
     }
 }

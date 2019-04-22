@@ -25,8 +25,6 @@ public class MS_WavebeamOnHitEffect implements OnHitEffectPlugin {
     private static final Color EXPLOSION_COLOR = new Color(125, 155, 115, 255);
     private static final Color PARTICLE_COLOR = new Color(125, 155, 115, 255);
     private static final int NUM_PARTICLES = 14;
-    private static final float MIN_EXTRA_DAMAGE = 200f;
-    private static final float MAX_EXTRA_DAMAGE = 300f;
 
     @Override
     public void onHit(DamagingProjectileAPI projectile, CombatEntityAPI target, Vector2f point, boolean shieldHit, CombatEngineAPI engine) {
@@ -34,8 +32,7 @@ public class MS_WavebeamOnHitEffect implements OnHitEffectPlugin {
         if (target instanceof ShipAPI && !shieldHit && Math.random() <= EXTRA_DAMAGE_CHANCE) {
             // Apply extra damage of a random type
             engine.applyDamage(target, point,
-                    MathUtils.getRandomNumberInRange(MIN_EXTRA_DAMAGE, MAX_EXTRA_DAMAGE),
-                    TYPES[(int) (Math.random() * TYPES.length)], 0f, false,
+                    200, TYPES[(int) (Math.random() * TYPES.length)], 0f, false,
                     true, projectile.getSource());
 
             // Spawn visual effects

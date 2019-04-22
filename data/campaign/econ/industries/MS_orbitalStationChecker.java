@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import data.campaign.econ.MS_industries;
 
 public class MS_orbitalStationChecker extends OrbitalStation {
     

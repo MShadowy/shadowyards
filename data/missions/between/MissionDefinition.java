@@ -12,60 +12,47 @@ public class MissionDefinition implements MissionDefinitionPlugin {
     @Override
     public void defineMission(MissionDefinitionAPI api) {
 		// Set up the fleets so we can add ships and fighter wings to them.
-        // In this scenario, the fleets are attacking each other, but
-        // in other scenarios, a fleet may be defending or trying to escape
+        /*Between Scylla and Charybdis
+        ~10 years after Drums in the Deep; the first Scyllas are coming online
+        At around this time, thwarted due to the SRA embracing radical transhumanism as
+        a cure to the virus bomb, a massive Pather force launches one of several follow up raids
+        which ends up breaking the back of their movement for bit*/
         api.initFleet(FleetSide.PLAYER, "SYS", FleetGoal.ATTACK, false);
         api.initFleet(FleetSide.ENEMY, "ISS", FleetGoal.ATTACK, true);
 
 		// Set a small blurb for each fleet that shows up on the mission detail and
         // mission results screens to identify each side.
-        api.setFleetTagline(FleetSide.PLAYER, "Shadowyards Patrol");
-        api.setFleetTagline(FleetSide.ENEMY, "Pirate/Luddite Raiders");
+        api.setFleetTagline(FleetSide.PLAYER, "Shadowyards Combat Evaluation Unit");
+        api.setFleetTagline(FleetSide.ENEMY, "Pather Attack Fleet");
 
 		// These show up as items in the bulleted list under 
         // "Tactical Objectives" on the mission detail screen
         api.addBriefingItem("Drive off the enemy raiders.");
 
-		// Set up the player's fleet.  Variant names come from the
-        // files in data/variants and data/variants/fighters
+		// Set up the player's fleet.
+        // the SRA team is a Combat Evaluation Unit testing out the new Scylla phase cruiser; 
+        // the Just Leaving is the third ship produced and much is expected of the design after the success of the Shamash
         api.addToFleet(FleetSide.PLAYER, "ms_scylla_Standard", FleetMemberType.SHIP, "SyS Just Leaving", true); //17
         api.addToFleet(FleetSide.PLAYER, "ms_charybdis_Balanced", FleetMemberType.SHIP, "SYS Wanders Like Thought", false).getCaptain().setPersonality(Personalities.STEADY); //18
         api.addToFleet(FleetSide.PLAYER, "ms_enlil_Standard", FleetMemberType.SHIP, "SYS Syd Real", false).getCaptain().setPersonality(Personalities.CAUTIOUS); //5
         api.addToFleet(FleetSide.PLAYER, "ms_seski_BR", FleetMemberType.SHIP, "SYS Sass Master", false).getCaptain().setPersonality(Personalities.STEADY); //4
         api.addToFleet(FleetSide.PLAYER, "ms_shamash_Attack", FleetMemberType.SHIP, "SYS Ball o' Fire", false).getCaptain().setPersonality(Personalities.AGGRESSIVE); //7
 
-		//api.addToFleet(FleetSide.PLAYER, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-        //api.addToFleet(FleetSide.PLAYER, "longbow_wing", FleetMemberType.FIGHTER_WING, false);
-		// Mark both ships as essential - losing either one results
-        // in mission failure. Could also be set on an enemy ship,
-        // in which case destroying it would result in a win.
 		// Set up the enemy fleet.
-        // The enemies ships are all pretty weak.  But there are quite a few of them.
-        api.addToFleet(FleetSide.ENEMY, "dominator_Outdated", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        // The Pather assault group; it's not quite clear what they're expecting to accomplish
+        // but this does represent a very significant concentration of firepower for them
+        api.addToFleet(FleetSide.ENEMY, "dominator_d_Assault", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
         api.addToFleet(FleetSide.ENEMY, "condor_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "enforcer_Assault", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "enforcer_Outdated", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "enforcer_CS", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "hound_Standard", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "hound_Standard", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "hound_Standard", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
-        api.addToFleet(FleetSide.ENEMY, "hound_Standard", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "enforcer_d_Strike", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "enforcer_d_Strike", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "enforcer_Outdated", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
+        api.addToFleet(FleetSide.ENEMY, "brawler_pather_Raider", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "lasher_luddic_path_Raider", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "hound_luddic_path_Attack", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "kite_luddic_path_Raider", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
+        api.addToFleet(FleetSide.ENEMY, "kite_luddic_path_Strike", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.RECKLESS);
+        api.addToFleet(FleetSide.ENEMY, "kite_luddic_path_Strike", FleetMemberType.SHIP, false).getCaptain().setPersonality(Personalities.AGGRESSIVE);
 
-		//api.addToFleet(FleetSide.ENEMY, "lasher_CS", FleetMemberType.SHIP, false).getCaptain().setPersonality("suicidal");
-        //api.addToFleet(FleetSide.ENEMY, "hound_Assault", FleetMemberType.SHIP, false);
-        //api.addToFleet(FleetSide.ENEMY, "broadsword_wing", FleetMemberType.FIGHTER_WING, false);
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-//		api.addToFleet(FleetSide.ENEMY, "mining_drone_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
-		//api.addToFleet(FleetSide.ENEMY, "talon_wing", FleetMemberType.FIGHTER_WING, false).getCaptain().setPersonality("suicidal");
 		// Set up the map.
         // 12000x8000 is actually somewhat small, making for a faster-paced mission.
         float width = 20000f;

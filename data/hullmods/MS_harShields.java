@@ -57,7 +57,7 @@ public class MS_harShields extends BaseHullMod {
         ship.getMutableStats().getFluxDissipation().modifyPercent("harShields", 100f * (MAG.get(ship.getHullSize()) * (getFluxCurve(fluxTracker.getHardFlux() / fluxTracker.getMaxFlux(), 1.4f))));
         
         if (ship == Global.getCombatEngine().getPlayerShip() && fluxTracker.getHardFlux() > 0) {
-            Global.getCombatEngine().maintainStatusForPlayerShip(HS_BUFFID, HS_ICON, HS_NAME, "Flux dissipation increased by"+(int) harShieldsBonus+"%", true);
+            Global.getCombatEngine().maintainStatusForPlayerShip(HS_BUFFID, HS_ICON, HS_NAME, "Flux dissipation increased by "+(int) harShieldsBonus+"%", true);
         }
     }
     

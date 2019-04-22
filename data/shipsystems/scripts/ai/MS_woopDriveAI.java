@@ -26,7 +26,7 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
     and if it thinks it's too much uses the system to NOPE */    
     private static final float SECONDS_TO_LOOK_AHEAD = 3f;
     private static final float RANGE_TO_CHECK = 2500f;
-    private static final float EDGE_CHECK = 700f;
+    private float EDGE_CHECK;
     
     private final CollectionUtils.CollectionFilter<DamagingProjectileAPI> filterMisses = new CollectionUtils.CollectionFilter<DamagingProjectileAPI>()
     {
@@ -105,10 +105,16 @@ public class MS_woopDriveAI implements ShipSystemAIScript {
                 nearbyThreats.add(missile);
             }
             
+            if (ship.getVariant().getHullMods().contains("safetyoverrides")) {
+                EDGE_CHECK = 1800f;
+            } else {
+                EDGE_CHECK = 700f;
+            }
+            
             List<ShipAPI> ships = CombatUtils.getShipsWithinRange(shipLoc, EDGE_CHECK);
             for (ShipAPI s : ships) {
                 if (MathUtils.isWithinRange(s.getLocation(), shipLoc, EDGE_CHECK) &&
-                        VectorUtils.getAngle(s.getLocation(), shipLoc) > 170) {
+                        VectorUtils.getAngle(s.getLocation(), shipLoc) > 160) {
                     clear = false;
                 }
             }

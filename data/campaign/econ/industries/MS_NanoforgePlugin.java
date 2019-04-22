@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -160,6 +161,13 @@ public class MS_NanoforgePlugin extends BaseInstallableIndustryItemPlugin {
 	@Override
 	public String getUninstallButtonText() {
 		return "Uninstall nanoforge";
+	}
+        
+        @Override
+	public boolean isInstallableItem(CargoStackAPI stack) {
+		if (!stack.isSpecialStack()) return false;
+		
+		return NANOFORGE_EFFECTS.containsKey(stack.getSpecialDataIfSpecial().getId());
 	}
         
         @Override
