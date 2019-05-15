@@ -13,7 +13,6 @@ import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.ShadowyardsModPlugin;
-import db.twiglib.TwigUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -105,28 +104,6 @@ public class MS_Utils {
     public static List<ShipAPI> getSortedAreaList(Vector2f loc, List<ShipAPI> list)
     {
         List<ShipAPI> out;
-        if (ShadowyardsModPlugin.hasTwigLib)
-        {
-            List<ShipAPI> temp = new ArrayList<>(list);
-            Collections.sort(temp, new SortShipsByDistance(loc));
-
-            out = new ArrayList<>(list.size());
-            while (temp.size() > 0)
-            {
-                ShipAPI ship = temp.get(0);
-                if (TwigUtils.isMultiShip(ship))
-                {
-                    out.add(ship);
-                    TwigUtils.filterConnections(ship, temp);
-                }
-                else
-                {
-                    out.add(ship);
-                    temp.remove(0);
-                }
-            }
-        }
-        else
         {
             out = new ArrayList<>(list);
             Collections.sort(out, new SortShipsByDistance(loc));

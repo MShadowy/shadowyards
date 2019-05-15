@@ -27,7 +27,7 @@ public class MS_FleetInflaterPlugin extends DefaultFleetInflater {
     }
     
     public static float getFighterProbability(FighterWingSpecAPI spec) {
-        if (spec.getId().contains("ms_shikome")) return 0.05f;
+        if (spec.getId().contains("ms_shikome")) return 0.025f;
         
         return 1f;
     }

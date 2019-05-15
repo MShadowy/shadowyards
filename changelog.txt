@@ -1,3 +1,29 @@
+0.8.7 Changelog
+
+    Fixed a typo that was causing the lockdown not to appear in exports blueprints package
+    Increased the Baseplates supply cost/month to 4 (from 2) supply cost/deployment to 4 (from 3)
+    Spawn weight for Carmine variants increased to 4 for a total of 12 weight
+    Some adjustments to SRA frigate supply costs
+        Seski cost/deployment reduced to 3 supplies (from 4)
+        Inanna cost/deployment reduced to 5 (from 6) and cost/month increased to 5 (from 4)
+        Belet-seri cost/deployment reduced to 4 (from 5)
+    Shikome changes:
+        Damage for Mini Lance reduced to 1000 (from 1500)
+        Damage/Second for CAS Assault Beamer reduced to 350 (from 500), impact reduced to 250 (from 1450)
+        Lowered spawn probability to 1 in 40 (from 1 in 20)
+    Heckler changes:
+        OP cost/wing increased to 9 (from 6)
+        Range decreased to 6000 (from 7000)
+        Max Flux decreased to 300 (from 450)
+    Vulgar changes:
+        Hammer mounts changed from 2 single Hammer racks to one double mount
+        Shield removed
+    Added a number of additional skins for the Revolutionary Council subfaction added by Vayra's Kadur Remnant mod
+    SRA Phase ships with custom phase systems should now be categorized properly when custom building ships
+    SRA ship costs adjusted to properly match the new vanilla prices
+    Finally remembered to replace the overly bright cockpit pods for the Skinwalker and Raksasha
+    Improved visual effects for Nidhoggr Lance and Wavepulse Cannon
+
 0.8.6 Changelog
 
     New Ships:
