@@ -1,3 +1,13 @@
+0.8.7RC2 Changelog
+
+    Fixed the tags for SRA industries so they now work properly with the updated colony mechanics
+    Further changes to the Vulgar
+        Weapon changed to a single shot mining blaster
+        Ships increased to 3 per wing
+        Some minor adjustments to attack run range
+        Formation changed to Claw
+    The Upelluri now has a short description, and has had the Targetting Supercomputer hullmod added
+
 0.8.7 Changelog
 
     Fixed a typo that was causing the lockdown not to appear in exports blueprints package
