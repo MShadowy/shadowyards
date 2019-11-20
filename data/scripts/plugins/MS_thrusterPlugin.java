@@ -1,6 +1,8 @@
+/*
+    By Tartiflette
+ */
 package data.scripts.plugins;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
@@ -9,16 +11,14 @@ import com.fs.starfarer.api.combat.ShipEngineControllerAPI.ShipEngineAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.lazywizard.lazylib.FastTrig;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
+//import data.scripts.plugins.SpriteRenderManager;
 
 public class MS_thrusterPlugin implements EveryFrameWeaponEffectPlugin {
+    
     private boolean runOnce=false, accel=false, turn=false;
     private ShipAPI SHIP;
     private ShipEngineAPI thruster;
@@ -31,7 +31,7 @@ public class MS_thrusterPlugin implements EveryFrameWeaponEffectPlugin {
     //sprite size, could be scaled with the engine width to allow variable engine length
     private Vector2f size= new Vector2f(8,74);
     
-    private static final Map<ShipAPI.HullSize, Float> tinY = new HashMap<>();
+    /*private static final Map<ShipAPI.HullSize, Float> tinY = new HashMap<>();
 
     static {
         tinY.put(ShipAPI.HullSize.FIGHTER, 15f);
@@ -97,10 +97,11 @@ public class MS_thrusterPlugin implements EveryFrameWeaponEffectPlugin {
         THRUST.put(1, Global.getSettings().getSprite("thrusts", "SRA_Vectored_Thrust01"));
         THRUST.put(2, Global.getSettings().getSprite("thrusts", "SRA_Vectored_Thrust02"));
         THRUST.put(3, Global.getSettings().getSprite("thrusts", "SRA_Vectored_Thrust03"));
-    }
+    }*/
     
     @Override
     public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
+        
         if(!runOnce){
             runOnce=true;
             
@@ -127,17 +128,18 @@ public class MS_thrusterPlugin implements EveryFrameWeaponEffectPlugin {
             //is the thruster performant at turning the ship? Engines closer to the center of mass will concentrate more on dealing with changes of velocity.
             THRUST_TO_TURN=smooth(MathUtils.getDistance(SHIP.getLocation(), weapon.getLocation())/SHIP.getCollisionRadius());            
         }
-        
-        if (engine.isPaused() || SHIP.getOriginalOwner()==-1) {
+
+        if(engine.isPaused() || SHIP.getOriginalOwner()==-1){
             return;
         }
-        
-        if(!SHIP.isAlive() || (thruster!=null && thruster.isDisabled())) {
+
+        //check for death/engine disabled
+        if(!SHIP.isAlive() || (thruster!=null && thruster.isDisabled())){
             weapon.getAnimation().setFrame(0);
-            previousThrust = 0;
+            previousThrust=0;
             return;
         }
-        
+
         //20FPS
         time+=amount;
         if(time>=FREQ){
@@ -222,6 +224,25 @@ public class MS_thrusterPlugin implements EveryFrameWeaponEffectPlugin {
                         //adds both thrust and turn angle at their respective thrust-to-turn ratio. Gives a "middleground" angle
                         combinedAngle = MathUtils.clampAngle(combinedAngle + MathUtils.getShortestRotation(NEUTRAL_ANGLE,accelerateAngle));                        
                         combinedAngle = MathUtils.clampAngle(combinedAngle + clampedThrustToTurn*MathUtils.getShortestRotation(accelerateAngle,turnAngle));  
+                        
+                        //DEBUG
+//                        SpriteRenderManager.objectspaceRender(
+//                                Global.getSettings().getSprite("fx","bar"),
+//                                SHIP,
+//                                offset,
+//                                new Vector2f(),
+//                                new Vector2f(32,32),
+//                                new Vector2f(),
+//                                combinedAngle,
+//                                0,
+//                                true,
+//                                Color.BLUE,
+//                                true,
+//                                0,
+//                                0,
+//                                0.1f,
+//                                false
+//                        );
                                                 
                         //get the total thrust with mults
                         float combinedThrust=thrust;
@@ -243,8 +264,52 @@ public class MS_thrusterPlugin implements EveryFrameWeaponEffectPlugin {
                         } else {
                             thrust(weapon, combinedAngle, combinedThrust, SMOOTH_THRUSTING/2);
                         }
+                        
+                        //DEBUG
+//                        engine.addHitParticle(MathUtils.getPoint(weapon.getLocation(), 20, SHIP.getFacing()+accelerateAngle), new Vector2f(), 5, 0.5f, 0.05f, Color.yellow);
+//                        engine.addHitParticle(MathUtils.getPoint(weapon.getLocation(), 20, SHIP.getFacing()+turnAngle), new Vector2f(), 5, 0.5f, 0.05f, Color.red);
+//                        engine.addHitParticle(MathUtils.getPoint(weapon.getLocation(), 20*combinedThrust, SHIP.getFacing()+combinedAngle), new Vector2f(), 5, 0.5f, 0.05f, Color.green);
+//                        engine.addFloatingText(weapon.getLocation(), " "+clampedThrustToTurn, 20, Color.yellow, SHIP, 1, 1);
+//                        engine.addFloatingText(weapon.getLocation(), " "+offAxis, 20, Color.yellow, SHIP, 1, 1);
+                        //DEBUG
                     }
                 }
+            //DEBUG
+//                SpriteRenderManager.objectspaceRender(
+//                        Global.getSettings().getSprite("fx","bar"),
+//                        SHIP,
+//                        offset,
+//                        new Vector2f(),
+//                        new Vector2f(16,16),
+//                        new Vector2f(),
+//                        turnAngle,
+//                        0,
+//                        true,
+//                        Color.red,
+//                        true,
+//                        0,
+//                        0,
+//                        0.1f,
+//                        false
+//                );
+//                SpriteRenderManager.objectspaceRender(
+//                        Global.getSettings().getSprite("fx","bar"),
+//                        SHIP,
+//                        offset,
+//                        new Vector2f(),
+//                        new Vector2f(16,16),
+//                        new Vector2f(),
+//                        accelerateAngle,
+//                        0,
+//                        true,
+//                        Color.green,
+//                        true,
+//                        0,
+//                        0,
+//                        0.1f,
+//                        false
+//                );
+            //DEBUG
                 
             } else {
                 if(FRAMES==0){          

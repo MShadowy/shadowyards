@@ -76,8 +76,8 @@ public class Yajna {
                 "Jnana",
                 5,
                 new ArrayList<>(Arrays.asList(Conditions.DESERT, Conditions.INIMICAL_BIOSPHERE, Conditions.HABITABLE, Conditions.VOLATILES_DIFFUSE, Conditions.ORGANICS_COMMON, Conditions.ORE_SPARSE, Conditions.POPULATION_5)),
-                new ArrayList<>(Arrays.asList(Industries.MILITARYBASE, Industries.REFINING, Industries.FUELPROD,  
-                        MS_industries.MODULARFACTORIES, Industries.POPULATION, Industries.SPACEPORT, MS_industries.ORBITAL2)),
+                new ArrayList<>(Arrays.asList(Industries.MILITARYBASE, Industries.FUELPROD, MS_industries.MODULARFACTORIES, 
+                        Industries.POPULATION, Industries.SPACEPORT, MS_industries.ORBITAL2)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
         );

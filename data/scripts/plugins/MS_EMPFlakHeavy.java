@@ -37,8 +37,8 @@ public class MS_EMPFlakHeavy extends BaseEveryFrameCombatPlugin {
     private static final float FLAK_EMP_DAMAGE = 1500f; //EMP Damage
     private static final float EMP_SIZE = 200f; //Area of Effect
     private static final float EMP_CORE = 120f; //Full damage area
-    private static final Color effectColor1 = new Color(100, 200, 255, 215);
-    private static final Color effectColor2 = new Color(35, 50, 85, 150);
+    private static final Color EFFECT_COLOR1 = new Color(100, 200, 255, 215);
+    private static final Color EFFECT_COLOR2 = new Color(35, 50, 85, 150);
     private static final float EMP_FLASH_DURATION = 0.25f;
     private static final float EMP_FUSE_RANGE = 80f; //"Detonation" radius
     private final static String MISS_IDS = "ms_hemp_shot";
@@ -61,14 +61,14 @@ public class MS_EMPFlakHeavy extends BaseEveryFrameCombatPlugin {
         MS_effectsHook.createEMPShockwave(point);
         
         engine.addHitParticle(point, ZERO, EMP_CORE_VISUAL_SIZE, 1f, EMP_FLASH_DURATION, Color.WHITE);
-        engine.addHitParticle(point, ZERO, EMP_VISUAL_SIZE, 0.4f, 0.4f, effectColor1);
+        engine.addHitParticle(point, ZERO, EMP_VISUAL_SIZE, 0.4f, 0.4f, EFFECT_COLOR1);
         Vector2f vel = new Vector2f();
         for (int i = 0; i < 30; i++)
         {
             vel.set(((float) Math.random() * 1.25f + 0.25f) * EMP_VISUAL_SIZE, 0f);
             VectorUtils.rotate(vel, (float) Math.random() * 360f, vel);
             engine.addSmoothParticle(projectile.getLocation(), vel, (float) Math.random() * 2.5f + 2.5f, 1f,
-                    (float) Math.random() * 0.3f + 0.6f, effectColor2);
+                    (float) Math.random() * 0.3f + 0.6f, EFFECT_COLOR2);
         }
         
         for (int i = 0; i < 5; i++) {
@@ -78,11 +78,11 @@ public class MS_EMPFlakHeavy extends BaseEveryFrameCombatPlugin {
             Vector2f point2 = new Vector2f(point);
             engine.spawnEmpArc(projectile.getSource(), point1, new SimpleEntity(point1), new SimpleEntity(point2),
                     DamageType.ENERGY, 0f, 0f, 1000f, null, 15f,
-                    effectColor1, effectColor2);
+                    EFFECT_COLOR1, EFFECT_COLOR2);
         }
         
         StandardLight light = new StandardLight(projectile.getLocation(), ZERO, ZERO, null);
-        light.setColor(effectColor1);
+        light.setColor(EFFECT_COLOR1);
         light.setSize(EMP_VISUAL_SIZE * 1.1f);
         light.setIntensity(0.15f);
         light.fadeOut(0.2f);
@@ -223,8 +223,8 @@ public class MS_EMPFlakHeavy extends BaseEveryFrameCombatPlugin {
                     100f,
                     null,
                     10f,
-                    effectColor1,
-                    effectColor1);
+                    EFFECT_COLOR1,
+                    EFFECT_COLOR1);
                 }
             }  
         }

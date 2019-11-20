@@ -12,7 +12,6 @@ import com.fs.starfarer.api.combat.ShipEngineControllerAPI.ShipEngineAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.ShadowyardsModPlugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

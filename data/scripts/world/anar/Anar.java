@@ -178,11 +178,11 @@ public class Anar {
                 new ArrayList<>(Arrays.asList(MS_Conditions.IRRADIATED_TERRAN, Conditions.HABITABLE, Conditions.EXTREME_WEATHER, 
                         Conditions.ORGANICS_COMMON, Conditions.FARMLAND_RICH, Conditions.RARE_ORE_ABUNDANT, Conditions.POPULATION_6)),
                 new ArrayList<>(Arrays.asList(MS_industries.ORBITAL1, Industries.HEAVYBATTERIES, Industries.HIGHCOMMAND, 
-                        Industries.FARMING, Industries.MINING, Industries.POPULATION, Industries.SPACEPORT)),
+                        Industries.MINING, Industries.FARMING, Industries.POPULATION, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
         );
-        theraminMarket.addIndustry(MS_industries.MODULARFACTORIES, new ArrayList<>(Arrays.asList(Items.CORRUPTED_NANOFORGE)));
+        //theraminMarket.addIndustry(MS_industries.MODULARFACTORIES, new ArrayList<>(Arrays.asList(Items.CORRUPTED_NANOFORGE)));
         CargoAPI cargo = theraminMarket.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
         cargo.addSpecial(new SpecialItemData("industry_bp", "ms_orbitalstation"), 1);
         

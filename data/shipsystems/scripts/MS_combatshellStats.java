@@ -30,25 +30,30 @@ public class MS_combatshellStats extends BaseShipSystemScript {
 	float jitterLevel = effectLevel;
 	float jitterRangeBonus = 0;
 	float maxRangeBonus = 10f;
-	if (state == State.IN) {
-		jitterLevel = effectLevel / (1f / ship.getSystem().getChargeUpDur());
-		if (jitterLevel > 1) {
-			jitterLevel = 1f;
-		}
-		jitterRangeBonus = jitterLevel * maxRangeBonus;
-                
+	if (null != state) switch (state) {
+            case IN:
+                jitterLevel = effectLevel / (1f / ship.getSystem().getChargeUpDur());
+                if (jitterLevel > 1) {
+                    jitterLevel = 1f;
+                }
+                jitterRangeBonus = jitterLevel * maxRangeBonus;
                 stats.getBeamWeaponDamageMult().modifyPercent(id, 33f * effectLevel);
                 stats.getEnergyRoFMult().modifyPercent(id, 33f * effectLevel);
-	} else if (state == State.ACTIVE) {
-		jitterLevel = 1f;
-		jitterRangeBonus = maxRangeBonus;
+                break;
+            case ACTIVE:
+                jitterLevel = 1f;
+                jitterRangeBonus = maxRangeBonus;
                 stats.getBeamWeaponDamageMult().modifyPercent(id, 33f * effectLevel);
                 stats.getEnergyRoFMult().modifyPercent(id, 33f * effectLevel);
-	} else if (state == State.OUT) {
-		jitterRangeBonus = jitterLevel * maxRangeBonus;
+                break;
+            case OUT:
+                jitterRangeBonus = jitterLevel * maxRangeBonus;
                 stats.getBeamWeaponDamageMult().modifyPercent(id, 33f * effectLevel);
                 stats.getEnergyRoFMult().modifyPercent(id, 33f * effectLevel);
-	}
+                break;
+            default:
+                break;
+        }
 	jitterLevel = (float) Math.sqrt(jitterLevel);
 	effectLevel *= effectLevel;
 		

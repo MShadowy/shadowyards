@@ -39,13 +39,18 @@ public class MS_scatterGunSpreader extends BaseEveryFrameCombatPlugin {
             if (SHOTGUNPROJ_IDS.contains(spec)) {
                 Vector2f loc = proj.getLocation();
                 Vector2f vel = proj.getVelocity();
-                int shotCount = (20);
+                int shotCount = (1);
+                int empCount = (10);
                 for (int j = 0; j < shotCount; j++) {
+                    //spec + "_clone" means is, if its got the same name in its name (except the "_clone" part) then it must be that weapon.
+                    engine.spawnProjectile(proj.getSource(), proj.getWeapon(), spec + "_clone", loc, proj.getFacing(), proj.getVelocity());
+                }
+                for (int k = 0; k < empCount; k++) {
                     Vector2f randomVel = MathUtils.getRandomPointOnCircumference(null, MathUtils.getRandomNumberInRange(20f, 60f));
                     randomVel.x += vel.x;
                     randomVel.y += vel.y;
                     //spec + "_clone" means is, if its got the same name in its name (except the "_clone" part) then it must be that weapon.
-                    engine.spawnProjectile(proj.getSource(), proj.getWeapon(), spec + "_clone", loc, proj.getFacing(), randomVel);
+                    engine.spawnProjectile(proj.getSource(), proj.getWeapon(), spec + "_emp", loc, proj.getFacing(), randomVel);
                 }
                 engine.removeEntity(proj);
             }

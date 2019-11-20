@@ -18,18 +18,18 @@ import org.lazywizard.lazylib.combat.AIUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-
-
-public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
-    //data
-    private static final float ANTI_CLUMP_RANGE = 45f;
-    private static final float VELOCITY_DAMPING_FACTOR = 0.1f;
-    private static final Vector2f ZERO = new Vector2f();
-    private IntervalUtil timer = new IntervalUtil(0.1f, 0.25f);
+public class MS_ApisAI implements MissileAIPlugin, GuidedMissileAI {
+    
+    private CombatEngineAPI engine;
     private final MissileAPI missile;
     private float nearestMissileAngle = 180f;
     private float nearestMissileDistance = Float.MAX_VALUE;
+    private static final float ANTI_CLUMP_RANGE = 45f;
+    private static final Vector2f ZERO = new Vector2f();
     private CombatEntityAPI target;
+    private final static float VELOCITY_DAMPING_FACTOR = 0.1f;
+    private IntervalUtil timer = new IntervalUtil(0.1f, 0f);
+    private IntervalUtil track = new IntervalUtil(0.3f, 0f);
     
     //////////////////////
     //  DATA COLLECTING //
@@ -40,30 +40,24 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
         if (source != null && source.getShipTarget() != null && !source.getShipTarget().isHulk()) {
             return source.getShipTarget();
         }
-
+        
         return AIUtils.getNearestEnemy(missile);
     }
     
-    public MS_BlackcapAI(MissileAPI missile, ShipAPI launchingShip) {
+    public MS_ApisAI(MissileAPI missile, ShipAPI launchingShip) {
         this.missile = missile;
         
-        if (launchingShip.getShipTarget() != null && !launchingShip.getShipTarget().isHulk())
-        {
-            setTarget(launchingShip.getShipTarget());
-        }
-        
-        if (target == null) {
-            List<ShipAPI> directTargets = CombatUtils.getShipsWithinRange(launchingShip.getMouseTarget(), 200f);
-            if (!directTargets.isEmpty()) {
-                Collections.sort(directTargets, new CollectionUtils.SortEntitiesByDistance(launchingShip.getMouseTarget()));
-                int size = directTargets.size();
-                for (int i = 0; i < size; i++) 
-                {
-                    ShipAPI tmp = directTargets.get(i);
-                    if (!tmp.isHulk() && tmp.getOwner() != launchingShip.getOwner()) {
-                        setTarget(tmp);
-                        break;
-                    }
+        // Support for 'fire at target by clicking on them' behavior
+        List<ShipAPI> directTargets = CombatUtils.getShipsWithinRange(launchingShip.getMouseTarget(), 100f);
+        if (!directTargets.isEmpty()) {
+            Collections.sort(directTargets, new CollectionUtils.SortEntitiesByDistance(launchingShip.getMouseTarget()));
+            int size = directTargets.size();
+            for (int i = 0; i < size; i++) 
+            {
+                ShipAPI tmp = directTargets.get(i);
+                if (!tmp.isHulk() && tmp.getOwner() != launchingShip.getOwner()) {
+                    setTarget(tmp);
+                    break;
                 }
             }
         }
@@ -85,6 +79,16 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
             return;
         }
         
+        timer.advance(amount);
+        
+        //the Apis never not thrusts; always thrust, never stop!
+        missile.giveCommand(ShipCommand.ACCELERATE);   
+        
+        if (!track.intervalElapsed()) { 
+            track.advance(amount);
+            return; 
+        }
+        
         // If our current target is lost, assign a new one
         if (target == null // unset
                 || (target instanceof ShipAPI && ((ShipAPI) target).isHulk()) // dead
@@ -92,7 +96,6 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
                 || !Global.getCombatEngine().isEntityInPlay(target)) // completely removed
         {
             setTarget(findBestTarget(missile));
-            //if no new target can be found, just wellp on out
             if (target == null)
             {
                 missile.giveCommand(ShipCommand.ACCELERATE);
@@ -100,15 +103,11 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
             }
         }
         
-        timer.advance(amount);
-        
         //cancelling IF: skip the AI if the game is paused, the missile is way off course, engineless or without a target or target is phased out
         if (Global.getCombatEngine().isPaused() || missile.isFading() || missile.isFizzling() || target == null) {return;}
         
-        //finding lead point to aim to
-        //public static Vector2f getBestInterceptPoint(Vector2f point, float speed,Vector2f targetLoc, Vector2f targetVel)
+        //fiding lead point to aim to
         float distance = MathUtils.getDistance(target.getLocation(), missile.getLocation());
-        float flightSpeed = missile.getMaxSpeed();
         float guidance = 0.4f;
         if (missile.getSource() != null)
         {
@@ -132,8 +131,8 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
         {
             nearestMissileDistance = Float.MAX_VALUE;
             nearestMissileAngle = 180f;
-            List<MissileAPI> nearbyBlackcaps = CombatUtils.getMissilesWithinRange(missile.getLocation(), ANTI_CLUMP_RANGE);
-            for (MissileAPI b : nearbyBlackcaps)
+            List<MissileAPI> nearbyMissiles = CombatUtils.getMissilesWithinRange(missile.getLocation(), ANTI_CLUMP_RANGE);
+            for (MissileAPI b : nearbyMissiles)
             {
                 if (b == missile)
                 {
@@ -153,6 +152,7 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
             }
         }
         
+        //aimAngle = angle between the missile facing and the lead direction
         float angularDistance = MathUtils.getShortestRotation(missile.getFacing(), VectorUtils.getAngle(missile.getLocation(), lead));
         float nearestMissileAngularDistance = MathUtils.getShortestRotation(missile.getFacing(), nearestMissileAngle);
         if (nearestMissileDistance <= ANTI_CLUMP_RANGE && Math.abs(nearestMissileAngularDistance) <= 100f && distance > 600f)
@@ -167,13 +167,9 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
             }
         }
         float absDAng = Math.abs(angularDistance);
-        
+                 
         missile.giveCommand(angularDistance < 0 ? ShipCommand.TURN_RIGHT : ShipCommand.TURN_LEFT);
-
-        if (absDAng <= 90f || missile.getVelocity().length() <= flightSpeed * 0.75f)
-        {
-            missile.giveCommand(ShipCommand.ACCELERATE);
-        }
+        
 
         if (absDAng < 5)
         {
@@ -189,6 +185,7 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
         {
             missile.setAngularVelocity(angularDistance / VELOCITY_DAMPING_FACTOR);
         }
+        
     }
     
     //////////////////////

@@ -18,7 +18,7 @@ public class MSTartarusShieldFinagler extends BaseEveryFrameCombatPlugin {
 
         if (engine != null) {
             for (ShipAPI ship : engine.getShips()) {
-                if ("ms_tartarus".equals(ship.getHullSpec().getHullId()) || "ms_lobatus".equals(ship.getHullSpec().getHullId())) {
+                if ("ms_tartarus".equals(ship.getHullSpec().getHullId()) || "ms_lobatus".equals(ship.getHullSpec().getHullId()) || "ms_boss_charybdis".equals(ship.getHullSpec().getHullId())) {
                     ShipSystemAPI system = ship.getSystem();
                     //MutableShipStatsAPI stats = ship.getMutableStats();
                     ShieldAPI shield = ship.getShield();
@@ -45,6 +45,9 @@ public class MSTartarusShieldFinagler extends BaseEveryFrameCombatPlugin {
                         float mult = 100.0f;
                         // if accelerated shields, we need to modify unfold rate from no modifier to -200% instead of just -100%
                         if (ship.getVariant().getHullMods().contains("advancedshieldemitter")) {
+                            mult = mult * 2.0f;
+                        }
+                        if ("ms_lobatus".equals(ship.getHullSpec().getHullId())) {
                             mult = mult * 2.0f;
                         }
                         float currentArc = ship.getShield().getActiveArc();
