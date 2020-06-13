@@ -52,7 +52,7 @@ public class Outposter {
         
         /*We'll add a pair of additional vanilla markets, 1 independent, 1 persean, which have 
         Modular Fabricators; the indie one in particular should be economically in good shape
-        experience a boom and as a result be leaning towards joing the SRA coalition*/
+        experiencing a boom and as a result be leaning towards joing the SRA coalition*/
         
         //here we add a couple additional sources of supply/demand for SRA goods
         //Every vanilla polity should have at least 1 solar array, usually on small markets

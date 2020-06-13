@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import data.campaign.econ.MS_industries;
 import data.campaign.econ.MS_items;
 import java.awt.Color;
 import java.util.List;
@@ -22,9 +21,14 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
         super.apply(true);
         
         int size = market.getSize();
+        int bat = 1;
+        if (size - 5 > 1) {
+            bat = size - 5;
+        }
         
         demand(Commodities.CREW, size -3);
         demand(Commodities.ORGANICS, size -1);
+        demand(MS_items.BATTERIES, bat);
         
         supply(MS_items.GUTS, size -4);
         
@@ -139,13 +143,13 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
 
     protected float getPopulationGrowthBonus() {
 	Pair<String, Integer> deficit = getMaxDeficit(Commodities.ORGANICS);
-	float demand = getDemand(Commodities.ORGANICS).getQuantity().getModifiedValue();
+	float want = getDemand(Commodities.ORGANICS).getQuantity().getModifiedValue();
 	float def = deficit.two;
-	if (def > demand) def = demand;
+	if (def > want) def = want;
 		
 		float mult = 1f;
-		if (def > 0 && demand > 0) {
-			mult = (demand - def) / demand;
+		if (def > 0 && want > 0) {
+			mult = (want - def) / want;
 		}
 		
 		return getMaxPopGrowthBonus() * mult;

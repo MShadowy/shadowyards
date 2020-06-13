@@ -1,3 +1,22 @@
+0.9.1 Changleog
+
+    Fixed an oversight in pulse popper and have it pop giga cepc blasts
+    Gugnir Blaster renamed to the Hofud (Ho-fudzh, tl. Head) Assault Blaster
+        Range reduced to 750 (from 1200), damage and flux/shot reduced to 2000 (from 3000/3500), reload size changed to 1 (from 3)
+    The Charybdis has had one of it fighter bays permanently occupied by the Dullahan Heavy Drone
+        Equipped with a 2 round burst tracking weapon
+        OP reduced to 165 (from 170) to account for the missing deck
+    The GAT can now be activated while phased, immediately drawing the ship out of phase, ready to strike
+    Added the Flux Lock Armor hullmod; specific to Shadowyards hulls and some derived variants this applies damage reduction based on flux acquired when venting
+    Mad Centers now have a demand for capacitors of Size -5, with a minimum demand of 1;
+    Apiary changes:
+        AI Targeting routines on the Apis submunitions have been adjusted to heavily weight towards fighters as the preferred target type
+        Maximum ammo reduced to 5 (from 10) and ammo regen reduced to 0.05 (from 0.1)
+        Damage type changed to FRAGMENTATION (from HIGH EXPLOSIVE)
+    The Overdrive system now takes 6 seconds to return to a ready to use state (from 10)
+    An error which was causing a mismatch between the vectored thruster covers and the engine plume has been resolved
+    All ships with vetored throusters should now have engine trails that follow straight behind them on the campaign map
+
 0.9 Changelog
 
     Rebalanced ship deployment/maintenance costs
@@ -11,7 +30,7 @@
     Scatter CEPC changed to make it more "Heavy Blaster" like
         Now fires a single large, high damage shot with a number of ancilliary emp blasts
         Overall damage remains the same
-    The Shrike ASM has been renamed to the Stilleto ASM
+    The Shrike ASM has been renamed to the Stiletto ASM
     Added the Gugnir Lance Blaster for the Odin IBB
     A number of weapons have had their shot colors tweaked to make them more distinct
     Changes to the Lobatus:
@@ -28,10 +47,9 @@
         A straightforward and logistically undemanding carrier, but it lacks the Charybdis' direct combat capabilities
     Added the Apiary Hive Missile, a multiple warhead missile specialized in breaking up enemy strike craft formations
     Changed some of the Blackcap behavior scripting, they should be better at plotting intercepts and should clump up less
-    Fixed the issues with the Revolutionary Council skins that were preventing them from correctly acquiring the RC faction hullmod, and corrected their tech basa description
+    Fixed the issues with the Revolutionary Council skins that were preventing them from correctly acquiring the RC faction hullmod, and corrected their tech base description
     Further Shikome balancing and fiddling
         Flux cap reduced to 1000 (from 1500), hull to 600 (from 750), armor to 100 (from 200)
-        As a temporary measure the fighter quality tag has been set to gihter1 to make it less preferentially selected during fleet inflation
     The Hangar module on the SRA Orbital Station and Battlestation has been reduced to 4 wings (from 6) to make them slightly less overwhelming compared to vanilla equivalents
     Removed the Refinery industry from Jnana and the Modular Fabricator from Theramin, bringing them down to the correct number of industries for their size
     Fixed a minor oversight that would sometimes allow fighter specific weapons to appear as loot

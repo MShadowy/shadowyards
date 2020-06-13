@@ -52,6 +52,10 @@ public class MS_GAT extends BaseShipSystemScript {
         
         if (state == State.ACTIVE) {
             float mult = 1f + ROF_BONUS.get(ship.getHullSize()) * effectLevel;
+            if (ship.getPhaseCloak() != null && ship.isPhased()) {
+                ship.getPhaseCloak().deactivate();
+            }
+            
             stats.getEnergyRoFMult().modifyMult(id, mult);
             stats.getMaxRecoilMult().modifyMult(id, RECOIL_MULT * effectLevel);
             stats.getRecoilDecayMult().modifyMult(id, RECOIL_MULT * effectLevel);
@@ -110,18 +114,6 @@ public class MS_GAT extends BaseShipSystemScript {
     
     @Override
     public StatusData getStatusData(int index, State state, float effectLevel) {
-        /*float mult = 1f + ROF_BONUS.get(this) * effectLevel;
-        float bonusPercent = (int) (mult - 1f) * 100f;
-        switch (index) {
-            case 0:
-                return new StatusData("all weapons rate of fire increased", false);
-            case 1:
-                return new StatusData("energy weapon damage increased", false);
-            case 2:
-                return new StatusData("weapon accuracy decreased", false);
-            default:
-                break;
-        }*/
         return null;
     }
 }

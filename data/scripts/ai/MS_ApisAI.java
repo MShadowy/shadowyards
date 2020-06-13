@@ -9,18 +9,16 @@ import com.fs.starfarer.api.combat.MissileAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipCommand;
 import com.fs.starfarer.api.util.IntervalUtil;
-import java.util.Collections;
 import java.util.List;
-import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.AIUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lwjgl.util.vector.Vector2f;
+import data.scripts.util.MagicTargeting;
 
 public class MS_ApisAI implements MissileAIPlugin, GuidedMissileAI {
     
-    private CombatEngineAPI engine;
     private final MissileAPI missile;
     private float nearestMissileAngle = 180f;
     private float nearestMissileDistance = Float.MAX_VALUE;
@@ -47,18 +45,22 @@ public class MS_ApisAI implements MissileAIPlugin, GuidedMissileAI {
     public MS_ApisAI(MissileAPI missile, ShipAPI launchingShip) {
         this.missile = missile;
         
-        // Support for 'fire at target by clicking on them' behavior
+        // Main targeting loop; missiles randomly choose a target in their overall flight range, heavily weighted towards fighters
         List<ShipAPI> directTargets = CombatUtils.getShipsWithinRange(launchingShip.getMouseTarget(), 100f);
         if (!directTargets.isEmpty()) {
-            Collections.sort(directTargets, new CollectionUtils.SortEntitiesByDistance(launchingShip.getMouseTarget()));
-            int size = directTargets.size();
-            for (int i = 0; i < size; i++) 
-            {
-                ShipAPI tmp = directTargets.get(i);
-                if (!tmp.isHulk() && tmp.getOwner() != launchingShip.getOwner()) {
-                    setTarget(tmp);
-                    break;
-                }
+            ShipAPI tmp = MagicTargeting.pickMissileTarget(
+            missile, 
+            MagicTargeting.targetSeeking.FULL_RANDOM, 
+            4000, 
+            360, 
+            100, 
+            5, 
+            2, 
+            1, 
+            1);
+                
+            if (tmp.getOwner() != missile.getOwner()) {
+                setTarget(tmp);
             }
         }
 

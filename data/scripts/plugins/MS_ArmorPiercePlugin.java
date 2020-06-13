@@ -161,29 +161,6 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             {
                 projectileTrailIDs4.put(proj, MagicTrailPlugin.getUniqueID());
             }
-            //Vector2f offsetPoint = new Vector2f((float) Math.cos(Math.toRadians(proj.getFacing()) * 16f), (float) Math.sin(Math.toRadians(proj.getFacing())));
-            //Vector2f spawnPosition = new Vector2f(offsetPoint.x + proj.getLocation().x, offsetPoint.y + proj.getLocation().y);
-            
-            // Then, actually spawn a trail
-            /*MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs.get(proj), Global.getSettings().getSprite("fx",
-                        "rhpcb_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 120f, 
-                    25f, 3f, 32f, 10f, COLOR2, COLOR3, 0.6f, 0f, 0.25f, 0.75f, GL_SRC_ALPHA, GL_ONE, 
-                    128, 1000, new Vector2f(0,0), null);
-            
-            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs2.get(proj), Global.getSettings().getSprite("fx",
-                        "rhpcb_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() + 120f, 
-                    25f, 3f, 32f, 10f, COLOR2, COLOR3, 0.6f, 0f, 0.15f, 0.6f, GL_SRC_ALPHA, GL_ONE, 
-                    128, 1000, new Vector2f(0,0), null);
-            
-            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs3.get(proj), Global.getSettings().getSprite("fx",
-                        "rhpcb_secondary_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 120f, 
-                    28f, 5f, 64f, 10f, COLOR3, new Color(60, 90, 120), 0.4f, 0f, 0.25f, 0.75f, GL_SRC_ALPHA, GL_ONE, 
-                    128, 1000, new Vector2f(0,0), null);
-            
-            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs4.get(proj), Global.getSettings().getSprite("fx",
-                        "rhpcb_secondary_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() + 120f, 
-                    28f, 5f, 64f, 10f, COLOR3, new Color(60, 90, 120), 0.4f, 0f, 0.15f, 0.6f, GL_SRC_ALPHA, GL_ONE, 
-                    128, 1000, new Vector2f(0,0), null);*/
 
             // Find nearby ships, missiles and asteroids
             List<CombatEntityAPI> toCheck = new ArrayList<>();

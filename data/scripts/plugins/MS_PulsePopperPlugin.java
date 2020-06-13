@@ -14,8 +14,8 @@ import org.lwjgl.util.vector.Vector2f;
 public class MS_PulsePopperPlugin extends BaseEveryFrameCombatPlugin {
     private CombatEngineAPI engine;
     
-    private static final Color FX1 = new Color(255, 240, 165, 255);
-    private static final Color FX2 = new Color(250, 135, 75, 255);
+    private static final Color FX1 = new Color(165, 255, 240, 255);
+    private static final Color FX2 = new Color(75, 250, 135, 255);
     private Vector2f ZERO = new Vector2f(0,0);
     private String sound;
     
@@ -40,13 +40,14 @@ public class MS_PulsePopperPlugin extends BaseEveryFrameCombatPlugin {
                 float vol;
                 switch (proj.getProjectileSpecId()) {
                     case "ms_mcepc_blast":
+                    case "ms_scattercepc_clone":
                         popSmall = 15f;
                         popBig = 25f;
                         sound = "cepc_pop_big";
                         vol = 0.65f;
                         break;
+                    case "ms_gigacepc_blast":
                     case "ms_cepc_blast":
-                    case "ms_scattercepc_clone":
                         popSmall = 12f;
                         popBig = 17f;
                         sound = "cepc_pop";
