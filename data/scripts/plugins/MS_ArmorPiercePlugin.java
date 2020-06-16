@@ -32,23 +32,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     /*So time to consider a general rewrite of this plugin to produce better effects.
     
     We'll use an intervalutil to only run the check at certain points (somewhere between 0.1 and 0.25 seconds, 
-    we'll use that value for both halves of the interval so it'll check consistently.) We'll also set up booleans
-    for doing damage this tick as well as for meeting the maximum damage limit, and a runOnce boolean for some
-    bookkeeping stuff.
-    
-    eg: 
-        boolean DID_DAMAGE;
-        boolean DAMAGE_LIMIT = false;
-    
-        if (interval.hasElapsed) {
-            boolean DID_DAMAGE = false;
-    
-            if (!DID_DAMAGE) {
-                DID_DAMAGE = true;
-    
-                apply damage stuff;
-            }
-        }
+    we'll use that value for both halves of the interval so it'll check consistently.)
     
     When fired, we'll check the total damage of the projectile and assign this value to a MAX_DAMAGE variable
     representing the upper limit that can be permitted.
@@ -64,17 +48,13 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     target before it can be killed otherwise*/
     
     private static CombatEngineAPI engine;
-    private static final Map<String, CollisionClass> originalCollisionClasses = new HashMap<>();
+    private static final Map<String, CollisionClass> ORIGINAL_COLLISSION_CLASSES = new HashMap<>();
 
     // Sound to play while piercing a target's armor (should be loopable!)
     private static final String PIERCE_SOUND = "explosion_missile"; // TEMPORARY
     // Projectile ID (String), pierces shields (boolean)
     // Keep track of the original collision class (used for shield hits)
     private static final Color COLOR1 = new Color(165, 215, 145, 150);
-    private static final Color COLOR2 = new Color(155, 255, 155, 150);
-    private static final Color COLOR3 = new Color(115, 185, 165, 150);
-    
-    private static final Vector2f ZERO = new Vector2f();
     
     private static final Set<String> PROJ_IDS = new HashSet();
     
@@ -102,7 +82,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     public void advance(float amount, List<InputEventAPI> events) {
         if (engine != Global.getCombatEngine()) {
             engine = Global.getCombatEngine();
-            originalCollisionClasses.clear();
+            ORIGINAL_COLLISSION_CLASSES.clear();
         }
 
         if (engine.isPaused()) {
@@ -129,8 +109,8 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             }
             
             // Register the original collision class (used for shield hits)
-            if (!originalCollisionClasses.containsKey(spec)) {
-                originalCollisionClasses.put(spec, proj.getCollisionClass());
+            if (!ORIGINAL_COLLISSION_CLASSES.containsKey(spec)) {
+                ORIGINAL_COLLISSION_CLASSES.put(spec, proj.getCollisionClass());
             }
 
             // We'll do collision checks manually
@@ -175,11 +155,10 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
                 if (entity.getCollisionClass() == CollisionClass.NONE) {
                     continue;
                 }
-
                 // Check for a shield hit
                 if ((entity.getShield() != null && entity.getShield().isOn() && entity.getShield().isWithinArc(proj.getLocation()))) {
                     // If we hit a shield, enable collision
-                    proj.setCollisionClass(originalCollisionClasses.get(spec));
+                    proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
                 } // Check if the projectile is inside the entity's bounds
                 else if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
                     // Calculate projectile speed
@@ -189,7 +168,12 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
                         DAMAGE_TOTAL = DAMAGE_TOTAL + DAMAGE_PER_TICK;
                         float DAMAGE_REMAINING = MAX_DAMAGE - DAMAGE_TOTAL;
                         
-                        engine.applyDamage(entity, proj.getLocation(), DAMAGE_PER_TICK, proj.getDamageType(), EMP_PER_TICK, true, true, proj.getSource());
+                        //only do damage if DAMAGE_REMAINING is a positive value
+                        if (DAMAGE_REMAINING > 0) {
+                            engine.applyDamage(entity, proj.getLocation(), DAMAGE_PER_TICK, proj.getDamageType(), EMP_PER_TICK, true, true, proj.getSource());
+                        }
+                        
+                        //in case the proj hits a shield we want it to apply the correct amount of damage
                         proj.setDamageAmount(DAMAGE_REMAINING);
                         
                         // Render the hit
@@ -198,12 +182,17 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
                         Global.getSoundPlayer().playLoop(PIERCE_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
                         
                         if (DAMAGE_REMAINING <= 0) {
-                            DAMAGE_PER_TICK = 0;
-                            proj.setCollisionClass(originalCollisionClasses.get(spec));
+                            proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
                             proj.isFading();
                         }
                     }
                 }
+            }
+            
+            //reset the damage
+            if (proj.isFading() && proj.getDamageAmount() < MAX_DAMAGE) {
+                proj.setDamageAmount(MAX_DAMAGE);
+                DAMAGE_TOTAL = 0;
             }
         }
     }

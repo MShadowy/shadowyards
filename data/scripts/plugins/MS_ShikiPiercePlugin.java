@@ -6,7 +6,6 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
-import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.ViewportAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
@@ -23,7 +22,6 @@ import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
-import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
 
 import static org.lwjgl.opengl.GL11.GL_ONE;
@@ -31,7 +29,7 @@ import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     private static CombatEngineAPI engine;
-    private static final Map<String, CollisionClass> originalCollisionClasses = new HashMap<>();
+    private static final Map<String, CollisionClass> ORIGINAL_COLLISSION_CLASSES = new HashMap<>();
 
     // Sound to play while piercing a target's armor (should be loopable!)
     private static final String PIERCE_SOUND = "explosion_missile"; // TEMPORARY
@@ -65,7 +63,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     public void advance(float amount, List<InputEventAPI> events) {
         if (engine != Global.getCombatEngine()) {
             engine = Global.getCombatEngine();
-            originalCollisionClasses.clear();
+            ORIGINAL_COLLISSION_CLASSES.clear();
         }
 
         if (engine.isPaused()) {
@@ -92,8 +90,8 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
             }
             
             // Register the original collision class (used for shield hits)
-            if (!originalCollisionClasses.containsKey(spec)) {
-                originalCollisionClasses.put(spec, proj.getCollisionClass());
+            if (!ORIGINAL_COLLISSION_CLASSES.containsKey(spec)) {
+                ORIGINAL_COLLISSION_CLASSES.put(spec, proj.getCollisionClass());
             }
 
             // We'll do collision checks manually
@@ -104,11 +102,6 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
             Vector2f point = new Vector2f(-30f, 0f);
             VectorUtils.rotate(point, proj.getFacing(), point);
             Vector2f.add(point, proj.getLocation(), point);
-            
-            Vector2f spawn = MathUtils.getRandomPointInCircle(proj.getLocation(), proj.getCollisionRadius());
-            float size = MathUtils.getRandomNumberInRange(20f, 10f);
-            float sharpDur = MathUtils.getRandomNumberInRange(0.2f, 0.6f);
-            float smoothDur = MathUtils.getRandomNumberInRange(0.1f, 0.4f);
             
             if (projectileTrailIDs.get(proj) == null)
             {
@@ -147,7 +140,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
                 // Check for a shield hit
                 if ((entity.getShield() != null && entity.getShield().isOn() && entity.getShield().isWithinArc(proj.getLocation()))) {
                     // If we hit a shield, enable collision
-                    proj.setCollisionClass(originalCollisionClasses.get(spec));
+                    proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
                 } // Check if the projectile is inside the entity's bounds
                 else if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
                     // Calculate projectile speed
@@ -157,7 +150,12 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
                         DAMAGE_TOTAL = DAMAGE_TOTAL + DAMAGE_PER_TICK;
                         float DAMAGE_REMAINING = MAX_DAMAGE - DAMAGE_TOTAL;
                         
-                        engine.applyDamage(entity, proj.getLocation(), DAMAGE_PER_TICK, proj.getDamageType(), EMP_PER_TICK, true, true, proj.getSource());
+                        //only do damage if DAMAGE_REMAINING is a positive value
+                        if (DAMAGE_REMAINING > 0) {
+                            engine.applyDamage(entity, proj.getLocation(), DAMAGE_PER_TICK, proj.getDamageType(), EMP_PER_TICK, true, true, proj.getSource());
+                        }
+                        
+                        //in case the proj hits a shield we want it to apply the correct amount of damage
                         proj.setDamageAmount(DAMAGE_REMAINING);
                         
                         // Render the hit
@@ -166,12 +164,17 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
                         Global.getSoundPlayer().playLoop(PIERCE_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
                         
                         if (DAMAGE_REMAINING <= 0) {
-                            DAMAGE_PER_TICK = 0;
-                            proj.setCollisionClass(originalCollisionClasses.get(spec));
+                            proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
                             proj.isFading();
                         }
                     }
                 }
+            }
+            
+            //reset the damage
+            if (proj.isFading() && proj.getDamageAmount() < MAX_DAMAGE) {
+                proj.setDamageAmount(MAX_DAMAGE);
+                DAMAGE_TOTAL = 0;
             }
         }
     }

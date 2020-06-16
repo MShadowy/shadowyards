@@ -25,7 +25,7 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
     private float time=0, previousThrust=0;
     
     //Smooth thrusting prevents instant changes in directions and levels of thrust, lower is smoother
-    private final float FREQ=0.05f, SMOOTH_THRUSTING=0.25f;        
+    private final float FREQ=0.05f, SMOOTH_THRUSTING=0.1f;        
     private float TURN_RIGHT_ANGLE=0, THRUST_TO_TURN=0, NEUTRAL_ANGLE=0, FRAMES=0, OFFSET=0;
     //sprite size, could be scaled with the engine width to allow variable engine length
     private Vector2f size= new Vector2f(8,74);
@@ -147,14 +147,13 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
                 Vector2f offset = new Vector2f(weapon.getLocation().x-SHIP.getLocation().x,weapon.getLocation().y-SHIP.getLocation().y);
                 VectorUtils.rotate(offset, -SHIP.getFacing(), offset);
                 
-                if(!turn && FRAMES != 0){
+                if(!turn){
                     //thrust only, easy.
                     thrust(weapon, accelerateAngle, thrust*(SHIP.getMutableStats().getAcceleration().computeMultMod()), SMOOTH_THRUSTING);                    
                 } else {
-                    if(!accel && FRAMES != 0){                        
+                    if(!accel){                        
                         //turn only, easy too.
-                        thrust(weapon, turnAngle, thrust*(SHIP.getMutableStats().getTurnAcceleration().computeMultMod()), SMOOTH_THRUSTING);                          
-                        
+                        thrust(weapon, turnAngle, thrust*(SHIP.getMutableStats().getTurnAcceleration().computeMultMod()), SMOOTH_THRUSTING); 
                     } else {
                         //combined turn and thrust, aka the funky part.
                         
@@ -225,7 +224,7 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
         }
         weapon.getAnimation().setFrame(frame);
         SpriteAPI sprite = weapon.getSprite();
-        
+        sprite.setAdditiveBlend();
         
         //target angle
         float aim=angle+SHIP.getFacing();
