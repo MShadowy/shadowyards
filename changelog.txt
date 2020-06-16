@@ -1,21 +1,28 @@
-0.9.1 Changleog
+0.9.1-rc2 Changelog
 
-    Fixed an oversight in pulse popper and have it pop giga cepc blasts
+    Further improved vectored thrusters, which should make them more consistent and less resource intensive
+    Fixed a bug with the Nidhoggr Lance and the Shikome's mirco-lance where it wasn't resetting the script between shots, leading to situations where it would fail to do appropriate damage
+    Fixed a bug where the Charybdis and Scylla were not spawning with their built in drone wings
+    The Flux Lock Armor hullmod now has an icon
+
+0.9.1 Changelog
+
+    Fixed an oversight in the pulse popper so it now pops giga cepc blasts
     Gugnir Blaster renamed to the Hofud (Ho-fudzh, tl. Head) Assault Blaster
         Range reduced to 750 (from 1200), damage and flux/shot reduced to 2000 (from 3000/3500), reload size changed to 1 (from 3)
     The Charybdis has had one of it fighter bays permanently occupied by the Dullahan Heavy Drone
-        Equipped with a 2 round burst tracking weapon
+        Equipped with a 2 round homing blaster
         OP reduced to 165 (from 170) to account for the missing deck
     The GAT can now be activated while phased, immediately drawing the ship out of phase, ready to strike
     Added the Flux Lock Armor hullmod; specific to Shadowyards hulls and some derived variants this applies damage reduction based on flux acquired when venting
-    Mad Centers now have a demand for capacitors of Size -5, with a minimum demand of 1;
+    Med Centers now have a demand for capacitors of Size -5, with a minimum demand of 1
     Apiary changes:
         AI Targeting routines on the Apis submunitions have been adjusted to heavily weight towards fighters as the preferred target type
         Maximum ammo reduced to 5 (from 10) and ammo regen reduced to 0.05 (from 0.1)
         Damage type changed to FRAGMENTATION (from HIGH EXPLOSIVE)
     The Overdrive system now takes 6 seconds to return to a ready to use state (from 10)
     An error which was causing a mismatch between the vectored thruster covers and the engine plume has been resolved
-    All ships with vetored throusters should now have engine trails that follow straight behind them on the campaign map
+    All ships with vectored thrusters should now have engine trails that follow straight behind them on the campaign map
 
 0.9 Changelog
 
