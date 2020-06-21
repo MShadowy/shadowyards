@@ -1,3 +1,11 @@
+0.9.1-rc3 Changelog
+
+    Fixed a bug with the flux lock armor where it would increase damage taken during the first frame of venting
+    Removed some sprite rendering stuff from the vectored thrusters script which may have been causing a showstopper bug due to color overflows
+    Removed CARRIER, COMBAT tag from the Charybdis
+    Added Commissioned Crews support through the Skirmish Tactics "hullmod"
+    Fixed a display glitch in the Hofud Assault Blasters name and added a description and role for it
+
 0.9.1-rc2 Changelog
 
     Further improved vectored thrusters, which should make them more consistent and less resource intensive

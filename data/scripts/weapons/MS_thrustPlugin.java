@@ -224,7 +224,6 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
         }
         weapon.getAnimation().setFrame(frame);
         SpriteAPI sprite = weapon.getSprite();
-        sprite.setAdditiveBlend();
         
         //target angle
         float aim=angle+SHIP.getFacing();

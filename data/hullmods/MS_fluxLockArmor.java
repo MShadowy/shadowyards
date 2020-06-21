@@ -12,10 +12,9 @@ public class MS_fluxLockArmor extends BaseHullMod {
     //applies a before armor damage reduction based on the ships total flux when it starts venting; follows a very similar curve to the HSC
     private static final Map<HullSize, Float> MAG = new HashMap<>();
     private final Map<ShipAPI, Float> MOD = new HashMap<>();
-    public static String FL_ICON = "graphics/shi/icons/tactical/ms_hsConduitIcon.png";
+    public static String FL_ICON = "graphics/shi/icons/tactical/ms_fLockIcon.png";
     public static String FL_BUFFID = "ms_fluxLock";
     public static String FL_NAME = "Flux Lock Plating";
-    //private ShipAPI ship;
     
     static {
         MAG.put(HullSize.FIGHTER, 0.7f);
@@ -62,7 +61,7 @@ public class MS_fluxLockArmor extends BaseHullMod {
 
         if (ship.getFluxTracker().isVenting()) {
             float fluxAtVent = ship.getFluxTracker().getCurrFlux();
-            float fluxLockBonus = 100f;
+            float fluxLockBonus = 1f;
             float displayBonus = 100f;
             
             if (MOD.containsKey(ship)) {

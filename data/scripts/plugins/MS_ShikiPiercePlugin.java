@@ -6,6 +6,7 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
+import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.ViewportAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
@@ -136,11 +137,14 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
                 if (entity.getCollisionClass() == CollisionClass.NONE) {
                     continue;
                 }
-
                 // Check for a shield hit
                 if ((entity.getShield() != null && entity.getShield().isOn() && entity.getShield().isWithinArc(proj.getLocation()))) {
                     // If we hit a shield, enable collision
                     proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
+                    // since the shot tends to bash through shields and do hull damage on overloads, make it fade out and set damage to 0
+                    if (proj.didDamage()) {
+                        proj.setDamageAmount(0);
+                    }
                 } // Check if the projectile is inside the entity's bounds
                 else if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
                     // Calculate projectile speed

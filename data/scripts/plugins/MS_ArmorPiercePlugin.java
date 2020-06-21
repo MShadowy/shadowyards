@@ -159,6 +159,10 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
                 if ((entity.getShield() != null && entity.getShield().isOn() && entity.getShield().isWithinArc(proj.getLocation()))) {
                     // If we hit a shield, enable collision
                     proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
+                    // since the shot tends to bash through shields and do hull damage on overloads, make it fade out and set damage to 0
+                    if (proj.didDamage()) {
+                        proj.setDamageAmount(0);
+                    }
                 } // Check if the projectile is inside the entity's bounds
                 else if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
                     // Calculate projectile speed
