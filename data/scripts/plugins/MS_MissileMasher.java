@@ -21,7 +21,7 @@ import org.lwjgl.util.vector.Vector2f;
 
 public class MS_MissileMasher extends BaseEveryFrameCombatPlugin  {
     
-    private static CombatEngineAPI engine;
+    private CombatEngineAPI engine;
     
     private static final float SECONDS_TO_LOOK_AHEAD = 1f;
     private final static Set<String> PROJ_IDS = new HashSet();

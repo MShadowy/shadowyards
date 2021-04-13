@@ -16,9 +16,9 @@ public class MS_jammer extends BaseShipSystemScript {
 
     private static CombatEngineAPI engine = null;
 
-    public static final float RANGE = 1200f;
-    public static final float ACCURACY_BONUS = -50f;
-    public static final float RANGE_BONUS = -20f;
+    private static final float RANGE = 1200f;
+    private static final float ACCURACY_BONUS = -50f;
+    private static final float RANGE_BONUS = -20f;
 
     private static final Map<ShipAPI, ShipAPI> jamming = new HashMap<>();
 

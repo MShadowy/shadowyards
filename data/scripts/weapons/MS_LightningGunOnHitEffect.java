@@ -13,11 +13,12 @@ import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.OnHitEffectPlugin;
+import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
 
 public class MS_LightningGunOnHitEffect implements OnHitEffectPlugin {
 
     @Override
-    public void onHit(DamagingProjectileAPI projectile, CombatEntityAPI target, Vector2f point, boolean shieldHit, CombatEngineAPI engine) {
+    public void onHit(DamagingProjectileAPI projectile, CombatEntityAPI target, Vector2f point, boolean shieldHit, ApplyDamageResultAPI apply, CombatEngineAPI engine) {
         Vector2f origin = projectile.getWeapon().getLocation();
         Vector2f slope = new Vector2f();
         slope.x = (point.x - origin.x);

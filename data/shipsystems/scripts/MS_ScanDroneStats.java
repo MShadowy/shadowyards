@@ -5,8 +5,8 @@ import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 
 public class MS_ScanDroneStats extends BaseShipSystemScript {
     
-	public static final float SENSOR_RANGE_PERCENT = 10f;
-	public static final float WEAPON_RANGE_PERCENT = 25f;
+	private static final float SENSOR_RANGE_PERCENT = 10f;
+	private static final float WEAPON_RANGE_PERCENT = 25f;
 	
         @Override
 	public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {

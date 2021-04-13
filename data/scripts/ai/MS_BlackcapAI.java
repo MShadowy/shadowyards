@@ -201,7 +201,7 @@ public class MS_BlackcapAI implements MissileAIPlugin, GuidedMissileAI {
     }
 
     @Override
-    public void setTarget(CombatEntityAPI target) {
+    public final void setTarget(CombatEntityAPI target) {
         this.target = target;
     }
     

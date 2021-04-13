@@ -147,11 +147,11 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
                 Vector2f offset = new Vector2f(weapon.getLocation().x-SHIP.getLocation().x,weapon.getLocation().y-SHIP.getLocation().y);
                 VectorUtils.rotate(offset, -SHIP.getFacing(), offset);
                 
-                if(!turn){
+                if(!turn && FRAMES != 0){
                     //thrust only, easy.
                     thrust(weapon, accelerateAngle, thrust*(SHIP.getMutableStats().getAcceleration().computeMultMod()), SMOOTH_THRUSTING);                    
                 } else {
-                    if(!accel){                        
+                    if(!accel && FRAMES != 0){                        
                         //turn only, easy too.
                         thrust(weapon, turnAngle, thrust*(SHIP.getMutableStats().getTurnAcceleration().computeMultMod()), SMOOTH_THRUSTING); 
                     } else {
@@ -219,7 +219,7 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
         
         //random sprite
         int frame = (int)(Math.random() * (FRAMES - 1)) + 1;
-        if(frame==weapon.getAnimation().getNumFrames()){
+        if(frame==weapon.getAnimation().getNumFrames()) {
             frame=1;
         }
         weapon.getAnimation().setFrame(frame);
@@ -246,13 +246,26 @@ public class MS_thrustPlugin implements EveryFrameWeaponEffectPlugin {
         
         //finally the actual sprite manipulation
         float width=length*size.x/2+size.x/2;
-        float height=length*size.y+(float)Math.random()*3+3;        
+        if (weapon.getShip().getVariant().getHullMods().contains("safetyoverrides")) {
+            length = length * 1.25f;
+        }  
+        float height=length*size.y+(float)Math.random()*3+3;      
         sprite.setSize(width, height);
         sprite.setCenter(width/2, height/2);
         
         //clamp the thrust then color stuff
         length=Math.max(0, Math.min(1, length));
-        sprite.setColor(new Color(1f, 0.5f+length/2, 0.5f+length/4));
+        
+        Color thrustColor = new Color(1, Math.min(1, 0.5f+length/2f), Math.min(1, 0.5f+length/4));
+        if (weapon.getShip().getVariant().getHullMods().contains("safetyoverrides")) { 
+            thrustColor = new Color(1, Math.min(1, 0.5f+length/20), Math.min(1, 0.5f+length/1.5f));
+        }
+        /*Color thrustColor = new Color(Math.min(1, 0.8235f), Math.min(1, 0.4902f), Math.min(1, 0.4118f));
+        if (weapon.getShip().getVariant().getHullMods().contains("safetyoverrides")) { 
+            thrustColor = new Color(Math.min(1, 0.8941f), Math.min(1, 0.451f), Math.min(1, 0.6471f));
+        }*/
+        //sprite.setColor(new Color(1f, Math.min(0.5f+length/2, 1), Math.min(0.5f+length/4, 1)));
+        sprite.setColor(thrustColor);
     }
         
     //////////////////////////////////////////

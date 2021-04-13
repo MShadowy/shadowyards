@@ -251,7 +251,7 @@ public class MS_FleetInflaterPlugin implements FleetInflater, AutofitPlugin.Auto
             auto.setChecked(CoreAutofitPlugin.RANDOMIZE, randomize);
             
             memberIndex++;
-            auto.doFit(currVariant, target, this);
+            auto.doFit(currVariant, target, memberIndex, this);
             m.setVariant(currVariant, false, false);
             
             if (!currMember.isStation()) {

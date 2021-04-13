@@ -15,8 +15,8 @@ public class MS_orbitalStationChecker extends OrbitalStation {
         
         FactionAPI player = sector.getFaction(Factions.PLAYER);
         FactionAPI shadow = sector.getFaction("shadow_industry");
-        
-        boolean canBuild = market.getPlanetEntity() != null &&
+        //while it may not be strictly necessary we want to be sure that the market exists
+        boolean canBuild = market != null &&
                 (player.getRelationshipLevel(shadow).isAtWorst(RepLevel.WELCOMING) ||
                     Global.getSector().getPlayerFaction().knowsIndustry(getId()));
         

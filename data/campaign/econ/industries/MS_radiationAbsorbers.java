@@ -11,12 +11,12 @@ public class MS_radiationAbsorbers extends BaseIndustry {
 	}
         
         @Override
-	public boolean isAvailableToBuild() {
-		return false;
-	}
-	
+        public boolean isHidden() {
+            return !market.getFactionId().equals("shadow_industry");
+        }
+        
         @Override
-	public boolean showWhenUnavailable() {
+	public boolean isAvailableToBuild() {
 		return false;
 	}
     

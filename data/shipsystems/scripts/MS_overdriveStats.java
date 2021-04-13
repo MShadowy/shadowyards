@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
@@ -14,25 +15,27 @@ import java.util.Map;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MS_overdriveStats extends BaseShipSystemScript {
-
-    public static final float ROF_BONUS = 1f;
-    public static final float FLUX_MULT = 0.8f;
-    public static final float ROF_MALUS = 0.5f;
+    protected Object STATUSKEY1 = new Object();
+    protected Object STATUSKEY2 = new Object();
+    private static final float ROF_BONUS = 1f;
+    private static final float FLUX_MULT = 0.8f;
+    private static final float ROF_MALUS = 0.5f;
     
-    private static final String sound = "overloadSteam";
+    private static final String SOUND = "overloadSteam";
 
-    private static final Map<WeaponSize, Float> mag = new HashMap<>();
+    private static final Map<WeaponSize, Float> MAG = new HashMap<>();
 
     static {
-        mag.put(WeaponSize.SMALL, 1f);
-        mag.put(WeaponSize.MEDIUM, 1.5f);
-        mag.put(WeaponSize.LARGE, 2.5f);
+        MAG.put(WeaponSize.SMALL, 1f);
+        MAG.put(WeaponSize.MEDIUM, 1.5f);
+        MAG.put(WeaponSize.LARGE, 2.5f);
     }
 
     @Override
     public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {
         CombatEngineAPI engine = Global.getCombatEngine();
         ShipAPI ship = (ShipAPI) stats.getEntity();
+        ShipSystemAPI system = ship.getSystem();
         List<WeaponAPI> weaps = ship.getAllWeapons();
         boolean hasPlayed = false;
         
@@ -52,7 +55,7 @@ public class MS_overdriveStats extends BaseShipSystemScript {
                 
                 float smokeSize = 0.8f + 0.4f * (float) Math.random();
                 
-                float smokeSizeValue = mag.get(w.getSize());
+                float smokeSizeValue = MAG.get(w.getSize());
                 
 
                 float velX = (float) Math.random() * 10f - 5f;
@@ -66,8 +69,20 @@ public class MS_overdriveStats extends BaseShipSystemScript {
             }
             
             if (!hasPlayed) {
-                Global.getSoundPlayer().playSound(sound, 0.8f, 0.5f, ship.getLocation(), ship.getVelocity());
+                Global.getSoundPlayer().playSound(SOUND, 0.8f, 0.5f, ship.getLocation(), ship.getVelocity());
                 hasPlayed = true;
+            }
+            
+            if (ship == Global.getCombatEngine().getPlayerShip() && effectLevel > 0) {
+                float bonus1 = (int) (mult - 1f) * 100f;
+                float bonus2 = (int) 100f - (FLUX_MULT * 100f);
+                
+                Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY1,
+                    system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
+                    "all weapons rate of fire increased " + (int) Math.round(bonus1) + "%", false);
+                Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY2,
+                    system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
+                    "all weapons flux cost decreased " + (int) Math.round(bonus2) + "%", false);
             }
         } else if (state == State.OUT) {
             float mult = 1f - ROF_MALUS * effectLevel;
@@ -76,6 +91,14 @@ public class MS_overdriveStats extends BaseShipSystemScript {
             stats.getEnergyRoFMult().modifyMult(id, mult);
             
             hasPlayed = false;
+            
+            if (ship == Global.getCombatEngine().getPlayerShip() && effectLevel > 0) {
+                float malus1 = (int) 100f - (mult * 100f);
+                
+                Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY1,
+                    system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
+                    "all weapons rate of fire decreased " + (int) Math.round(malus1) + "%", false);
+            }
         }
     }
 
@@ -91,15 +114,6 @@ public class MS_overdriveStats extends BaseShipSystemScript {
 
     @Override
     public StatusData getStatusData(int index, State state, float effectLevel) {
-        float mult = 1f + ROF_BONUS * effectLevel;
-        float curs = 1f - ROF_MALUS * effectLevel;
-        float bonusPercent = (int) (mult - 1f) * 100f;
-        float malusPercent = (int) (curs - 1f) * 100f;
-        if (index == 0) {
-            return new StatusData("all weapons rate of fire +" + (int) bonusPercent + "%", false);
-        } else if (index == 1) {
-            return new StatusData("all weapons rate of fire -" + (int) malusPercent + "%", false);
-        }
         return null;
     }
 }

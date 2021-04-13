@@ -8,7 +8,7 @@ import org.lwjgl.util.vector.Vector2f;
 
 public class Utils {
 
-    private static final Random rand = new Random();
+    private static final Random RAND = new Random();
 
     public static Vector2f translate_polar(Vector2f center, float radius, float angle) {
         float radians = (float) Math.toRadians(angle);
@@ -29,7 +29,7 @@ public class Utils {
     }
 
     public static float get_random(float low, float high) {
-        return rand.nextFloat() * (high - low) + low;
+        return RAND.nextFloat() * (high - low) + low;
     }
 
     public static boolean can_be_loaded(String fullyQualifiedClassName) {

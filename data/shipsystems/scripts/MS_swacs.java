@@ -26,14 +26,14 @@ public class MS_swacs extends BaseShipSystemScript {
     
     private static final Color COLOR1 = new Color(210, 125, 105, 155);
     
-    public static final Color JITTER_UNDER_COLOR = new Color(255,50,0,125);
-    public static final Color JITTER_COLOR = new Color(255,50,0,75);
+    private static final Color JITTER_UNDER_COLOR = new Color(255,50,0,125);
+    private static final Color JITTER_COLOR = new Color(255,50,0,75);
 
     //Just some global variables.
-    public static final float ACCURACY_BONUS = 20f;
-    public static final float RANGE_BONUS = 10f;
-    public static final float DAMAGE_BOOST = 33f;
-    public static final float AGILITY_BONUS = 15f;
+    private static final float ACCURACY_BONUS = 20f;
+    private static final float RANGE_BONUS = 10f;
+    private static final float DAMAGE_BOOST = 33f;
+    private static final float AGILITY_BONUS = 15f;
     private static final Vector2f ZERO = new Vector2f();
 
     //Creates a hashmap that keeps track of what ships are receiving the benefits.

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ import org.lwjgl.util.vector.Vector2f;
 
 
 public class MS_woopDrive extends BaseShipSystemScript {
-    
+    protected Object STATUSKEY1 = new Object();
     //ship system for the Clade; will very likely require a custom AI
     //Makes the ship go backwards basically like a reverse Burn Drive
     private static final String DATA_KEY = "ms_woopDrive";
@@ -46,6 +47,7 @@ public class MS_woopDrive extends BaseShipSystemScript {
         final Map<ShipAPI, Float> acting = localData.acting;
         
         ShipAPI ship = (ShipAPI) stats.getEntity();
+        ShipSystemAPI system = ship.getSystem();
         //So we need to get the ships facing, then apply the thrust in reverse
         if (ship.isAlive()) {
             if (effectLevel > 0f) {
@@ -71,6 +73,12 @@ public class MS_woopDrive extends BaseShipSystemScript {
                     ship.getVelocity().normalise();
                     ship.getVelocity().scale(stats.getMaxSpeed().modified);
                 }
+                
+                if (ship == Global.getCombatEngine().getPlayerShip() && effectLevel > 0) {
+                    Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY1,
+                            system.getSpecAPI().getIconSpriteName(), system.getDisplayName(), 
+                        "retro-thrusters returning to nominal status", false);
+                }
             } else {
                 if (!started) {
                     started = true;
@@ -89,6 +97,12 @@ public class MS_woopDrive extends BaseShipSystemScript {
                 if (speed < 300f) {
                     ship.getVelocity().normalise();
                     ship.getVelocity().scale(stats.getMaxSpeed().modified);
+                }
+                
+                if (ship == Global.getCombatEngine().getPlayerShip() && effectLevel > 0) {
+                    Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY1,
+                            system.getSpecAPI().getIconSpriteName(), system.getDisplayName(), 
+                        "retro-thrusters overcharged", false);
                 }
             }
         }
@@ -116,7 +130,7 @@ public class MS_woopDrive extends BaseShipSystemScript {
     
     @Override
     public StatusData getStatusData(int index, State state, float effectLevel) {
-        return new StatusData("retro-thrusters overcharged", false);
+        return null;// new StatusData("retro-thrusters overcharged", false);
     }
     
     private static final class CladeData {

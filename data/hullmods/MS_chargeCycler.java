@@ -2,16 +2,21 @@ package data.hullmods;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.BaseHullMod;
+import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
 
 public class MS_chargeCycler extends BaseHullMod {
-    private float RATE = 1.1f;
+    private final float RATE = 1.075f;
     
     @Override
     public String getDescriptionParam(int index, HullSize hullSize) {
-	return null;
+	if (index == 0) {
+            return "" + (int) ((RATE - 1) * 100);
+        }
+        return null;
     }
     
     @Override
@@ -26,14 +31,17 @@ public class MS_chargeCycler extends BaseHullMod {
     
     @Override
     public void advanceInCombat(ShipAPI ship, float amount) {
-        if (Global.getCombatEngine().isPaused() || ship.isHulk()) {
+        CombatEngineAPI engine = Global.getCombatEngine();
+        if (engine.isPaused() || !ship.isAlive()) {
             return;
         }
-        
         for (WeaponAPI w : ship.getAllWeapons()) {
-            float bCharge = w.getAmmoPerSecond();
-            if (bCharge != 0) {
-                float nCharge = bCharge + RATE;
+            //only bother with ammo regenerators
+            
+            float reloadRate = w.getAmmoPerSecond();
+            float nuCharge = reloadRate * RATE;
+            if (w.getType() == WeaponType.ENERGY && w.usesAmmo() && reloadRate > 0) {
+                w.getAmmoTracker().setAmmoPerSecond(nuCharge);
             }
         }
     }

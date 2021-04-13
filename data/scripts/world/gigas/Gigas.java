@@ -9,9 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipData;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
@@ -19,9 +17,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner.ShipRecoverySpecialCreator;
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipCondition;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldParams;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldSource;
@@ -32,6 +27,7 @@ import data.campaign.econ.MS_industries;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import data.scripts.util.MS_Utils;
 
 public class Gigas {
     
@@ -62,9 +58,9 @@ public class Gigas {
                 auris_grip,  
                 null,  
                 "Auris Grip",  
-                5,  
-                new ArrayList<>(Arrays.asList(Conditions.FREE_PORT, Conditions.ORGANIZED_CRIME, Conditions.POPULATION_5)),  
-                new ArrayList<>(Arrays.asList(Industries.MINING, MS_industries.MODULARFACTORIES, Industries.ORBITALSTATION, Industries.SPACEPORT, Industries.POPULATION)),
+                3,  
+                new ArrayList<>(Arrays.asList(Conditions.FREE_PORT, Conditions.ORGANIZED_CRIME, Conditions.STEALTH_MINEFIELDS, Conditions.POPULATION_3)),  
+                new ArrayList<>(Arrays.asList(MS_industries.MODULARFACTORIES, Industries.ORBITALSTATION, Industries.PATROLHQ, Industries.SPACEPORT, Industries.POPULATION)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),  
                 0.3f  
         );
@@ -108,9 +104,9 @@ public class Gigas {
         belterDebrisField.setDiscoverable(true);
         belterDebrisField.setCircularOrbit(vel, 30f, 4600f, 180f);
         //and some derelict craft, remains of one of the battles between the Heg and SRA a year ago
-        addDerelict(system, vel, "ms_enlil_Standard", ShipCondition.BATTERED, 4613f, false);
-	addDerelict(system, vel, "kite_Standard", ShipCondition.BATTERED, 4545f, false);
-        addDerelict(system, vel, "wolf_d_pirates_Attack", ShipCondition.WRECKED, 4877f, false);
+        MS_Utils.addDerelict(system, vel, "ms_enlil_Standard", ShipCondition.BATTERED, 4613f, false);
+	MS_Utils.addDerelict(system, vel, "kite_Standard", ShipCondition.BATTERED, 4545f, false);
+        MS_Utils.addDerelict(system, vel, "wolf_d_pirates_Attack", ShipCondition.WRECKED, 4877f, false);
         
         PlanetAPI vel2 = system.addPlanet("leviathan", vel, "Leviathan", "gas_giant", 92, 400f, 8600f, 170f);
         //vel2.setCustomDescriptionId("planet_leviathan");
@@ -153,7 +149,8 @@ public class Gigas {
                 0.3f  
         );
         
-        addDerelict(system, vel, "ms_sargasso_Assault", ShipCondition.AVERAGE, 11000f, true);
+        MS_Utils.addDerelict(system, vel, "ms_ninurta_Standard", ShipCondition.AVERAGE, 11900f, true);
+        MS_Utils.addDerelict(system, vel, "ms_sargasso_Assault", ShipCondition.AVERAGE, 11000f, true);
         
         PlanetAPI vel3 = system.addPlanet("kain", vel, "Kain", "frozen", 211, 110f, 14500f, 243f);
         //vel3.setCustomDescriptionId("planet_kain");
@@ -192,7 +189,7 @@ public class Gigas {
         
         SectorEntityToken v = system.getEntityById("gigas");
 	JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("gigas_gate", "Gigas Jump Node");
-	jumpPoint.setCircularOrbit(v, 160-60, 1900, 210);
+	jumpPoint.setCircularOrbit(v, 160-60, 2100, 210);
 	jumpPoint.setRelatedPlanet(vel1);
         
         jumpPoint.setStandardWormholeToHyperspaceVisual();
@@ -214,20 +211,5 @@ public class Gigas {
         editor.clearArc(system.getLocation().x, system.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
         editor.clearArc(system.getLocation().x, system.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);	     
 //        editor.clearArc(system.getLocation().x, system.getLocation().y, 0, system.getMaxRadiusInHyperspace()*1.25f, 0, 360, 0.25f);
-    }
-	
-    protected void addDerelict(StarSystemAPI system, SectorEntityToken focus, String variantId, 
-	ShipCondition condition, float orbitRadius, boolean recoverable) {
-	DerelictShipData params = new DerelictShipData(new PerShipData(variantId, condition), false);
-	SectorEntityToken ship = BaseThemeGenerator.addSalvageEntity(system, Entities.WRECK, Factions.NEUTRAL, params);
-	ship.setDiscoverable(true);
-	
-	float orbitDays = orbitRadius / (10f + (float) Math.random() * 5f);
-	ship.setCircularOrbit(focus, (float) Math.random() * 360f, orbitRadius, orbitDays);
-		
-	if (recoverable) {
-		ShipRecoverySpecialCreator creator = new ShipRecoverySpecialCreator(null, 0, 0, false, null, null);
-		Misc.setSalvageSpecial(ship, creator.createSpecial(ship, null));
-	}	
     }
 }

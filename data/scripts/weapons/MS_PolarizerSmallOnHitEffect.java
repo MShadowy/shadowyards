@@ -7,6 +7,7 @@ import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.OnHitEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
 import java.awt.Color;
 import org.lwjgl.util.vector.Vector2f;
 import data.scripts.ShadowyardsModPlugin;
@@ -23,7 +24,7 @@ public class MS_PolarizerSmallOnHitEffect implements OnHitEffectPlugin
     //{
         // Check if we hit a ship (not its shield)
     @Override
-    public void onHit(DamagingProjectileAPI projectile, CombatEntityAPI target, Vector2f point, boolean shieldHit, CombatEngineAPI engine) {
+    public void onHit(DamagingProjectileAPI projectile, CombatEntityAPI target, Vector2f point, boolean shieldHit, ApplyDamageResultAPI apply, CombatEngineAPI engine) {
         if (point == null) {
             return;
         }

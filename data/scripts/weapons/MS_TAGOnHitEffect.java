@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.OnHitEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
 import java.util.HashMap;
 import java.util.Map;
 import org.lwjgl.util.vector.Vector2f;
@@ -15,7 +16,7 @@ public class MS_TAGOnHitEffect implements OnHitEffectPlugin {
     static final Float debuffDuration = 10f;
     
     @Override
-    public void onHit (DamagingProjectileAPI projectile, CombatEntityAPI target, Vector2f point, boolean shieldHit, CombatEngineAPI engine) {
+    public void onHit (DamagingProjectileAPI projectile, CombatEntityAPI target, Vector2f point, boolean shieldHit, ApplyDamageResultAPI apply, CombatEngineAPI engine) {
         ShipAPI source = projectile.getSource();
         
         if (target instanceof ShipAPI && !shieldHit) {

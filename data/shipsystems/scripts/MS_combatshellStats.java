@@ -8,12 +8,10 @@ import java.awt.Color;
 
 public class MS_combatshellStats extends BaseShipSystemScript {
     
-    public static final float MAX_TIME_MULT = 3f;
-    public static final float MIN_TIME_MULT = 0.1f;
-    public static final float DAM_MULT = 0.1f;
+    private static final float MAX_TIME_MULT = 3f;
 	
-    public static final Color JITTER_COLOR = new Color(15,15,15,55);
-    public static final Color JITTER_UNDER_COLOR = new Color(234,253,185,155);
+    private static final Color JITTER_COLOR = new Color(15,15,15,55);
+    private static final Color JITTER_UNDER_COLOR = new Color(234,253,185,155);
     
     @Override
     public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {
@@ -68,9 +66,6 @@ public class MS_combatshellStats extends BaseShipSystemScript {
 	} else {
 		Global.getCombatEngine().getTimeMult().unmodify(id);
 	}
-		
-	ship.getEngineController().fadeToOtherColor(this, JITTER_COLOR, new Color(0,0,0,0), effectLevel, 0.5f);
-	ship.getEngineController().extendFlame(this, -0.25f, -0.25f, -0.25f);
     }
     
     @Override

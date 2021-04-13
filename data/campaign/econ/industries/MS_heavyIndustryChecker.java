@@ -12,7 +12,8 @@ public class MS_heavyIndustryChecker extends HeavyIndustry {
         boolean hasModular = false;
         
         if (market.getPlanetEntity() != null && (market.hasIndustry(MS_industries.MODULARFACTORIES) || 
-                market.hasIndustry(MS_industries.PARALLEL_PRODUCTION))) {
+                                market.hasIndustry(MS_industries.PARALLEL_PRODUCTION) || 
+                market.hasIndustry(MS_industries.MILITARY_LINES) || market.hasIndustry(MS_industries.SHIPYARDS))) {
             hasModular = true;
         }
         

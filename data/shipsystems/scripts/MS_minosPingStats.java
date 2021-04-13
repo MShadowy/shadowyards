@@ -74,7 +74,7 @@ public class MS_minosPingStats extends BaseShipSystemScript {
         if (index == 0) {
             return new StatusData("sensor strength increased", false);
         } else if (index == 1) {
-            return new StatusData("fleet ecm capalities improved", false);
+            return new StatusData("fleet ecm capabilities improved", false);
         }
         return null;
     }

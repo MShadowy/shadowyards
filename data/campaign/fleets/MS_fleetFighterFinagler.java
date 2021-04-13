@@ -53,8 +53,8 @@ public class MS_fleetFighterFinagler implements EveryFrameScript {
             // there are a whole host of reasons we might not care about checking a given fleet
             if (fleet == null
                     || !fleet.isInflated()
-                    || !fleet.isPlayerFleet()
                     || !fleet.isAlive()
+                    || fleet.isPlayerFleet()
                     || fleet.isEmpty()
                     || fleet.isExpired()
                     || fleet.isDespawning()
@@ -79,7 +79,7 @@ public class MS_fleetFighterFinagler implements EveryFrameScript {
                 
                 // grab the ship variant
                 ShipVariantAPI variant = member.getVariant();
-                if (variant == null) {
+                if (variant == null || !member.isCarrier()) {
                     continue; // if the ship doesn't have a variant, idfk just skip it
                 }
                 
@@ -89,79 +89,18 @@ public class MS_fleetFighterFinagler implements EveryFrameScript {
                     // count shikome wings
                     if (FIND_WING.equals(variant.getWingId(i))) {
                         count++;
-                        
-                        // if we have too many shikome wings, replace this one with a skinwalker wing
-                        if (count > allowed) {
-                            member.getVariant().setWingId(i, REPLACE_WING);
-                        }
-                        
                     }
-                    
+                }
+                
+                // if we have too many shikome wings, list all the decks in fleet?
+                // then replace Shiki's with skinwalkers until we're under the limit
+                if (count > allowed) {
+                    for (int d = 0; d <= member.getNumFlightDecks(); d++) {
+                        member.getVariant().setWingId(d, REPLACE_WING);
+                        count--;
+                    }
                 }
             }
         }
-        
-        //SectorAPI sector = Global.getSector();
-        //if (sector == null) {
-            //return;
-        //}
-        
-        
-        //if (timer.intervalElapsed()) {
-            //finagleFighters();
-        //}
     }
-    
-    /*public void finagleFighters() {
-               
-        for (CampaignFleetAPI f : Global.getSector().getCurrentLocation().getFleets()) {
-            //if the fleet is still a stub or has already been checked we don't care
-            if (!f.isInflated() || finagledFleets.contains(f.getId())) {
-                continue;
-            }
-            //if the faction doesn't know how to make Shikomes there's no need to bother
-            //since we don't want this to happen every time we set a bit so fleets don't get finagled multiple times
-            if (!f.getFaction().getKnownFighters().contains("ms_shikome")) {
-                finagledFleets.add(f.getId());
-                continue;
-            }
-            finagledFleets.add(f.getId());
-            
-            int fSize = f.getFleetPoints();
-            int max = fSize / FP_THRESHOLD;
-            int curr = 0;
-            
-            //otherwise we rifle through the carriers and remove Shikomes
-            for (FleetMemberAPI cv : f.getFleetData().getMembersInPriorityOrder()) {                
-                if (cv.isFighterWing()) {
-                    continue;
-                }
-                
-                if (!cv.isCarrier()) {
-                    continue;
-                }
-    
-                // grab the ship variant
-                ShipVariantAPI variant = cv.getVariant();
-                if (variant == null) {
-                    continue; // if the ship doesn't have a variant, idfk just skip it
-                }
-                
-                for (int i=0; i <= cv.getNumFlightDecks(); i++) {
-                    if (FIND_WING.equals(cv.getVariant().getWingId(i))) {
-                        //cv.getVariant().setWingId(i, REPLACE_WING);
-                            curr++;
-                        if (curr > max) {
-                            cv.getVariant().setWingId(i, REPLACE_WING);
-                        }
-                    }
-                }
-            }
-            
-            if (clear.intervalElapsed() && (f.isExpired() || !f.isAlive() 
-                    || f.isEmpty() || f.isDespawning()) && finagledFleets.contains(f.getId())) {
-                finagledFleets.remove(f.getId());
-            }
-        }
-    }*/
 }

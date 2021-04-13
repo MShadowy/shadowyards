@@ -46,7 +46,7 @@ public class SHIGen implements SectorGeneratorPlugin {
         shadow.setRelationship(tritachyon.getId(), 0f);
         
         shadow.setRelationship(independent.getId(), 0.2f);
-        shadow.setRelationship(league.getId(), 0.5f);
+        shadow.setRelationship(league.getId(), 0.1f);
         
         church.setRelationship(shadow.getId(), -0.3f);
         path.setRelationship(shadow.getId(), -0.9f);

@@ -36,6 +36,7 @@ import java.util.Map;
 
 public class NGCSRABaseStartingScript extends BaseCommandPlugin {
 
+    @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         if (dialog == null) {
             return false;
@@ -44,6 +45,7 @@ public class NGCSRABaseStartingScript extends BaseCommandPlugin {
         final MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
         
         data.addScript(new Script() {
+            @Override
             public void run() {
                 CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
                 
@@ -58,8 +60,7 @@ public class NGCSRABaseStartingScript extends BaseCommandPlugin {
                     for (FleetMemberAPI m : fleet.getFleetData().getMembersListCopy()) {
                         if (!m.isFlagship()) {
                             PersonAPI comrade = Global.getSector().getPlayerFaction().createRandomPerson();
-                            comrade.getStats().setSkillLevel(Skills.DEFENSIVE_SYSTEMS, 1);
-                            comrade.getStats().setSkillLevel(Skills.DAMAGE_CONTROL, 1);
+                            comrade.getStats().setSkillLevel(Skills.FLUX_REGULATION, 1);
                             comrade.setRankId(Ranks.SPACE_LIEUTENANT);
                             comrade.setPostId(Ranks.POST_MERCENARY);
                             comrade.setPersonality(Personalities.AGGRESSIVE);

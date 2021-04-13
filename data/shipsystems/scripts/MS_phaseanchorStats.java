@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.ShipSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import java.awt.Color;
 import java.util.HashMap;
@@ -12,10 +13,9 @@ import java.util.Map;
 
 public class MS_phaseanchorStats extends BaseShipSystemScript {
 
-    public static final Color JITTER_COLOR = new Color(255,175,255,255);
-    public static final float JITTER_FADE_TIME = 0.5f;
+    private static final Color JITTER_COLOR = new Color(255,175,255,255);
+    private static final float JITTER_FADE_TIME = 0.5f;
     
-    //ShipAPI ship;
     private static final Map<HullSize, Float> mag = new HashMap<>();
     static {
         mag.put(ShipAPI.HullSize.FIGHTER, 60f);
@@ -25,12 +25,10 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
         mag.put(ShipAPI.HullSize.CAPITAL_SHIP, 30f);
     }
     
-    public static final float SHIP_ALPHA_MULT = 0.25f;
-	//public static final float VULNERABLE_FRACTION = 0.875f;
-    public static final float VULNERABLE_FRACTION = 0f;
-    public static final float INCOMING_DAMAGE_MULT = 0.25f;
+    private static final float SHIP_ALPHA_MULT = 0.25f;
+    private static final float VULNERABLE_FRACTION = 0f;
 	
-    public static final float MAX_TIME_MULT = 3f;
+    private static final float MAX_TIME_MULT = 3f;
 	
     protected Object STATUSKEY1 = new Object();
     protected Object STATUSKEY2 = new Object();
@@ -46,16 +44,9 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
 	if (cloak == null) return;
 	
 	if (level > f) {
-//		Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY1,
-//				cloak.getSpecAPI().getIconSpriteName(), cloak.getDisplayName(), "can not be hit", false);
 		Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY2,
 				cloak.getSpecAPI().getIconSpriteName(), cloak.getDisplayName(), "time flow altered", false);
-	} else {
-//		float INCOMING_DAMAGE_MULT = 0.25f;
-//		float percent = (1f - INCOMING_DAMAGE_MULT) * getEffectLevel() * 100;
-//		Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY3,
-//				spec.getIconSpriteName(), cloak.getDisplayName(), "damage mitigated by " + (int) percent + "%", false);
-	}
+	} else { }
     }
     
     @Override
@@ -83,6 +74,9 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
             return;
         }
         
+        float speedPercentMod = stats.getDynamic().getMod(Stats.PHASE_CLOAK_SPEED_MOD).computeEffective(0f);
+        stats.getMaxSpeed().modifyPercent(id, speedPercentMod * effectLevel);
+        
         float level = effectLevel;
 	//float f = VULNERABLE_FRACTION;
 	
@@ -105,7 +99,11 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
 
             stats.getMaxSpeed().modifyFlat(id, mag.get(ship.getHullSize()) * effectLevel);
         } else if (state == State.OUT) {
-            ship.setPhased(true);
+            if (level > 0.5f) { 
+                ship.setPhased(true);
+            } else {
+                ship.setPhased(false);
+            }
             levelForAlpha = level;
             
             stats.getMaxSpeed().unmodify(id); // to slow down ship to its regular top speed while powering drive down
@@ -128,11 +126,8 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
     @Override
     public void unapply(MutableShipStatsAPI stats, String id) {
         ShipAPI ship;
-	//boolean player = false;
 	if (stats.getEntity() instanceof ShipAPI) {
 		ship = (ShipAPI) stats.getEntity();
-		//player = ship == Global.getCombatEngine().getPlayerShip();
-		//id = id + "_" + ship.getId();
 	} else {
 		return;
 	}
@@ -144,6 +139,7 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
 	ship.setExtraAlphaMult(1f);
         
         stats.getMaxSpeed().unmodify(id);
+        stats.getMaxSpeed().unmodifyPercent(id);
         stats.getMaxTurnRate().unmodify(id);
         stats.getTurnAcceleration().unmodify(id);
         stats.getAcceleration().unmodify(id);
@@ -152,12 +148,6 @@ public class MS_phaseanchorStats extends BaseShipSystemScript {
 
     @Override
     public StatusData getStatusData(int index, State state, float effectLevel) {
-        /*if (index == 0) {
-            return new StatusData("phase anchors latched", false);
-        }
-        if (index == 1) {
-            return new StatusData("+ 90 top speed", false);
-        }*/
         return null;
     }
 }

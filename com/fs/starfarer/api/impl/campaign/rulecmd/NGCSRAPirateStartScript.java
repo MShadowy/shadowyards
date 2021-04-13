@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class NGCSRAPirateStartScript extends BaseCommandPlugin {
+    @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         if (dialog == null) {
             return false;
@@ -25,6 +26,7 @@ public class NGCSRAPirateStartScript extends BaseCommandPlugin {
         final MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 
         data.addScript(new Script() {
+            @Override
             public void run() {
                 
                 SectorAPI sector = Global.getSector();

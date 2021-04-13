@@ -1,215 +1,165 @@
 package data.scripts.plugins;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CollisionClass;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
-import com.fs.starfarer.api.combat.DamageType;
-import com.fs.starfarer.api.combat.ViewportAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
+import static com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.MAX_CHANCE_PERCENT;
+import static com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.MAX_RANGE;
+import static com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.MIN_RANGE;
+import com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.RangedSpecDamageDealtMod;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-import static org.lwjgl.opengl.GL11.GL_ONE;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+//import static org.lwjgl.opengl.GL11.GL_ONE;
+//import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
-    private static CombatEngineAPI engine;
-    private static final Map<String, CollisionClass> ORIGINAL_COLLISSION_CLASSES = new HashMap<>();
+
+    // OBJECTIVES:
+    // NL should pierce targets and deal 1000 damage per hit at normal damage
+    // NL can pierce shields if it has damage remaining
+    // - this reduces overload time a little, but that is fair
+    // Missiles don't count for hits
+    // Destroyed/wrecked fighters don't count for hits
+    // - if the fighter survives the hit, it does count
+    // Hull under a module is not hit
+
+//    private static final String WEAPON_ID = "ms_rhpc";
+    private static final String PROJ_ID = "ms_microLanceBlast";
+    private static final int MAX_HITS = 4; // For base 1000 damage per hit
+
+    // Calculate time to cover 50 px
+    // Might want to reduce the base distance — your call
+    // Doesn't account for stuff that speeds up the projectile
+    private static final float BASE_PIERCE_DISTANCE = 50f;
+    private static final float BASE_SPEED = 1000f;
+    private static final float DAMAGE_COOLDOWN = BASE_PIERCE_DISTANCE / BASE_SPEED;
 
     // Sound to play while piercing a target's armor (should be loopable!)
+    private static final String SHIELD_HIT_SOUND = "hit_shield_heavy_energy";
     private static final String PIERCE_SOUND = "explosion_missile"; // TEMPORARY
-    // Projectile ID (String), pierces shields (boolean)
-    // Keep track of the original collision class (used for shield hits)
     private static final Color COLOR1 = new Color(165, 215, 145, 150);
-    private static final Color COLOR2 = new Color(155, 255, 155, 150);
-    private static final Color COLOR3 = new Color(115, 185, 165, 150);
-    
-    private static final Vector2f ZERO = new Vector2f();
-    
-    private static final Set<String> PROJ_IDS = new HashSet();
-    
-    private float MAX_DAMAGE;
-    private float DAMAGE_PER_TICK;
-    private float EMP_PER_TICK;
-    private float DAMAGE_TOTAL;
-    
-    private final IntervalUtil interval = new IntervalUtil(0.05f, 0.05f);
-    private boolean runOnce = false;
-    
-    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs = new WeakHashMap<>();
 
-    private final Map<DamagingProjectileAPI, Float> projectileTrailIDs2 = new WeakHashMap<>();
+    //*******************
+    // RENDERING & SOUNDS
+    //********************
 
-    static {
-        PROJ_IDS.add("ms_microLanceBlast");
-    }
-
-    @Override
-    public void advance(float amount, List<InputEventAPI> events) {
-        if (engine != Global.getCombatEngine()) {
-            engine = Global.getCombatEngine();
-            ORIGINAL_COLLISSION_CLASSES.clear();
-        }
-
-        if (engine.isPaused()) {
-            return;
-        }
+    // Deals all remaining damage
+    private void hitShield(MS_MicroLanceShot shot,
+                DamagingProjectileAPI proj, CombatEntityAPI entity,
+                float speed, float amount) {
         
-        interval.advance(amount);
+        float damage = shot.damagePerHit;
+        damage *= getRangedSpecDamageMult(proj);
+        float empDamage = shot.empPerHit;
+        
+        engine.applyDamage(entity, proj.getLocation(),
+                    damage,
+                    proj.getDamageType(),
+                    empDamage,
+                    false, false, proj.getSource());
 
-        // Scan all shots on the map for armor piercing projectiles
-        for (DamagingProjectileAPI proj : engine.getProjectiles()) {
-            String spec = proj.getProjectileSpecId();
+        // Render the hit
+        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
+        // Play piercing sound (only one sound active per projectile)
+        Global.getSoundPlayer().playLoop(SHIELD_HIT_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
+    }
 
-            // Is this projectile armor piercing?
-            if (!PROJ_IDS.contains(spec)) {
-                continue;
-            }
-            
-            if (!runOnce) {
-                runOnce = true;
-                
-                MAX_DAMAGE = (proj.getDamageAmount());
-                DAMAGE_PER_TICK = MAX_DAMAGE * 0.5f;
-                EMP_PER_TICK = proj.getEmpAmount() * 0.5f;
-            }
-            
-            // Register the original collision class (used for shield hits)
-            if (!ORIGINAL_COLLISSION_CLASSES.containsKey(spec)) {
-                ORIGINAL_COLLISSION_CLASSES.put(spec, proj.getCollisionClass());
-            }
+    // Deals damage equal to hitsToBreak
+    private void hitShieldPierced(MS_MicroLanceShot shot,
+                DamagingProjectileAPI proj, CombatEntityAPI entity,
+                int hitsToBreak, float speed, float amount) {
+        float damage = shot.damagePerHit;
+        damage *= getRangedSpecDamageMult(proj);
+        float empDamage = shot.empPerHit;
 
-            // We'll do collision checks manually
-            proj.setCollisionClass(CollisionClass.NONE);
-            //Spawn random hit particles I guess
-            //target a vector directly behind the proj
-            //Vector2f dir;
-            Vector2f point = new Vector2f(-30f, 0f);
-            VectorUtils.rotate(point, proj.getFacing(), point);
-            Vector2f.add(point, proj.getLocation(), point);
-            
-            if (projectileTrailIDs.get(proj) == null)
-            {
-                projectileTrailIDs.put(proj, MagicTrailPlugin.getUniqueID());
-            }
-            
-            if (projectileTrailIDs2.get(proj) == null)
-            {
-                projectileTrailIDs2.put(proj, MagicTrailPlugin.getUniqueID());
-            }
-            // Then, actually spawn a trail
-            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs.get(proj), Global.getSettings().getSprite("sra_trails",
-                        "rhpcb_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 180f, 
-                    0f, 0f, 16f, 0f, COLOR2, COLOR3, 0.6f, 0f, 0.1f, 0.3f, GL_SRC_ALPHA, GL_ONE, 
-                    128, 500, new Vector2f(0,0), null);
-            
-            MagicTrailPlugin.AddTrailMemberAdvanced(proj, projectileTrailIDs2.get(proj), Global.getSettings().getSprite("sra_trails",
-                        "rhpcb_secondary_proj_trail"), proj.getLocation(), 0f, 0f, proj.getFacing() - 180f, 
-                    0f, 0f, 24f, 0f, COLOR3, new Color(60, 90, 120), 0.4f, 0f, 0.15f, 0.35f, GL_SRC_ALPHA, GL_ONE, 
-                    128, 500, new Vector2f(0,0), null);
+        engine.applyDamage(entity, proj.getLocation(),
+                    damage,
+                    proj.getDamageType(),
+                    empDamage,
+                    false, false, proj.getSource());
 
-            // Find nearby ships, missiles and asteroids
-            List<CombatEntityAPI> toCheck = new ArrayList<>();
-            toCheck.addAll(CombatUtils.getShipsWithinRange(proj.getLocation(), proj.getCollisionRadius() + 5f));
-            toCheck.addAll(CombatUtils.getMissilesWithinRange(proj.getLocation(), proj.getCollisionRadius() + 5f));
-            toCheck.addAll(CombatUtils.getAsteroidsWithinRange(proj.getLocation(), proj.getCollisionRadius() + 5f));
+        // Render the hit
+        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
+        // Play piercing sound (only one sound active per projectile)
+        Global.getSoundPlayer().playLoop(SHIELD_HIT_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
+    }
 
-            // Don't include the ship that fired this projectile!
-            toCheck.remove(proj.getSource());
-            for (CombatEntityAPI entity : toCheck) {
-                // Check for an active phase cloak
-                if (entity.getCollisionClass() == CollisionClass.NONE) {
-                    continue;
-                }
-                // Check for a shield hit
-                if ((entity.getShield() != null && entity.getShield().isOn() && entity.getShield().isWithinArc(proj.getLocation()))) {
-                    // If we hit a shield, enable collision
-                    proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
-                    // since the shot tends to bash through shields and do hull damage on overloads, make it fade out and set damage to 0
-                    if (proj.didDamage()) {
-                        proj.setDamageAmount(0);
-                    }
-                } // Check if the projectile is inside the entity's bounds
-                else if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
-                    // Calculate projectile speed
-                    float speed = proj.getVelocity().length();
+    // Deals one hit
+    private void hitHullPierced(MS_MicroLanceShot shot,
+                DamagingProjectileAPI proj, CombatEntityAPI entity,
+                float speed, float amount) {
+        float damage = shot.damagePerHit;
+        damage *= getRangedSpecDamageMult(proj);
+        float empDamage = shot.empPerHit;
 
-                    if (interval.intervalElapsed()) {
-                        DAMAGE_TOTAL = DAMAGE_TOTAL + DAMAGE_PER_TICK;
-                        float DAMAGE_REMAINING = MAX_DAMAGE - DAMAGE_TOTAL;
-                        
-                        //only do damage if DAMAGE_REMAINING is a positive value
-                        if (DAMAGE_REMAINING > 0) {
-                            engine.applyDamage(entity, proj.getLocation(), DAMAGE_PER_TICK, proj.getDamageType(), EMP_PER_TICK, true, true, proj.getSource());
-                        }
-                        
-                        //in case the proj hits a shield we want it to apply the correct amount of damage
-                        proj.setDamageAmount(DAMAGE_REMAINING);
-                        
-                        // Render the hit
-                        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount * 2f, .5f);
-                        // Play piercing sound (only one sound active per projectile)
-                        Global.getSoundPlayer().playLoop(PIERCE_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
-                        
-                        if (DAMAGE_REMAINING <= 0) {
-                            proj.setCollisionClass(ORIGINAL_COLLISSION_CLASSES.get(spec));
-                            proj.isFading();
-                        }
-                    }
-                }
-            }
-            
-            //reset the damage
-            if (proj.isFading() && proj.getDamageAmount() < MAX_DAMAGE) {
-                proj.setDamageAmount(MAX_DAMAGE);
-                DAMAGE_TOTAL = 0;
-            }
+        // Deal damage first, then check if it counts as a hit
+        engine.applyDamage(entity, proj.getLocation(),
+                    damage,
+                    proj.getDamageType(),
+                    empDamage,
+                    true, false, proj.getSource());
+
+        // Render the hit
+        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount * 2f, .5f);
+        // Play piercing sound (only one sound active per projectile)
+        Global.getSoundPlayer().playLoop(PIERCE_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
+
+    }
+
+    // Special case handling of Ranged Specialization skill
+    private float getRangedSpecDamageMult(DamagingProjectileAPI proj) {
+        ShipAPI source = proj.getSource();
+        if (source == null) return 1f;
+
+        if (!source.hasListenerOfClass(RangedSpecDamageDealtMod.class)) {
+            return 1f;
+        }
+
+        float dist = Misc.getDistance(proj.getLocation(), source.getLocation());
+        float f = (dist - MIN_RANGE) / (MAX_RANGE - MIN_RANGE);
+        if (f < 0) f = 0;
+        if (f > 1) f = 1;
+
+        float chancePercent = (int) Math.round(MAX_CHANCE_PERCENT * f);
+        if (chancePercent <= 0) return 1f;
+
+        if ((float) Math.random() < chancePercent * 0.01f) {
+            return 2f;
+        } else {
+            return 1f + (chancePercent * 0.01f);
         }
     }
 
-    @Override
-    public void init(CombatEngineAPI engine) {
-    }
-    
-    @Override
-    public void renderInUICoords(ViewportAPI viewport) {
-    }
-     
     @Override
     public void renderInWorldCoords(ViewportAPI viewport) {
         if (engine == null) {
             return;
         }
-        
+
         for (DamagingProjectileAPI proj : engine.getProjectiles()) {
             String spec = proj.getProjectileSpecId();
-            
-            if (!PROJ_IDS.contains(spec)) {
+
+            if (spec == null || !spec.equals(PROJ_ID)) {
                 continue;
             }
-            
+
             Vector2f Here = new Vector2f(0,0) ;
             Here.x = proj.getLocation().x;
             Here.y = proj.getLocation().y;
-                    
+
             SpriteAPI sprite = Global.getSettings().getSprite("flare", "nidhoggr_ALF");
-                    
+
             if (!engine.isPaused()) {
                 sprite.setAlphaMult(MathUtils.getRandomNumberInRange(0.9f, 1f));
             } else {
@@ -220,5 +170,376 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
             sprite.setAdditiveBlend();
             sprite.renderAtCenter(Here.x, Here.y);
         }
+    }
+
+
+    //*********************
+    // PROJECTILE HIT LOGIC
+    //**********************
+
+    public static class MS_MicroLanceShot {
+        final String id;
+        ShipAPI source;
+        float damagePerHit;
+        float empPerHit;
+        int hitsLeft;
+        boolean expired;
+
+        public MS_MicroLanceShot(DamagingProjectileAPI proj) {
+            this.id = Global.getSector().genUID();
+            this.source = proj.getSource();
+            this.hitsLeft = MAX_HITS;
+            this.damagePerHit = proj.getDamageAmount() / MAX_HITS;
+            this.empPerHit = proj.getEmpAmount() / MAX_HITS;
+            this.expired = false;
+        }
+    }
+
+    private static final List<MS_MicroLanceShot> SHOTS = new ArrayList<>();
+    private static final Map<String, IntervalUtil> COOLDOWNS = new HashMap<>();
+
+    private static CombatEngineAPI engine;
+
+    @Override
+    public void advance(float amount, List<InputEventAPI> events) {
+        if (engine != Global.getCombatEngine()) {
+            SHOTS.clear();
+            COOLDOWNS.clear();
+            engine = Global.getCombatEngine();
+        }
+
+        if (engine.isPaused()) {
+            return;
+        }
+
+        List<String> keysToRemove = new ArrayList<>();
+        for (String key : COOLDOWNS.keySet()) {
+            IntervalUtil cooldown = COOLDOWNS.get(key);
+            cooldown.advance(amount);
+            if (cooldown.intervalElapsed()) keysToRemove.add(key);
+        }
+        for (String key: keysToRemove) COOLDOWNS.remove(key);
+
+        // Scan all shots on the map for NL projectiles
+        PROJECTILES:
+        for (DamagingProjectileAPI proj : engine.getProjectiles()) {
+            String spec = proj.getProjectileSpecId();
+
+            // Is this a NL proj?
+            if (spec == null || !spec.equals(PROJ_ID)) {
+                continue;
+            }
+
+            MS_MicroLanceShot shot = null;
+            // See if it is a shot already being tracked
+            for (MS_MicroLanceShot s : SHOTS) {
+                if (s.source == proj.getSource()) {
+                    shot = s;
+                    shot.expired = false;
+                    break;
+                }
+            }
+            // Else start tracking it
+            if (shot == null) {
+                shot = new MS_MicroLanceShot(proj);
+                SHOTS.add(shot);
+                proj.setCollisionClass(CollisionClass.NONE);
+            }
+
+            // Skip if out of damage
+            if (shot.hitsLeft <= 0) {
+                endLanceShot(shot, proj);
+                continue;
+            }
+
+
+            // Iterate over missiles
+            // Missiles don't count as hits
+            List<CombatEntityAPI> missiles = new ArrayList<>();
+            missiles.addAll(CombatUtils.getMissilesWithinRange(proj.getLocation(), proj.getCollisionRadius() + 5f));
+
+            for (CombatEntityAPI entity : missiles) {
+                if (entity.getCollisionClass() == CollisionClass.NONE) {
+                    continue;
+                }
+
+                if (isHitCooldownActive(entity, shot)) continue;
+
+                if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
+                    engine.applyDamage(entity, entity.getLocation(),
+                                shot.damagePerHit, DamageType.ENERGY,
+                                shot.empPerHit, true, false,
+                                proj.getSource());
+                }
+
+            }
+
+
+            // Iterate over fighters
+            List<CombatEntityAPI> ships = new ArrayList<>();
+            ships.addAll(CombatUtils.getShipsWithinRange(proj.getLocation(), proj.getCollisionRadius() + 5f));
+            // Would be nice to sort here so stuff gets hit closest
+            // to farthest instead of top-bottom left-right
+
+            // Check for shield hits on fighters
+            for (CombatEntityAPI entity : ships) {
+                if (entity.getCollisionClass() == CollisionClass.NONE) {
+                    continue;
+                }
+
+                ShipAPI ship = (ShipAPI) entity;
+
+                if (!ship.isFighter()) continue;
+
+                if (isHitCooldownActive(ship, shot)) continue;
+
+                if (isShieldHit(entity, proj)) {
+                    float speed = proj.getVelocity().length();
+
+                    float shieldFluxLeft = ship.getShield().getFluxPerPointOfDamage()
+                                * (ship.getFluxTracker().getMaxFlux()
+                                - ship.getFluxTracker().getCurrFlux());
+
+                    // Min 1 hit, remainder is cut off
+                    int hitsToBreak = 1 + (int) (shieldFluxLeft / shot.damagePerHit);
+
+                    // Shield absorbs entire hit
+                    if (hitsToBreak >= shot.hitsLeft) {
+                        hitShield(shot, proj, entity, speed, amount);
+                        endLanceShot(shot, proj);
+                        continue PROJECTILES;
+                    }
+
+                    // Shield is pierced
+                    shot.hitsLeft -= hitsToBreak;
+                    startHitCooldown(ship, shot);
+
+                    hitShield(shot, proj, entity, speed, amount);
+                }
+
+            }
+
+            // Check for hull hits on fighters
+            for (CombatEntityAPI entity : ships) {
+                if (entity.getCollisionClass() == CollisionClass.NONE) {
+                    continue;
+                }
+
+                ShipAPI ship = (ShipAPI) entity;
+
+                if (!ship.isFighter()) continue;
+
+                if (isHitCooldownActive(ship, shot)) continue;
+
+                if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
+                    // Calculate projectile speed
+                    float speed = proj.getVelocity().length();
+
+                    // Deal damage first, then check if it counts as a hit
+                    hitHullPierced(shot, proj, entity, speed, amount);
+
+                    startHitCooldown(ship, shot);
+
+                    // Does it count?
+                    if (ship.isAlive()) {
+                        shot.hitsLeft--;
+                    }
+
+                    // Can this lance still deal damage?
+                    if (shot.hitsLeft <= 0) {
+                        endLanceShot(shot, proj);
+                        continue PROJECTILES;
+                    }
+                }
+            }
+
+
+            // Iterate over ships and wrecks
+            // Check for a shield hit
+            for (CombatEntityAPI entity : ships) {
+                if (entity.getCollisionClass() == CollisionClass.NONE) {
+                    continue;
+                }
+
+                ShipAPI ship = (ShipAPI) entity;
+
+                if (ship == shot.source) continue;
+
+                if (ship.isFighter()) continue;
+
+                if (isHitCooldownActive(ship, shot)) continue;
+
+                if (isShieldHit(entity, proj)) {
+                    float speed = proj.getVelocity().length();
+
+                    float shieldFluxLeft = ship.getShield().getFluxPerPointOfDamage()
+                                * (ship.getFluxTracker().getMaxFlux()
+                                - ship.getFluxTracker().getCurrFlux());
+
+                    // Min 1 hit, remainder is cut off
+                    int hitsToBreak = 1 + (int) (shieldFluxLeft / shot.damagePerHit);
+
+                    // Shield absorbs entire hit
+                    if (hitsToBreak >= shot.hitsLeft) {
+                        hitShield(shot, proj, entity, speed, amount);
+                        endLanceShot(shot, proj);
+                        continue PROJECTILES;
+                    }
+
+                    // Shield is pierced
+                    shot.hitsLeft -= hitsToBreak;
+                    startHitCooldown(ship, shot);
+
+                    hitShieldPierced(shot, proj, entity, hitsToBreak, speed, amount);
+
+                    continue PROJECTILES; // Allow only one shield hit
+                }
+            }
+
+            // Check for a hull hit on a station/ship module
+            for (CombatEntityAPI entity : ships) {
+                if (entity.getCollisionClass() == CollisionClass.NONE) {
+                    continue;
+                }
+
+                ShipAPI ship = (ShipAPI) entity;
+
+                if (ship.isFighter()) continue;
+
+                if (!ship.isStationModule()) continue;
+                if (ship.getParentStation() == shot.source) continue;
+
+                if (ship == shot.source) continue;
+
+                if (isHitCooldownActive(ship, shot)) continue;
+
+                if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
+                    // Calculate projectile speed
+                    float speed = proj.getVelocity().length();
+
+                    // Dealing damage
+                    shot.hitsLeft--;
+                    startHitCooldown(ship, shot);
+                    startHitCooldown(ship.getParentStation(), shot);
+
+                    hitHullPierced(shot, proj, entity, speed, amount);
+
+                    // Can this lance still deal damage?
+                    if (shot.hitsLeft <= 0) {
+                        endLanceShot(shot, proj);
+                    }
+
+                    continue PROJECTILES;
+                }
+            }
+
+            // Check for a hull hit on a ship
+            for (CombatEntityAPI entity : ships) {
+                if (entity.getCollisionClass() == CollisionClass.NONE) {
+                    continue;
+                }
+
+                ShipAPI ship = (ShipAPI) entity;
+
+                if (ship.isFighter()) continue;
+
+                if (ship.isStationModule()) continue;
+
+                if (ship == shot.source) continue;
+
+                if (isHitCooldownActive(ship, shot)) continue;
+
+                if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
+                    // Calculate projectile speed
+                    float speed = proj.getVelocity().length();
+
+                    // Dealing damage
+                    shot.hitsLeft--;
+                    startHitCooldown(ship, shot);
+
+                    hitHullPierced(shot, proj, entity, speed, amount);
+
+                    // Can this lance still deal damage?
+                    if (shot.hitsLeft <= 0) {
+                        endLanceShot(shot, proj);
+                    }
+
+                    continue PROJECTILES;
+                }
+            }
+
+            // Iterate over asteroids
+            List<CombatEntityAPI> asteroids = new ArrayList<>();
+            asteroids.addAll(CombatUtils.getAsteroidsWithinRange(proj.getLocation(), proj.getCollisionRadius() + 5f));
+
+            for (CombatEntityAPI entity : asteroids) {
+                if (entity.getCollisionClass() == CollisionClass.NONE) {
+                    continue;
+                }
+
+                if (isHitCooldownActive(entity, shot)) continue;
+
+                if (CollisionUtils.isPointWithinBounds(proj.getLocation(), entity)) {
+                    // Calculate projectile speed
+                    float speed = proj.getVelocity().length();
+
+                    // Dealing damage
+                    startHitCooldown(entity, shot);
+
+                    hitHullPierced(shot, proj, entity, speed, amount);
+
+                    if (entity.getHitpoints() > 0) {
+                        shot.hitsLeft--;
+                        startHitCooldown(entity, shot);
+                    }
+
+                    // Can this lance still deal damage?
+                    if (shot.hitsLeft <= 0) {
+                        endLanceShot(shot, proj);
+                        continue PROJECTILES;
+                    }
+                }
+
+            }
+        }
+
+
+        // Clean up expired shots in SHOTS list
+        List<MS_MicroLanceShot> toRemove = new ArrayList<>();
+        for (MS_MicroLanceShot shot : SHOTS) {
+            if (shot.expired) toRemove.add(shot);
+
+            shot.expired = true; // We assume each shot will expire next time around
+        }
+        SHOTS.removeAll(toRemove);
+
+    }
+
+    private boolean isShieldHit(CombatEntityAPI entity, DamagingProjectileAPI proj) {
+        return entity.getShield() != null && entity.getShield().isOn()
+                    && entity.getShield().isWithinArc(proj.getLocation());
+    }
+
+    private boolean isHitCooldownActive(CombatEntityAPI entity, MS_MicroLanceShot shot) {
+        String entityId = entity.toString();
+        if (entity instanceof ShipAPI) entityId = ((ShipAPI) entity).getId();
+
+        String key = entityId + shot.source.getId();
+
+        return COOLDOWNS.containsKey(key);
+    }
+
+    private void startHitCooldown(CombatEntityAPI entity, MS_MicroLanceShot shot) {
+        String entityId = entity.toString();
+        if (entity instanceof ShipAPI) entityId = ((ShipAPI) entity).getId();
+
+        COOLDOWNS.put(entityId + shot.source.getId(),
+                    new IntervalUtil(DAMAGE_COOLDOWN, DAMAGE_COOLDOWN));
+    }
+
+    private void endLanceShot(MS_MicroLanceShot shot, DamagingProjectileAPI proj) {
+        shot.hitsLeft = 0;
+        shot.expired = true;
+        engine.removeEntity(proj);
     }
 }

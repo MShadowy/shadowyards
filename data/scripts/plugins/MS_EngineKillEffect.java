@@ -25,8 +25,8 @@ public class MS_EngineKillEffect extends BaseEveryFrameCombatPlugin {
     // Sound to play while piercing a target's armor (should be loopable!)
     private static final String PIERCE_SOUND = "ms_enginekill_impact"; // TEMPORARY
     // Projectile ID (String), pierces shields (boolean)
-    private static final Color effectColor = new Color(165, 215, 145, 150);
-    private static final Color effectColorCore = new Color(255, 255, 255, 255);
+    private static final Color EFFECT_COLOR = new Color(165, 215, 145, 150);
+    private static final Color EFFECT_COLOR_CORE = new Color(255, 255, 255, 255);
     private static final float ENGINE_KILL_RADIUS_SQUARED = 30f * 30f;
 
     private static final Set<String> PROJ_IDS = new HashSet<>();
@@ -83,7 +83,7 @@ public class MS_EngineKillEffect extends BaseEveryFrameCombatPlugin {
                                     shipEngine.disable();
                                     engine.spawnEmpArc(proj.getSource(), projLocation, entity, entity,
                                             DamageType.OTHER, 0, 0, 50f,
-                                            null, 15f, effectColor, effectColorCore);
+                                            null, 15f, EFFECT_COLOR, EFFECT_COLOR_CORE);
                                 }
                             }
                         }

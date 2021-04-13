@@ -58,8 +58,12 @@ public class MS_ApisAI implements MissileAIPlugin, GuidedMissileAI {
             2, 
             1, 
             1);
-                
-            if (tmp.getOwner() != missile.getOwner()) {
+            
+            if (tmp == null) 
+            { 
+                setTarget(findBestTarget(missile)); 
+            } else if (tmp.getOwner() != missile.getOwner()) 
+            {
                 setTarget(tmp);
             }
         }
@@ -200,7 +204,7 @@ public class MS_ApisAI implements MissileAIPlugin, GuidedMissileAI {
     }
 
     @Override
-    public void setTarget(CombatEntityAPI target) {
+    public final void setTarget(CombatEntityAPI target) {
         this.target = target;
     }
     

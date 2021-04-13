@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.OnHitEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.ShipEngineControllerAPI;
+import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
 import data.scripts.ShadowyardsModPlugin;
 import data.scripts.hullmods.TEM_LatticeShield;
 import java.awt.Color;
@@ -39,7 +40,7 @@ public class MS_REISOnHitEffect implements OnHitEffectPlugin {
     //private static final float ENGINE_KILL_RADIUS_SQUARED = 30f * 30f;
     
     @Override
-    public void onHit(DamagingProjectileAPI proj, CombatEntityAPI target, Vector2f point, boolean shieldHit, CombatEngineAPI engine) {
+    public void onHit(DamagingProjectileAPI proj, CombatEntityAPI target, Vector2f point, boolean shieldHit, ApplyDamageResultAPI apply, CombatEngineAPI engine) {
         if (point == null) {
             return;
         }

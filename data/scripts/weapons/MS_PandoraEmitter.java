@@ -11,6 +11,7 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import java.awt.Color;
 import java.util.List;
+import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -173,6 +174,22 @@ public class MS_PandoraEmitter implements EveryFrameWeaponEffectPlugin {
 
         @Override
         public Object getAI() {
+            return null;
+        }
+
+        @Override
+        public boolean isExpired() {
+            return false;
+        }
+
+        @Override
+        public void setCustomData(String string, Object o) { }
+
+        @Override
+        public void removeCustomData(String string) { }
+
+        @Override
+        public Map<String, Object> getCustomData() {
             return null;
         }
     }

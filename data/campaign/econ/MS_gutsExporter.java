@@ -38,7 +38,7 @@ public class MS_gutsExporter extends BaseMarketConditionPlugin {
             ITEM.setMaxDemand(ITEM.getMaxDemand() - SUPPLY);
         }
         
-        if (ITEM.getCommodity().equals(MS_items.GUTS)) {
+        if (ITEM.getCommodity().getId().equals(MS_items.GUTS)) {
             ITEM.setMaxDemand(SUPPLY);
         }
     }
