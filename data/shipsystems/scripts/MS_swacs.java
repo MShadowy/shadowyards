@@ -28,6 +28,7 @@ public class MS_swacs extends BaseShipSystemScript {
     
     private static final Color JITTER_UNDER_COLOR = new Color(255,50,0,125);
     private static final Color JITTER_COLOR = new Color(255,50,0,75);
+    private static final Color JITTER_CLEAR = new Color(0,0,0,0);
 
     //Just some global variables.
     private static final float ACCURACY_BONUS = 20f;
@@ -145,8 +146,8 @@ public class MS_swacs extends BaseShipSystemScript {
                 
                 fighter.setWeaponGlow(0f, Misc.setAlpha(null, 255), EnumSet.allOf(WeaponType.class));
 					
-		fighter.setJitterUnder(KEY_JITTER, null, 0f, 0, 0f, 0f);
-		fighter.setJitter(KEY_JITTER, null, 0f, 0, 0f, 0f);
+		fighter.setJitterUnder(KEY_JITTER, JITTER_CLEAR, 0f, 0, 0f, 0f);
+		fighter.setJitter(KEY_JITTER, JITTER_CLEAR, 0f, 0, 0f, 0f);
 	}
     }
 

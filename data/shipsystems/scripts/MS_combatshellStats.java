@@ -12,6 +12,7 @@ public class MS_combatshellStats extends BaseShipSystemScript {
 	
     private static final Color JITTER_COLOR = new Color(15,15,15,55);
     private static final Color JITTER_UNDER_COLOR = new Color(234,253,185,155);
+    private static final Color JITTER_CLEAR = new Color(0,0,0,0);
     
     @Override
     public void apply(MutableShipStatsAPI stats, String id, State state, float effectLevel) {
@@ -89,8 +90,8 @@ public class MS_combatshellStats extends BaseShipSystemScript {
         stats.getBeamWeaponDamageMult().unmodify(id);
         stats.getEnergyRoFMult().unmodify(id);
         
-        ship.setJitter(this, null, 0, 0, 0, 0f);
-	ship.setJitterUnder(this, null, 0, 0, 0f, 0f);
+        ship.setJitter(this, JITTER_CLEAR, 0, 0, 0, 0f);
+	ship.setJitterUnder(this, JITTER_CLEAR, 0, 0, 0f, 0f);
     }
 	
     @Override
