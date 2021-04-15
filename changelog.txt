@@ -1,3 +1,52 @@
+0.9.5-rc2 Changelog
+
+    Reduced the cost of Charge Cyclers to 3/6/9/12 OP (from 5/10/15/20) and improved the charge regen rate to 10%
+    Changed the names of the Particle Dart and Lance (to the Kamal Particle Dart and Mughal Particle Lance) and improved their descriptions
+    Additionally the Mughal's range has been increased to 1300 (from 1250)
+    Added a Military Market to Euripides
+    Added a very *extra* player specific portrait
+    Fixed a NPE crash that could sometimes happen in Nexerelin due to not finding a planetary black market somehow
+    Improved the market handling script so that it will now add SRA related special items to their markets occasionally
+    Removed the guaranteed Shadowyards station bp from the Theramin military market
+    Fixed some color problems on the Skadi sprite 
+
+0.9.5-rc1 Changelog
+    
+    Added the Redwings subfaction to the SRA; their home base is located on Euripides
+    Implemented an item based upgrade system for Fabricator Industries, and expanded the number of industries to four: 
+    	Modular Fabricators (balanced but not as good as Heavy Industry)
+    	Massively Parallel Fabricators (a civilian industrial focus capable of putting out lots of machinery) 
+    	Military Production Lines (heavy weapons and supplies)
+    	Integrated Shipyards (very high quality ships and large quantities of ship hulls)
+    Updated the Shadowyards mod plugin to include warnings for not having required mods and some additional housekeeping in other miscellaneous scripts
+    Fixed an issue where the Shadowyards station type couldn't be built at orbitals in Nexerelin (Probably working)
+    Added Nexerelin diplomatic traits to the SRA
+    Hopefully fixed a bug where joining a battle in which Mimirs were present would sometimes generate a NPE crash
+    Replaced the aging Lance script with a modernized and much less buggy version; everything should work properly now
+    Reduced the range of the Nidhoggr Lance to 1200 (from 2000)
+    Fixed a targeting bug with the Apiary's submunitions which could sometimes cause a NPE crash
+    Fixed an issue with the Commissioned Crews hullmod which could make acquiring it a bit more annoying then necessary
+    Hopefully fixed the "Glowing Shikome" bug and made some improvements to the fighter finagling script
+    Reduced the projectile speed of the Skinwalker and Bit Drone guns to 2000 (from 4000)
+    Added some SRA industries to vanilla markets
+        Asharu, Nomios, Olinadu, and Tigra City have acquired Orbital Solar Arrays
+        Fikenhild, Qaras and Baetis have recieved Med Centers
+        Eldfell has gotten its hands on some Modular Fabricators
+    Adjusted the populations on a few of the markets added by the mod:
+    	Euripides has been reduced to size 7 (from size 8) - despite being a 75% hazard world with a modest pre-collapse population, that was a bit much
+    	Auris' Grip has been reduced to size 3 (from size 5) - given that it's only a few months old such a large population was pretty questionable
+    	Hotri has been increased to size 6 (from size 4) - very low hazard, colonized around the collapse
+    	Mantra has been reduced to size 5 (from size 6) - somehow colonized well before Hotri, but also a complete hellhole
+    Removed an extra variant of the Odin which, due to sharing the same id, was causing the game to become confused and load the wrong configuration
+    Added the Charge Cycler hullmod, which increased the charge recovery rate for Energy weapons which have that stat by 7.5%
+    Added 2 additional variants to act as CORE variants for each of the High Value Bounty ships
+    Added an additional small composite hardpoint to the Carmine, as well as 5 additional OP, and adjusted the firing angles of a couple of the turrets
+    Added 2 new defense buster beam weapons, the Particle Dart, and Particle Lance, which deal a portion of their overall damage as hard flux immediately upon the first hit
+    Reduced OP cost of Raksasha bombers to 20 OP (from 25)
+    Went over variants and updated them where needed
+    Fixed display bugs that were present with the GAT and Overdrive systems
+    Replaced the Armor Pierce scripts and adjusted color clamps in the Vectored Thrusters script, which should hopefully put an end to the color overflow crash
+
 0.9.1-rc3 Changelog
 
     Fixed a bug with the flux lock armor where it would increase damage taken during the first frame of venting
@@ -9,7 +58,7 @@
 0.9.1-rc2 Changelog
 
     Further improved vectored thrusters, which should make them more consistent and less resource intensive
-    Fixed a bug with the Nidhoggr Lance and the Shikome's mirco-lance where it wasn't resetting the script between shots, leading to situations where it would fail to do appropriate damage
+    Fixed a bug with the Nidhoggr Lance and the Shikome's micro-lance where it wasn't resetting the script between shots, leading to situations where it would fail to do appropriate damage
     Fixed a bug where the Charybdis and Scylla were not spawning with their built in drone wings
     The Flux Lock Armor hullmod now has an icon
 

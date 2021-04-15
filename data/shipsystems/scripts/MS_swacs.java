@@ -142,6 +142,11 @@ public class MS_swacs extends BaseShipSystemScript {
                 fStats.getDeceleration().unmodify(id);
                 fStats.getTurnAcceleration().unmodify(id);
                 fStats.getMaxTurnRate().unmodify(id);
+                
+                fighter.setWeaponGlow(0f, Misc.setAlpha(null, 255), EnumSet.allOf(WeaponType.class));
+					
+		fighter.setJitterUnder(KEY_JITTER, null, 0f, 0, 0f, 0f);
+		fighter.setJitter(KEY_JITTER, null, 0f, 0, 0f, 0f);
 	}
     }
 

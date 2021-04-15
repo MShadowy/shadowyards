@@ -9,7 +9,7 @@ import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
 
 public class MS_chargeCycler extends BaseHullMod {
-    private final float RATE = 1.075f;
+    private final float RATE = 1.1f;
     
     @Override
     public String getDescriptionParam(int index, HullSize hullSize) {

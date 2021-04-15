@@ -88,6 +88,9 @@ public class MS_combatshellStats extends BaseShipSystemScript {
         
         stats.getBeamWeaponDamageMult().unmodify(id);
         stats.getEnergyRoFMult().unmodify(id);
+        
+        ship.setJitter(this, null, 0, 0, 0, 0f);
+	ship.setJitterUnder(this, null, 0, 0, 0f, 0f);
     }
 	
     @Override

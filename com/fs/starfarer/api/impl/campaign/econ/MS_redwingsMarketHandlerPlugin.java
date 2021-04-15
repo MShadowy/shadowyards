@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
@@ -33,10 +34,14 @@ public class MS_redwingsMarketHandlerPlugin implements EveryFrameScript {
         "ms_vardr_redwing"
     }));
     
-    private RedwingsMarketListener listener;
+    private static final List<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(new String[]{
+        "ms_parallelTooling",
+        "ms_militaryLogistics",
+        "ms_specializedSystemsFabs",
+        "industry_bp"
+    }));
     
-    protected boolean cInit = false;
-    protected boolean bInit = false;
+    private RedwingsMarketListener listener;
     
     @Override
     public void advance (float amount) {
@@ -72,6 +77,8 @@ public class MS_redwingsMarketHandlerPlugin implements EveryFrameScript {
         @Override
         public void reportPlayerOpenedMarketAndCargoUpdated(MarketAPI market) {
             MarketAPI commandMarket = null;
+            FactionAPI shadow = sector.getFaction("shadow_industry");
+            
             for (MarketAPI m : Global.getSector().getEconomy().getMarketsCopy()) {
                 if (m.hasIndustry(MS_industries.REDWINGS)) {
                     commandMarket = m;
@@ -82,11 +89,10 @@ public class MS_redwingsMarketHandlerPlugin implements EveryFrameScript {
                 hasRedwings = true;
             }
             
-            //Redwings need their command structure to exist:
-            if (hasRedwings) {
-                if (!targetMarkets.contains(market)) {
-                    FactionAPI shadow = sector.getFaction("shadow_industry");
-                    if (market.getFactionId().contains(shadow.getId())) {
+            if (!targetMarkets.contains(market)) {
+                if (market.getFactionId().contains(shadow.getId())) {
+                    //Redwings need their command structure to exist:
+                    if (hasRedwings) {
                         if (market.getSubmarket(Submarkets.GENERIC_MILITARY) != null) {
                             CargoAPI cargo = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
                             if (cargo != null) {
@@ -105,37 +111,64 @@ public class MS_redwingsMarketHandlerPlugin implements EveryFrameScript {
                                     }
                                 }
                                 
-                                cInit = true;
-                            }  
-                            
-                            if (cInit) {
                                 cargo.initMothballedShips(shadow.getId());
                             }
                         }
 
-                        CargoAPI blackM = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
-                        if (blackM != null) {
-                            //same odds, but fewer chances
-                            for (int i = 0; i < 2; i++) {
-                                if (Math.random() > 0.9f) {
+                        if (market.getSubmarket(Submarkets.SUBMARKET_BLACK) != null) {
+                            CargoAPI blackM = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
+                            if (blackM != null) {
+                                //same odds, but fewer chances
+                                for (int i = 0; i < 2; i++) {
+                                    if (Math.random() > 0.9f) {
+                                        Random rand = new Random();
+                                        String shipToAdd = SHIP_SELECT.get(rand.nextInt(SHIP_SELECT.size())) + "_Hull";
+                                        String name = shadow.pickRandomShipName();
+                                        if (shipToAdd != null) {
+                                            blackM.addMothballedShip(FleetMemberType.SHIP, shipToAdd, name);
+                                        }
+                                    }
+                                }
+
+                                blackM.initMothballedShips(shadow.getId());
+                            }
+                        }    
+                    }
+                
+                    
+                    if (market.getSubmarket(Submarkets.GENERIC_MILITARY) != null) {
+                        CargoAPI cargo = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
+                        if (cargo != null) {
+                            for (int i = 0; i < 1; i++) {
+                                if (Math.random() > 0.8f) {
                                     Random rand = new Random();
-                                    String shipToAdd = SHIP_SELECT.get(rand.nextInt(SHIP_SELECT.size())) + "_Hull";
-                                    String name = shadow.pickRandomShipName();
-                                    if (shipToAdd != null) {
-                                        blackM.addMothballedShip(FleetMemberType.SHIP, shipToAdd, name);
+                                    String specialItem = SPECIAL_ITEMS.get(rand.nextInt(SPECIAL_ITEMS.size()));
+                                    if (specialItem != null) {
+                                        if (specialItem.equals("industry_bp")) cargo.addSpecial(new SpecialItemData(specialItem, "ms_orbitalstation"), 1);
+                                        else cargo.addSpecial(new SpecialItemData(specialItem, null), 1);
                                     }
                                 }
                             }
-                            
-                            bInit = true;
-                        }
-                        
-                        if (bInit) {
-                            blackM.initMothballedShips(shadow.getId());
-                        }
-
-                        targetMarkets.add(market);
+                        }    
                     }
+                    
+                    if (market.getSubmarket(Submarkets.SUBMARKET_OPEN) != null) {
+                        CargoAPI open = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
+                        if (open != null) {
+                            for (int i = 0; i < 1; i++) {
+                                if (Math.random() > 0.9f) {
+                                    Random rand = new Random();
+                                    String specialItem = SPECIAL_ITEMS.get(rand.nextInt(SPECIAL_ITEMS.size()));
+                                    if (specialItem != null) {
+                                        if (specialItem.equals("industry_bp")) open.addSpecial(new SpecialItemData(specialItem, "ms_orbitalstation"), 1);
+                                        else open.addSpecial(new SpecialItemData(specialItem, null), 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    targetMarkets.add(market);
                 }
             }
         }

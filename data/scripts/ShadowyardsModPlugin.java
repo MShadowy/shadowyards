@@ -90,6 +90,8 @@ public class ShadowyardsModPlugin extends BaseModPlugin {
     public void onNewGame() {
         if (isExerelin && !SectorManager.getManager().isCorvusMode())
         {
+            Global.getSector().addScript(new MS_fleetFighterFinagler());
+            Global.getSector().addScript(new MS_redwingsMarketHandlerPlugin());
             return;
         }
         

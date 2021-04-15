@@ -4,13 +4,11 @@ import data.scripts.world.MS_Conditions;
 import data.scripts.world.AddMarketplace;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import java.awt.Color;
@@ -31,7 +29,6 @@ import com.fs.starfarer.api.impl.campaign.terrain.NebulaTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.StarCoronaTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import data.campaign.econ.MS_industries;
-import data.campaign.econ.MS_specialItems;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.lwjgl.util.vector.Vector2f;
@@ -92,7 +89,7 @@ public class Anar {
                         Conditions.REGIONAL_CAPITAL, Conditions.POPULATION_7)),
                 new ArrayList<>(Arrays.asList(MS_industries.ORBITAL3, Industries.PATROLHQ, MS_industries.MEDICALCENTER, Industries.FARMING, MS_industries.SHIPYARDS,
                     Industries.REFINING, Industries.LIGHTINDUSTRY, Industries.MEGAPORT, Industries.HEAVYBATTERIES, MS_industries.REDWINGS, Industries.POPULATION)),
-                new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
+                new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.GENERIC_MILITARY, Submarkets.SUBMARKET_OPEN)),
                 0.3f
         );
         
@@ -181,8 +178,8 @@ public class Anar {
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f
         );
-        CargoAPI cargo = theraminMarket.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
-        cargo.addSpecial(new SpecialItemData("industry_bp", "ms_orbitalstation"), 1);
+        //CargoAPI cargo = theraminMarket.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
+        //cargo.addSpecial(new SpecialItemData("industry_bp", "ms_orbitalstation"), 1);
         
         AddMarketplace.addMarketplace(Factions.INDEPENDENT,
                 melancholia,

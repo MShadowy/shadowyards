@@ -22,13 +22,13 @@ public class MS_gutsExporter extends BaseMarketConditionPlugin {
                 break;
             case 6:
             case 7:
-            case 8:
                 SUPPLY = 2;
                 break;
+            case 8:
             case 9:
-            case 10:
                 SUPPLY = 3;
                 break;
+            case 10:
             default:
                 SUPPLY = 0;
                 break;
