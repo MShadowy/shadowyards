@@ -23,9 +23,11 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteFleetSpawner;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RaidDangerLevel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -79,7 +81,7 @@ public class MS_redWingsHQ extends BaseIndustry implements RouteFleetSpawner, Fl
 		
 	MemoryAPI memory = market.getMemoryWithoutUpdate();
 	Misc.setFlagWithReason(memory, MemFlags.MARKET_PATROL, getModId(), true, -1);
-	Misc.setFlagWithReason(memory, MemFlags.MARKET_MILITARY, getModId(), true, -1);
+	//Misc.setFlagWithReason(memory, MemFlags.MARKET_MILITARY, getModId(), true, -1);
 	
         if (isHidden()) {
             supply.clear();
@@ -99,7 +101,7 @@ public class MS_redWingsHQ extends BaseIndustry implements RouteFleetSpawner, Fl
 		
 	MemoryAPI memory = market.getMemoryWithoutUpdate();
 	Misc.setFlagWithReason(memory, MemFlags.MARKET_PATROL, getModId(), false, -1);
-	Misc.setFlagWithReason(memory, MemFlags.MARKET_MILITARY, getModId(), false, -1);
+	//Misc.setFlagWithReason(memory, MemFlags.MARKET_MILITARY, getModId(), false, -1);
 		
 	unmodifyStabilityWithBaseMod();
     }
@@ -117,7 +119,10 @@ public class MS_redWingsHQ extends BaseIndustry implements RouteFleetSpawner, Fl
 	
     @Override
     protected int getBaseStabilityMod() {
-        return 2;
+        int stab = 0;
+        if (market.getPrevStability() < 10) stab = 1;
+        
+        return stab;
     }
 	
     public String getNameForModifier() {

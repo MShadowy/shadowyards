@@ -31,7 +31,8 @@ public class MS_redwingsMarketHandlerPlugin implements EveryFrameScript {
         "ms_charybdis_redwing",
         "ms_mimir_redwing",
         "ms_skadi_redwing",
-        "ms_vardr_redwing"
+        "ms_vardr_redwing",
+        "ms_carmine_redwing" //remove this one when the actual mission gets set up
     }));
     
     private static final List<String> SPECIAL_ITEMS = new ArrayList<>(Arrays.asList(new String[]{
@@ -78,6 +79,7 @@ public class MS_redwingsMarketHandlerPlugin implements EveryFrameScript {
         public void reportPlayerOpenedMarketAndCargoUpdated(MarketAPI market) {
             MarketAPI commandMarket = null;
             FactionAPI shadow = sector.getFaction("shadow_industry");
+            FactionAPI red = sector.getFaction("redwings");
             
             for (MarketAPI m : Global.getSector().getEconomy().getMarketsCopy()) {
                 if (m.hasIndustry(MS_industries.REDWINGS)) {
@@ -88,6 +90,8 @@ public class MS_redwingsMarketHandlerPlugin implements EveryFrameScript {
             if (commandMarket != null) {
                 hasRedwings = true;
             }
+            
+            if (!red.knowsShip("ms_carmine_redwing")) red.addKnownShip("ms_carmine_redwing", false);
             
             if (!targetMarkets.contains(market)) {
                 if (market.getFactionId().contains(shadow.getId())) {

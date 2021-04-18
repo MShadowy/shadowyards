@@ -37,42 +37,25 @@ public class MS_modularFac extends BaseIndustry implements IndustryItemUser {
                 
                 int size = market.getSize();
                 float SHIP_QUALITY_BONUS = 0.1f;
-                int HEAVY_MACHINERY_SUPPLY = 3;
-                int SUPPLY_QUANTITY = 3;
-                int HAND_WEAPON_SUPPLY = 3;
-                int SHIP_SUPPLY = 3;
+                int OUTPUT = 3;
                 
                 //adjust outputs according to each specialization
                 //average production in everything, small ship quality bonus, but no weaknesses
-                if (market.hasIndustry(MS_industries.PARALLEL_PRODUCTION)) {
-                    SHIP_QUALITY_BONUS = 0.0f;
-                    HEAVY_MACHINERY_SUPPLY = 0;
-                    SUPPLY_QUANTITY = 2;
-                }
-                if (market.hasIndustry(MS_industries.MILITARY_LINES)) {
-                    SHIP_QUALITY_BONUS = 0.2f;
-                    HEAVY_MACHINERY_SUPPLY = 4;
-                    SUPPLY_QUANTITY = 0;
-                    HAND_WEAPON_SUPPLY = 1;
-                    SHIP_SUPPLY = 4;
-                }
-                if (market.hasIndustry(MS_industries.SHIPYARDS)) {
-                    SHIP_QUALITY_BONUS = 0.6f;
-                    SUPPLY_QUANTITY = 4;
-                    HAND_WEAPON_SUPPLY = 4;
-                    SHIP_SUPPLY = 0;
-                }
                 
-                if (market.hasIndustry(MS_industries.MODULARFACTORIES) || market.hasIndustry(MS_industries.PARALLEL_PRODUCTION)
-                                || market.hasIndustry(MS_industries.MILITARY_LINES) || market.hasIndustry(MS_industries.SHIPYARDS)) {
+                if (MS_industries.MODULARFACTORIES.equals(getId())) {
                     demand(Commodities.METALS, size -1);
                     demand(Commodities.RARE_METALS, size -3);
                     demand(MS_items.BATTERIES, size -2);
+                    
+                    int ADJUSTED_OUTPUT = size - OUTPUT;
+                    if (ADJUSTED_OUTPUT <= 0) {
+                        ADJUSTED_OUTPUT = 1;
+                    }
                 
-                    supply(Commodities.HEAVY_MACHINERY, size - HEAVY_MACHINERY_SUPPLY);
-                    supply(Commodities.SUPPLIES, size - SUPPLY_QUANTITY);
-                    supply(Commodities.HAND_WEAPONS, size - HAND_WEAPON_SUPPLY);
-                    supply(Commodities.SHIPS, size - SHIP_SUPPLY);
+                    supply(Commodities.HEAVY_MACHINERY, ADJUSTED_OUTPUT);
+                    supply(Commodities.SUPPLIES, ADJUSTED_OUTPUT);
+                    supply(Commodities.HAND_WEAPONS, ADJUSTED_OUTPUT);
+                    supply(Commodities.SHIPS, ADJUSTED_OUTPUT);
                 
                     Pair<String, Integer> deficit = getMaxDeficit(Commodities.METALS, Commodities.RARE_METALS, MS_items.BATTERIES);
                     int maxDeficit = size -3;
@@ -85,7 +68,7 @@ public class MS_modularFac extends BaseIndustry implements IndustryItemUser {
 					Commodities.SHIPS);
                 
                     if (SHIP_QUALITY_BONUS > 0) {
-			market.getStats().getDynamic().getMod(Stats.PRODUCTION_QUALITY_MOD).modifyFlat(getModId(1), SHIP_QUALITY_BONUS, "Massively parallel fabricators");
+			market.getStats().getDynamic().getMod(Stats.PRODUCTION_QUALITY_MOD).modifyFlat(getModId(1), SHIP_QUALITY_BONUS, "Modular fabricators");
                     }
 		
                     float stability = market.getPrevStability();
@@ -284,4 +267,9 @@ public class MS_modularFac extends BaseIndustry implements IndustryItemUser {
                 
             return "Heavy Industry is already present";
 	}
+        
+        @Override
+        public float getPatherInterest() {
+            return 1f + super.getPatherInterest();
+        }
 }

@@ -117,10 +117,12 @@ public class MS_mimirSlideDrive extends BaseShipSystemScript {
                     {
                         if (!started) {
                             started = true;
-                        }       float speed = ship.getVelocity().length();
+                        }
+                        float speed = ship.getVelocity().length();
                         if (speed <= 0.1f) {
                             ship.getVelocity().set(VectorUtils.getDirectionalVector(ship.getLocation(), ship.getVelocity()));
-                        }       if (speed < 900f) {
+                        }
+                        if (speed < 900f) {
                             ship.getVelocity().normalise();
                             ship.getVelocity().scale(speed + amount * 3600f);
                         }
@@ -129,10 +131,14 @@ public class MS_mimirSlideDrive extends BaseShipSystemScript {
                 case ACTIVE:
                     {
                         float speed = ship.getVelocity().length();
+                        if (speed <= 0.1f) {
+                            ship.getVelocity().set(VectorUtils.getDirectionalVector(ship.getLocation(), ship.getVelocity()));
+                        }
                         if (speed < 900f) {
                             ship.getVelocity().normalise();
                             ship.getVelocity().scale(speed + amount * 3600f);
-                        }       stats.getArmorDamageTakenMult().modifyPercent(id, 0.5f);
+                        }
+                        stats.getArmorDamageTakenMult().modifyPercent(id, 0.5f);
                         stats.getHullDamageTakenMult().modifyPercent(id, 0.5f);
                         break;
                     }

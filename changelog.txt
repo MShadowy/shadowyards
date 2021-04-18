@@ -1,3 +1,22 @@
+0.9.5-rc4 Changelog
+
+    The Carmine (Redwings) should show up in SRA military and black markets and in Redwings fleets, as in retrospect there wasn't much reason to keep it from showing up while the mission string that would put it in game isn't even implemented yet
+    Finally seem to have resolved the ongoing Mimir vector crash bug, with thanks to President Matt Damon on the discrod
+    Redwings Command no longers makes Euripides a military market, and as such its uh... military market has been removed
+    	Please note that this will not effect existing saves
+    Some adjustments to Modular Fabricators and their sub industries in order to prevent possible issues with industry ids getting confused
+    Went over the Elysium (P)'s description to make it less clunky
+    Replaced the Potnia-bis' flare launcher with a damper system
+    Fixed an issue with the Tartarus' colission radius being smaller than its shield
+    Shikomes should no longer kill themselves with their mini-lances, and re-added the trails for the shot
+    Gave Theramin a custom planet class, Irradiated Terran, and a matching planet graphic
+    Theramin once again has its Radiation Absorbers, to help deal with it's newly gained Irradiated condition
+
+0.9.5-rc3 Changelog
+
+    Fixed a dumb oversight crash with the SWACs system
+    Fixed a crash with the GAT system on destroyer scale ships
+
 0.9.5-rc2 Changelog
 
     Reduced the cost of Charge Cyclers to 3/6/9/12 OP (from 5/10/15/20) and improved the charge regen rate to 10%

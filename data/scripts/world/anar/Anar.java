@@ -89,7 +89,7 @@ public class Anar {
                         Conditions.REGIONAL_CAPITAL, Conditions.POPULATION_7)),
                 new ArrayList<>(Arrays.asList(MS_industries.ORBITAL3, Industries.PATROLHQ, MS_industries.MEDICALCENTER, Industries.FARMING, MS_industries.SHIPYARDS,
                     Industries.REFINING, Industries.LIGHTINDUSTRY, Industries.MEGAPORT, Industries.HEAVYBATTERIES, MS_industries.REDWINGS, Industries.POPULATION)),
-                new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.GENERIC_MILITARY, Submarkets.SUBMARKET_OPEN)),
+                new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN)),
                 0.3f
         );
         
@@ -137,7 +137,7 @@ public class Anar {
         system.addRingBand(anar4, "misc", "rings_dust0", 256f, 1, Color.white, 128f, 1800, 120f);
         PlanetAPI anar4a = system.addPlanet("cinderbox", anar4, "Cinderbox", "lava", 300, 60, 700, 88);
         anar4a.setCustomDescriptionId("planet_cinderbox");
-        PlanetAPI theramin = system.addPlanet("theramin", anar4, "Theramin", "terran", 240, 120, 1200, 246);
+        PlanetAPI theramin = system.addPlanet("theramin", anar4, "Theramin", "planet_theramin", 240, 120, 1200, 246);
         theramin.setCustomDescriptionId("planet_theramin");
         theramin.setFaction("shadow_industry");
         PlanetAPI melancholia = system.addPlanet("melancholia", anar4, "Melancholia", "cryovolcanic", 200, 80, 2100, 492);
@@ -171,9 +171,9 @@ public class Anar {
                 new ArrayList<>(Arrays.asList((SectorEntityToken) station_gravitas)),
                 "Theramin",
                 6,
-                new ArrayList<>(Arrays.asList(MS_Conditions.IRRADIATED_TERRAN, Conditions.HABITABLE, Conditions.EXTREME_WEATHER, 
+                new ArrayList<>(Arrays.asList(MS_Conditions.IRRADIATED_TERRAN, Conditions.HABITABLE, Conditions.EXTREME_WEATHER, Conditions.IRRADIATED,
                         Conditions.ORGANICS_COMMON, Conditions.FARMLAND_RICH, Conditions.RARE_ORE_ABUNDANT, Conditions.POPULATION_6)),
-                new ArrayList<>(Arrays.asList(MS_industries.ORBITAL1, Industries.HEAVYBATTERIES, Industries.HIGHCOMMAND, 
+                new ArrayList<>(Arrays.asList(MS_industries.ORBITAL1, Industries.HEAVYBATTERIES, Industries.HIGHCOMMAND, MS_industries.RADBLOCKERS, 
                         Industries.MINING, MS_industries.PARALLEL_PRODUCTION, Industries.FARMING, Industries.POPULATION, Industries.SPACEPORT)),
                 new ArrayList<>(Arrays.asList(Submarkets.SUBMARKET_STORAGE, Submarkets.SUBMARKET_BLACK, Submarkets.SUBMARKET_OPEN, Submarkets.GENERIC_MILITARY)),
                 0.3f

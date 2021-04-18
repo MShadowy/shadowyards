@@ -289,7 +289,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
 
                 ShipAPI ship = (ShipAPI) entity;
 
-                if (!ship.isFighter()) continue;
+                if (!ship.isFighter() || ship == shot.source) continue;
 
                 if (isHitCooldownActive(ship, shot)) continue;
 
@@ -327,7 +327,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
 
                 ShipAPI ship = (ShipAPI) entity;
 
-                if (!ship.isFighter()) continue;
+                if (!ship.isFighter() || ship == shot.source) continue;
 
                 if (isHitCooldownActive(ship, shot)) continue;
 

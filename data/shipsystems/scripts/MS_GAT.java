@@ -40,7 +40,7 @@ public class MS_GAT extends BaseShipSystemScript {
     private static final Map<HullSize, Float> BEAM_DAM_MULT = new HashMap<>();//1.55f;
     static {
         BEAM_DAM_MULT.put(HullSize.FRIGATE, 1.55f);
-        BEAM_DAM_MULT.put(HullSize.DEFAULT, 1.65f);
+        BEAM_DAM_MULT.put(HullSize.DESTROYER, 1.65f);
         BEAM_DAM_MULT.put(HullSize.CRUISER, 1.75f);
         BEAM_DAM_MULT.put(HullSize.CAPITAL_SHIP, 1.85f);
     }

@@ -26,35 +26,52 @@ public class MS_fabUpgrader extends BaseIndustry  {
                 
         //adjust outputs according to each specialization
         //average production in everything, small ship quality bonus, but no weaknesses
-        if (market.hasIndustry(MS_industries.PARALLEL_PRODUCTION)) {
+        if (MS_industries.PARALLEL_PRODUCTION.equals(getId())) {
             SHIP_QUALITY_BONUS = 0.0f;
             HEAVY_MACHINERY_SUPPLY = 0;
             SUPPLY_QUANTITY = 2;
         }
-        if (market.hasIndustry(MS_industries.MILITARY_LINES)) {
+        if (MS_industries.MILITARY_LINES.equals(getId())) {
             SHIP_QUALITY_BONUS = 0.2f;
             HEAVY_MACHINERY_SUPPLY = 4;
             SUPPLY_QUANTITY = 0;
             HAND_WEAPON_SUPPLY = 1;
             SHIP_SUPPLY = 4;
         }
-        if (market.hasIndustry(MS_industries.SHIPYARDS)) {
+        if (MS_industries.SHIPYARDS.equals(getId())) {
             SHIP_QUALITY_BONUS = 0.6f;
             SUPPLY_QUANTITY = 4;
             HAND_WEAPON_SUPPLY = 4;
             SHIP_SUPPLY = 0;
         }
                 
-        if (market.hasIndustry(MS_industries.MODULARFACTORIES) || market.hasIndustry(MS_industries.PARALLEL_PRODUCTION)
-                        || market.hasIndustry(MS_industries.MILITARY_LINES) || market.hasIndustry(MS_industries.SHIPYARDS)) {
+        if (MS_industries.PARALLEL_PRODUCTION.equals(getId())
+                        || MS_industries.MILITARY_LINES.equals(getId()) 
+                || MS_industries.SHIPYARDS.equals(getId())) {
             demand(Commodities.METALS, size -1);
             demand(Commodities.RARE_METALS, size -3);
             demand(MS_items.BATTERIES, size -2);
+            
+            String iName = "";
+            if (market.hasIndustry(MS_industries.MILITARY_LINES)) {
+                iName = "Military production lines";
+            } else if (market.hasIndustry(MS_industries.SHIPYARDS)) {
+                iName = "Integrated shipyards";
+            }
+                    
+            int ADJUSTED_MACHINERY = size - HEAVY_MACHINERY_SUPPLY;
+            if (ADJUSTED_MACHINERY <= 0) ADJUSTED_MACHINERY = 1;
+            int ADJUSTED_SUPPLIES = size - SUPPLY_QUANTITY;
+            if (ADJUSTED_SUPPLIES <= 0) ADJUSTED_SUPPLIES = 1;
+            int ADJUSTED_WEAPONS  = size - HAND_WEAPON_SUPPLY;
+            if (ADJUSTED_WEAPONS <= 0) ADJUSTED_WEAPONS = 1;
+            int ADJUSTED_SHIPS = size - SHIP_SUPPLY;
+            if (ADJUSTED_SHIPS <= 0) ADJUSTED_SHIPS = 1;
                 
-            supply(Commodities.HEAVY_MACHINERY, size - HEAVY_MACHINERY_SUPPLY);
-            supply(Commodities.SUPPLIES, size - SUPPLY_QUANTITY);
-            supply(Commodities.HAND_WEAPONS, size - HAND_WEAPON_SUPPLY);
-            supply(Commodities.SHIPS, size - SHIP_SUPPLY);
+            supply(Commodities.HEAVY_MACHINERY, ADJUSTED_MACHINERY);
+            supply(Commodities.SUPPLIES, ADJUSTED_SUPPLIES);
+            supply(Commodities.HAND_WEAPONS, ADJUSTED_WEAPONS);
+            supply(Commodities.SHIPS, ADJUSTED_SHIPS);
                 
             Pair<String, Integer> deficit = getMaxDeficit(Commodities.METALS, Commodities.RARE_METALS, MS_items.BATTERIES);
             int maxDeficit = size -3;
@@ -67,7 +84,7 @@ public class MS_fabUpgrader extends BaseIndustry  {
 			Commodities.SHIPS);
                 
             if (SHIP_QUALITY_BONUS > 0) {
-		market.getStats().getDynamic().getMod(Stats.PRODUCTION_QUALITY_MOD).modifyFlat(getModId(1), SHIP_QUALITY_BONUS, "Massively parallel fabricators");
+		market.getStats().getDynamic().getMod(Stats.PRODUCTION_QUALITY_MOD).modifyFlat(getModId(1), SHIP_QUALITY_BONUS, iName);
             }
 		
             float stability = market.getPrevStability();
@@ -110,8 +127,8 @@ public class MS_fabUpgrader extends BaseIndustry  {
     protected void addPostDemandSection(TooltipMakerAPI tooltip, boolean hasDemand, IndustryTooltipMode mode) {
         //if (mode == IndustryTooltipMode.NORMAL && isFunctional()) {
         if (mode != IndustryTooltipMode.NORMAL || isFunctional()) {	
-            float SHIP_QUALITY_BONUS = 0.1f;
-            if (MS_industries.SHIPYARDS.equals(getId())) SHIP_QUALITY_BONUS = 0.4f;
+            float SHIP_QUALITY_BONUS = 0.2f;
+            if (MS_industries.SHIPYARDS.equals(getId())) SHIP_QUALITY_BONUS = 0.6f;
             if (MS_industries.PARALLEL_PRODUCTION.equals(getId())) SHIP_QUALITY_BONUS = 0.0f;
                 
             float total = SHIP_QUALITY_BONUS;
@@ -137,5 +154,18 @@ public class MS_fabUpgrader extends BaseIndustry  {
     
     protected void upgradeFinished(Industry previous) {
         sendBuildOrUpgradeMessage();
+    }
+    
+    @Override
+    public float getPatherInterest() {
+        float interest = 1f;
+        if (market.hasIndustry(MS_industries.MILITARY_LINES)) {
+            interest = 2f;
+        }
+        if (market.hasIndustry(MS_industries.SHIPYARDS)) {
+            interest = 4f;
+        }
+            
+        return interest + super.getPatherInterest();
     }
 }
