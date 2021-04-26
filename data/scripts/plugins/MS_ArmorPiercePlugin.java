@@ -198,7 +198,7 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     private static final List<MS_NidhoggerLanceShot> SHOTS = new ArrayList<>();
     private static final Map<String, IntervalUtil> COOLDOWNS = new HashMap<>();
 
-    private static CombatEngineAPI engine;
+    private CombatEngineAPI engine;
 
     @Override
     public void advance(float amount, List<InputEventAPI> events) {

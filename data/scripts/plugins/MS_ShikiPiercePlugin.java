@@ -198,7 +198,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     private static final List<MS_MicroLanceShot> SHOTS = new ArrayList<>();
     private static final Map<String, IntervalUtil> COOLDOWNS = new HashMap<>();
 
-    private static CombatEngineAPI engine;
+    private CombatEngineAPI engine;
 
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
@@ -289,7 +289,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
 
                 ShipAPI ship = (ShipAPI) entity;
 
-                if (!ship.isFighter() || ship == shot.source) continue;
+                if (!ship.isFighter() || ship == shot.source || ship.getOwner() == shot.source.getOwner()) continue;
 
                 if (isHitCooldownActive(ship, shot)) continue;
 
@@ -327,7 +327,7 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
 
                 ShipAPI ship = (ShipAPI) entity;
 
-                if (!ship.isFighter() || ship == shot.source) continue;
+                if (!ship.isFighter() || ship == shot.source || ship.getOwner() == shot.source.getOwner()) continue;
 
                 if (isHitCooldownActive(ship, shot)) continue;
 
