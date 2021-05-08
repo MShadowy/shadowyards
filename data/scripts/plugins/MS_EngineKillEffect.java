@@ -30,6 +30,8 @@ public class MS_EngineKillEffect extends BaseEveryFrameCombatPlugin {
     private static final float ENGINE_KILL_RADIUS_SQUARED = 30f * 30f;
 
     private static final Set<String> PROJ_IDS = new HashSet<>();
+    
+    private CombatEngineAPI engine;
 
     static {
         // Add all the enginekiller
@@ -38,7 +40,6 @@ public class MS_EngineKillEffect extends BaseEveryFrameCombatPlugin {
 
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
-        CombatEngineAPI engine = Global.getCombatEngine();
         
         // Scan all shots on the map for armor piercing projectiles
         for (DamagingProjectileAPI proj : engine.getProjectiles()) {
@@ -101,13 +102,6 @@ public class MS_EngineKillEffect extends BaseEveryFrameCombatPlugin {
 
     @Override
     public void init(CombatEngineAPI engine) {
-    }
-    
-    @Override
-    public void renderInUICoords(ViewportAPI viewport) {
-    }
-     
-    @Override
-    public void renderInWorldCoords(ViewportAPI viewport) {  
+        this.engine = engine;
     }
 }

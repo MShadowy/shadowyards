@@ -35,8 +35,11 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
     private static final float EMP_SHOCKWAVE_DURATION = 0.05f;
     private static final float EMP_SHOCKWAVE_MAX_SCALE = 1f;
     private static final float EMP_SHOCKWAVE_MIN_SCALE = 0.2f;
+    private static final float SPARK_SHOCKWAVE_DURATION = 0.25f;
+    private static final float SPARK_SHOCKWAVE_MAX_SCALE = 1f;
+    private static final float SPARK_SHOCKWAVE_MIN_SCALE = 0.2f;
     private static final int SHOCKWAVE_SIZE = 256;
-
+    
     public static void createFlakShockwave(Vector2f location)
     {
         final LocalData localData = (LocalData) Global.getCombatEngine().getCustomData().get(DATA_KEY);
@@ -75,7 +78,6 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
 
         shockwaves.add(new Shockwave(location, EMP_SHOCKWAVE_DURATION, EMP_SHOCKWAVE_MAX_SCALE, EMP_SHOCKWAVE_MIN_SCALE));
     }
-    private CombatEngineAPI engine; // Assigned per combat
     
     public static void createPing(Vector2f location, Vector2f velocity)
     {
@@ -118,6 +120,20 @@ public class MS_effectsHook extends BaseEveryFrameCombatPlugin {
         
         rifts.add(new Rift(location, GAP_DURATION, GAP_MAX_SCALE, GAP_MIN_SCALE));
     }
+    
+    public static void createSparkShockwave(Vector2f location)
+    {
+        final LocalData localData = (LocalData) Global.getCombatEngine().getCustomData().get(DATA_KEY);
+        if (localData == null)
+        {
+            return;
+        }
+
+        final List<Shockwave> shockwaves = localData.shockwaves;
+
+        shockwaves.add(new Shockwave(location, SPARK_SHOCKWAVE_DURATION, SPARK_SHOCKWAVE_MAX_SCALE, SPARK_SHOCKWAVE_MIN_SCALE));
+    }
+    private CombatEngineAPI engine; // Assigned per combat
 
     @Override
     public void advance(float amount, List<InputEventAPI> events)

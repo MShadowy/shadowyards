@@ -8,13 +8,18 @@ import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
+import data.scripts.plugins.MS_OverheatSteam;
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MS_overdriveStats extends BaseShipSystemScript {
+    private final Set<ShipAPI> activeRegistry = new HashSet<>();
+    
     protected Object STATUSKEY1 = new Object();
     protected Object STATUSKEY2 = new Object();
     private static final float ROF_BONUS = 1f;
@@ -47,6 +52,11 @@ public class MS_overdriveStats extends BaseShipSystemScript {
             stats.getEnergyRoFMult().modifyMult(id, mult);
             stats.getEnergyWeaponFluxCostMod().modifyMult(id, FLUX_MULT);
             stats.getBeamWeaponFluxCostMult().modifyFlat(id, FLUX_MULT);
+            
+            if (!activeRegistry.contains(ship)) {
+                engine.addPlugin(new MS_OverheatSteam(ship));
+                activeRegistry.add(ship);
+            }
             
             for (WeaponAPI w : weaps) {
                 if (engine.isPaused()) {
@@ -90,6 +100,8 @@ public class MS_overdriveStats extends BaseShipSystemScript {
             stats.getMissileRoFMult().modifyMult(id, mult);
             stats.getEnergyRoFMult().modifyMult(id, mult);
             
+            
+            
             hasPlayed = false;
             
             if (ship == Global.getCombatEngine().getPlayerShip() && effectLevel > 0) {
@@ -99,6 +111,10 @@ public class MS_overdriveStats extends BaseShipSystemScript {
                     system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
                     "all weapons rate of fire decreased " + (int) Math.round(malus1) + "%", false);
             }
+        }
+        
+        if (!activeRegistry.isEmpty() && (state != State.ACTIVE || !ship.isAlive() || !Global.getCombatEngine().isEntityInPlay(ship))) {
+            activeRegistry.clear();
         }
     }
 

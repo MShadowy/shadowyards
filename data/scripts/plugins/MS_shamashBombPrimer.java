@@ -30,6 +30,12 @@ public class MS_shamashBombPrimer extends BaseEveryFrameCombatPlugin {
     private SpriteAPI sprite;
     private float spriteHeight;
     private float spriteWidth;
+    
+    private DamagingProjectileAPI proj;
+    
+    public MS_shamashBombPrimer (DamagingProjectileAPI proj) {
+        this.proj = proj;
+    }
  
     @Override
     public void advance(float amount, List<InputEventAPI> events)
@@ -39,6 +45,11 @@ public class MS_shamashBombPrimer extends BaseEveryFrameCombatPlugin {
         {
             return;
         }
+        
+        if (proj == null || proj.isFading() || proj.didDamage() || !Global.getCombatEngine().isEntityInPlay(proj)) {
+            Global.getCombatEngine().removePlugin(this);
+            return;
+	}
  
         // Scan all projectiles for new bombs periodically
         nextCheck -= amount;

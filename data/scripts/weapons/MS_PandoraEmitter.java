@@ -18,10 +18,14 @@ import org.lwjgl.util.vector.Vector2f;
 public class MS_PandoraEmitter implements EveryFrameWeaponEffectPlugin {
 
     private static final String WEAPON_ID = "ms_pandora";
+    private static final String WEAPON_2 = "ms_derazhoObject";
     private static final String TARGET_ID = "ms_pandoraEmitterTarg";
     private static final float EMITTER_THICKNESS = 8f;
+    private static final float E_DARK_THICKNESS = 4f;
     private static final Color EMITTER_FRINGE = new Color(125, 155, 115, 150);
     private static final Color EMITTER_CORE = new Color(165, 215, 145, 255);
+    private static final Color E_DARK_FRINGE = new Color(125, 115, 155, 255);
+    private static final Color E_DARK_CORE = new Color(65, 45, 115, 155);
     private boolean hasChecked = false, hasEye = false;
     private WeaponAPI firingEye = null;
     private WeaponAPI closestEye = null;
@@ -40,7 +44,7 @@ public class MS_PandoraEmitter implements EveryFrameWeaponEffectPlugin {
                     closestDistance = MathUtils.getDistanceSquared(emitter.getLocation(), weapon.getLocation());
                 }
             }
-            if (WEAPON_ID.equals(weapon.getId())) {
+            if (WEAPON_ID.equals(weapon.getId()) || WEAPON_2.equals(weapon.getId())) {
                 if (firingEye == null) {
                     firingEye = weapon;
                 }
@@ -67,10 +71,18 @@ public class MS_PandoraEmitter implements EveryFrameWeaponEffectPlugin {
         }
 
         if (firingEye.isFiring() && firingEye.getChargeLevel() <= 5.5) {
-            activeArc = engine.spawnEmpArc(weapon.getShip(),
-                    weapon.getLocation(), weapon.getShip(),
-                    eyeFollower, DamageType.OTHER, 0f, 0f, 5000f,
-                    null, EMITTER_THICKNESS, EMITTER_FRINGE, EMITTER_CORE);
+            if (WEAPON_2.equals(firingEye.getId())) {
+                activeArc = engine.spawnEmpArc(weapon.getShip(),
+                        weapon.getLocation(), weapon.getShip(),
+                        eyeFollower, DamageType.OTHER, 0f, 0f, 5000f,
+                        null, E_DARK_THICKNESS, E_DARK_FRINGE, E_DARK_CORE);
+            }
+            else {
+                activeArc = engine.spawnEmpArc(weapon.getShip(),
+                        weapon.getLocation(), weapon.getShip(),
+                        eyeFollower, DamageType.OTHER, 0f, 0f, 5000f,
+                        null, EMITTER_THICKNESS, EMITTER_FRINGE, EMITTER_CORE); 
+            }
         }
     }
 

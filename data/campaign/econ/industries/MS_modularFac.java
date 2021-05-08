@@ -2,6 +2,7 @@ package data.campaign.econ.industries;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
@@ -245,9 +246,11 @@ public class MS_modularFac extends BaseIndustry implements IndustryItemUser {
         @Override
 	public boolean isAvailableToBuild() {
             if (!super.isAvailableToBuild()) return false;
-                
+            
+            PlanetAPI planet = market.getPlanetEntity();
+            
             boolean hasHeavy = false;
-            if (market.getPlanetEntity() != null && (market.hasIndustry(Industries.HEAVYINDUSTRY) ||
+            if (planet != null && planet.getOrbitFocus() != null && (market.hasIndustry(Industries.HEAVYINDUSTRY) ||
                         market.hasIndustry(Industries.ORBITALWORKS))) {
                 hasHeavy = true;
             }

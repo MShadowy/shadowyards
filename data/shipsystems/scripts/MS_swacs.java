@@ -19,7 +19,7 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MS_swacs extends BaseShipSystemScript {
-
+    
     private CombatEngineAPI engine;
     
     public static final Object KEY_JITTER = new Object();
@@ -28,7 +28,6 @@ public class MS_swacs extends BaseShipSystemScript {
     
     private static final Color JITTER_UNDER_COLOR = new Color(255,50,0,125);
     private static final Color JITTER_COLOR = new Color(255,50,0,75);
-    private static final Color JITTER_CLEAR = new Color(0,0,0,0);
 
     //Just some global variables.
     private static final float ACCURACY_BONUS = 20f;
@@ -55,51 +54,57 @@ public class MS_swacs extends BaseShipSystemScript {
 	}
 
         if (effectLevel > 0) {
-		float jitterLevel = effectLevel;
-		float maxRangeBonus = 5f;
-		float jitterRangeBonus = jitterLevel * maxRangeBonus;
-		for (ShipAPI fighter : getFighters(ship)) {
-			if (fighter.isHulk()) continue;
-			MutableShipStatsAPI fStats = fighter.getMutableStats();
+            float jitterLevel = effectLevel;
+            float jitterRangeBonus = 0;
+            float maxRangeBonus = 5f;
+            jitterRangeBonus = jitterLevel * maxRangeBonus;
+            
+            jitterLevel = (float) Math.sqrt(jitterLevel);
+            effectLevel *= effectLevel;
+            
+            for (ShipAPI fighter : getFighters(ship)) {
+		if (fighter.isHulk()) continue;
+		MutableShipStatsAPI fStats = fighter.getMutableStats();
 				
-			fStats.getBallisticWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
-			fStats.getEnergyWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
-			fStats.getMissileWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
+		fStats.getBallisticWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
+		fStats.getEnergyWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
+		fStats.getMissileWeaponDamageMult().modifyPercent(id, 1f + 0.01f * DAMAGE_BOOST * effectLevel);
                         
-                        fStats.getAutofireAimAccuracy().modifyPercent(id, ACCURACY_BONUS);
-                        fStats.getBallisticWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
-                        fStats.getEnergyWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
-                        fStats.getBeamWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
+                fStats.getAutofireAimAccuracy().modifyPercent(id, ACCURACY_BONUS);
+                fStats.getBallisticWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
+                fStats.getEnergyWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
+                fStats.getBeamWeaponRangeBonus().modifyPercent(id, RANGE_BONUS);
                         
-                        fStats.getMaxSpeed().modifyPercent(id, AGILITY_BONUS);
-                        fStats.getAcceleration().modifyPercent(id, AGILITY_BONUS);
-                        fStats.getDeceleration().modifyPercent(id, AGILITY_BONUS);
-                        fStats.getMaxTurnRate().modifyPercent(id, AGILITY_BONUS);
-                        fStats.getTurnAcceleration().modifyPercent(id, AGILITY_BONUS);
+                fStats.getMaxSpeed().modifyPercent(id, AGILITY_BONUS);
+                fStats.getAcceleration().modifyPercent(id, AGILITY_BONUS);
+                fStats.getDeceleration().modifyPercent(id, AGILITY_BONUS);
+                fStats.getMaxTurnRate().modifyPercent(id, AGILITY_BONUS);
+                fStats.getTurnAcceleration().modifyPercent(id, AGILITY_BONUS);
 				
-			if (jitterLevel > 0 && ShaderLib.isOnScreen(ZERO, 100f)) {
-				//fighter.setWeaponGlow(effectLevel, new Color(255,50,0,125), EnumSet.allOf(WeaponType.class));
-				fighter.setWeaponGlow(effectLevel, Misc.setAlpha(JITTER_UNDER_COLOR, 255), EnumSet.allOf(WeaponType.class));
-					
-				fighter.setJitterUnder(KEY_JITTER, JITTER_COLOR, jitterLevel, 5, 0f, jitterRangeBonus);
-				fighter.setJitter(KEY_JITTER, JITTER_UNDER_COLOR, jitterLevel, 2, 0f, 0 + jitterRangeBonus * 1f);
-				Global.getSoundPlayer().playLoop("system_targeting_feed_loop", ship, 1f, 1f, fighter.getLocation(), fighter.getVelocity());
+		if (jitterLevel > 0 && ShaderLib.isOnScreen(ZERO, 2000f)) {
+                    if (fighter.getHullSpec().getHullId().equals("ms_shikome")) { } else {
+                        fighter.setWeaponGlow(effectLevel, Misc.setAlpha(JITTER_UNDER_COLOR, 255), EnumSet.allOf(WeaponType.class));
+                    }
+                    
+                    fighter.setJitterUnder(KEY_JITTER, JITTER_COLOR, jitterLevel, 10, 0f, jitterRangeBonus);
+                    fighter.setJitter(KEY_JITTER, JITTER_UNDER_COLOR, jitterLevel, 3, 0f, 0 + jitterRangeBonus * 1f);
+                    Global.getSoundPlayer().playLoop("system_targeting_feed_loop", ship, 1f, 1f, fighter.getLocation(), fighter.getVelocity());
                                 
-                                for (ShipEngineAPI engines : fighter.getEngineController().getShipEngines()) {
-                                    if (engines.isDisabled() == false) {
-                                    float size;
-                                    for (int i = 0; i < 5; i++) {
-                                        size = MathUtils.getRandomNumberInRange(4f, 1f);
-                                        Vector2f spawn = MathUtils.getRandomPointInCircle(ship.getLocation(), ship.getCollisionRadius());
+                    for (ShipEngineAPI engines : fighter.getEngineController().getShipEngines()) {
+                        if (engines.isDisabled() == false) {
+                        float size;
+                        for (int i = 0; i < 5; i++) {
+                            size = MathUtils.getRandomNumberInRange(4f, 1f);
+                                Vector2f spawn = MathUtils.getRandomPointInCircle(ship.getLocation(), ship.getCollisionRadius());
                             
-                                        if (Math.random() > 0.9 && !engine.isPaused()) {
-                                            engine.addSmoothParticle(spawn, ZERO, size, (float) Math.random() * 1f, 1f, COLOR1);
-                                        }
-                                    }
+                                if (Math.random() > 0.9 && !engine.isPaused()) {
+                                    engine.addSmoothParticle(spawn, ZERO, size, (float) Math.random() * 1f, 1f, COLOR1);
                                 }
                             }
-			}
+                        }
+                    }
 		}
+            }
 	}
     }
     
@@ -143,11 +148,6 @@ public class MS_swacs extends BaseShipSystemScript {
                 fStats.getDeceleration().unmodify(id);
                 fStats.getTurnAcceleration().unmodify(id);
                 fStats.getMaxTurnRate().unmodify(id);
-                
-                fighter.setWeaponGlow(0f, Misc.setAlpha(JITTER_CLEAR, 255), EnumSet.allOf(WeaponType.class));
-					
-		fighter.setJitterUnder(KEY_JITTER, JITTER_CLEAR, 0f, 0, 0f, 0f);
-		fighter.setJitter(KEY_JITTER, JITTER_CLEAR, 0f, 0, 0f, 0f);
 	}
     }
 

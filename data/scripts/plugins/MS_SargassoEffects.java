@@ -7,14 +7,18 @@ import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import data.scripts.util.MS_effectsHook;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class MS_SargassoEffects extends BaseEveryFrameCombatPlugin {
     
     private CombatEngineAPI engine;
+    private final ShipAPI ship;
     
     private final IntervalUtil interval = new IntervalUtil(1.5f, 1.5f);
     
-    private static final String SYS = "ms_swacs";
+    public MS_SargassoEffects(@NotNull ShipAPI ship) {
+        this.ship = ship;
+    }
     
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
@@ -26,19 +30,15 @@ public class MS_SargassoEffects extends BaseEveryFrameCombatPlugin {
             return;
         }
         
-        for (ShipAPI ship : engine.getShips()) {
-            if (!ship.getSystem().getId().contains(SYS) || !ship.isAlive()) {
-                continue; //since this only goes for Sargasso's we can exclude most everything
+        interval.advance(amount);
+        if (interval.intervalElapsed()) {
+            for (int i = 0; i < 1; i++) {
+                MS_effectsHook.createPulse(ship.getLocation());
             }
-            
-            if (ship.getSystem().isActive()) {
-                interval.advance(amount);
-                if (interval.intervalElapsed()) {
-                    for (int i = 0; i < 1; i++) {
-                            MS_effectsHook.createPulse(ship.getLocation());
-                    }
-                }
-            }
+        }
+        
+        if (ship.getSystem().getEffectLevel() <= 0) {
+            engine.removePlugin(this);
         }
     }
     

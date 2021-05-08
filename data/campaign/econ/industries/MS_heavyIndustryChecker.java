@@ -1,5 +1,6 @@
 package data.campaign.econ.industries;
 
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.impl.campaign.econ.impl.HeavyIndustry;
 import data.campaign.econ.MS_industries;
 
@@ -11,7 +12,9 @@ public class MS_heavyIndustryChecker extends HeavyIndustry {
     public boolean isAvailableToBuild() {
         boolean hasModular = false;
         
-        if (market.getPlanetEntity() != null && (market.hasIndustry(MS_industries.MODULARFACTORIES) || 
+        PlanetAPI planet = market.getPlanetEntity();
+        
+        if (planet != null && planet.getOrbitFocus() != null && (market.hasIndustry(MS_industries.MODULARFACTORIES) || 
                                 market.hasIndustry(MS_industries.PARALLEL_PRODUCTION) || 
                 market.hasIndustry(MS_industries.MILITARY_LINES) || market.hasIndustry(MS_industries.SHIPYARDS))) {
             hasModular = true;

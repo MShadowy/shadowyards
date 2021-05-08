@@ -1,11 +1,9 @@
 package data.scripts.plugins;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
-import com.fs.starfarer.api.combat.ViewportAPI;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.List;
@@ -23,11 +21,14 @@ public class MS_PandoraZapMaster extends BaseEveryFrameCombatPlugin {
         // Add all projectiles that should zap here
         PROJ_IDS.add("ms_pandora_zap");
     }
-
+    
+    private CombatEngineAPI engine;
+    
     @Override
     public void advance(float amount, List events) {
-        CombatEngineAPI engine = Global.getCombatEngine();
-
+        if (engine == null) {
+            return;
+        }
         if (engine.isPaused()) {
             return;
         }
@@ -63,13 +64,6 @@ public class MS_PandoraZapMaster extends BaseEveryFrameCombatPlugin {
 
     @Override
     public void init(CombatEngineAPI engine) {
-    }
-    
-    @Override
-    public void renderInUICoords(ViewportAPI viewport) {
-    }
-     
-    @Override
-    public void renderInWorldCoords(ViewportAPI viewport) {  
+        this.engine = engine;
     }
 }

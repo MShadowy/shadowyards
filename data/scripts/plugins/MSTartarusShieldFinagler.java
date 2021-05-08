@@ -1,21 +1,19 @@
 package data.scripts.plugins;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
 import com.fs.starfarer.api.combat.ShieldAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipSystemAPI;
-import com.fs.starfarer.api.combat.ViewportAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
 import java.util.List;
 
 public class MSTartarusShieldFinagler extends BaseEveryFrameCombatPlugin {
-
+    
+    private CombatEngineAPI engine;
+    
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
-        CombatEngineAPI engine = Global.getCombatEngine();
-
         if (engine != null) {
             for (ShipAPI ship : engine.getShips()) {
                 if ("ms_tartarus".equals(ship.getHullSpec().getHullId()) || "ms_lobatus".equals(ship.getHullSpec().getHullId()) || "ms_boss_charybdis".equals(ship.getHullSpec().getHullId())) {
@@ -66,13 +64,6 @@ public class MSTartarusShieldFinagler extends BaseEveryFrameCombatPlugin {
 
     @Override
     public void init(CombatEngineAPI engine) {
-    }
-    
-    @Override
-    public void renderInUICoords(ViewportAPI viewport) {
-    }
-     
-    @Override
-    public void renderInWorldCoords(ViewportAPI viewport) {  
+        this.engine = engine;
     }
 }

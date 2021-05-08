@@ -47,10 +47,10 @@ public class SHIGen implements SectorGeneratorPlugin {
         shadow.setRelationship("SCY", RepLevel.WELCOMING);                      // not really ideologically on the same page, but we're helping each other regardless
         shadow.setRelationship("ORA", RepLevel.FAVORABLE);                      // something's a little strange here, but they seem like they're on the level...
         shadow.setRelationship("scalartech", 0.4f);                             // isolationists, but reliable trading partners
-        shadow.setRelationship("dassault_mikoyan", 0.2f);                       // corporate, but also anti-fascists
+        shadow.setRelationship("dassault_mikoyan", 0.2f);                       // corporate anti-fascists which... well, we'll roll with it
         shadow.setRelationship("6eme_bureau", 0.2f);                            // subfaction; dme legbreakers
-        shadow.setRelationship("pack", RepLevel.FAVORABLE);                     // anarchist commune trying to resist imperialism
-        shadow.setRelationship("brighton", 0.5f);                               // we're not really in a position to help these people more, unfortunately
+        shadow.setRelationship("pack", RepLevel.FAVORABLE);                     // anarchist commune trying to resist imperialism; also we like dogs
+        shadow.setRelationship("brighton", 0.5f);                               // not really in much position to help out more
         
         shadow.setRelationship("blackrock_driveyards", RepLevel.SUSPICIOUS);    // they're doing something in Gniess, and it ain't lookin nice
         shadow.setRelationship("sad", RepLevel.SUSPICIOUS);                     // a splinter group of Yardies gone completely off the chain and/or rails
@@ -59,12 +59,12 @@ public class SHIGen implements SectorGeneratorPlugin {
         shadow.setRelationship("HMI", -0.4f);                                   // pirates pretending to be a corporation
            
         shadow.setRelationship("diableavionics", RepLevel.HOSTILE);             // imperialists, and they seem to be actively trying to destabilize things
-        shadow.setRelationship("mayorate", RepLevel.HOSTILE);                   // xenophobic and hostile
+        shadow.setRelationship("mayorate", RepLevel.HOSTILE);                   // xenophobic, hostile... and what kind of government model even is this?
         shadow.setRelationship("junk_pirates", RepLevel.HOSTILE);               // innovative pirates
         shadow.setRelationship("exigency", RepLevel.HOSTILE);                   // technologically sophisticated pirates
         shadow.setRelationship("exipirated", RepLevel.HOSTILE);                 // also pirates
         shadow.setRelationship("cabal", -0.8f);                                 // really, really obnoxious pirates
-        shadow.setRelationship("blade_breakers", RepLevel.HOSTILE);             // we don't know too much about them, but they seem... bad
+        shadow.setRelationship("blade_breakers", RepLevel.HOSTILE);             // we don't know too much about them, but they seem... y'know, bad
               
         shadow.setRelationship("tahlan_legioinfernalis", -0.74f);               // better organized and better armed space pirates, might be fascists
         shadow.setRelationship("draco", -0.8f);                                 // what the hell is wrong with these people
@@ -77,12 +77,12 @@ public class SHIGen implements SectorGeneratorPlugin {
         shadow.setRelationship(pirates.getId(), -0.6f);                         // we can sympathize with how difficult matters are, but not the random murder and banditry
         shadow.setRelationship(diktat.getId(), -0.7f);                          // basically similar to the Hegemony, but worse
         shadow.setRelationship(remnants.getId(), RepLevel.HOSTILE);             // renegade Tri-Tach toys from the 1st AI War
-        shadow.setRelationship(derelicts.getId(), RepLevel.HOSTILE);            // Domain holdovers
+        shadow.setRelationship(derelicts.getId(), RepLevel.HOSTILE);            // Domain leftovers, past their "best by" date
         
         shadow.setRelationship(tritachyon.getId(), 0f);                         // asshats, but we've got enough on our plate
         
         shadow.setRelationship(independent.getId(), 0.2f);                      // a mixed bag, but we support autarchy and independence
-        shadow.setRelationship(league.getId(), 0.1f);                           // we're not exactly friends, but they do at least dislike the Heggies
+        shadow.setRelationship(league.getId(), 0.1f);                           // we're not really friends, but...
         
         church.setRelationship(shadow.getId(), -0.3f);                          // they kinda resent the SRA's efforts to materially help the sector
         kol.setRelationship(shadow.getId(), -0.3f);                             // subfaction: church legbreakers

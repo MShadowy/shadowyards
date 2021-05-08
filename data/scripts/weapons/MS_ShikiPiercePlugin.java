@@ -1,4 +1,4 @@
-package data.scripts.plugins;
+package data.scripts.weapons;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.*;
@@ -10,11 +10,15 @@ import static com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.MIN
 import com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.RangedSpecDamageDealtMod;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import data.scripts.plugins.MS_APVisualEffectPlugin;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
@@ -23,18 +27,10 @@ import org.lwjgl.util.vector.Vector2f;
 //import static org.lwjgl.opengl.GL11.GL_ONE;
 //import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
-public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
+public class MS_ShikiPiercePlugin implements EveryFrameWeaponEffectPlugin, OnFireEffectPlugin {
 
-    // OBJECTIVES:
-    // NL should pierce targets and deal 1000 damage per hit at normal damage
-    // NL can pierce shields if it has damage remaining
-    // - this reduces overload time a little, but that is fair
-    // Missiles don't count for hits
-    // Destroyed/wrecked fighters don't count for hits
-    // - if the fighter survives the hit, it does count
-    // Hull under a module is not hit
-
-//    private static final String WEAPON_ID = "ms_rhpc";
+    private static final String DATA_KEY_PREFIX = "MS_HullPierceWeapon_";
+    
     private static final String PROJ_ID = "ms_microLanceBlast";
     private static final int MAX_HITS = 4; // For base 1000 damage per hit
 
@@ -63,14 +59,14 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
         damage *= getRangedSpecDamageMult(proj);
         float empDamage = shot.empPerHit;
         
-        engine.applyDamage(entity, proj.getLocation(),
+        Global.getCombatEngine().applyDamage(entity, proj.getLocation(),
                     damage,
                     proj.getDamageType(),
                     empDamage,
                     false, false, proj.getSource());
 
         // Render the hit
-        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
+        Global.getCombatEngine().spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
         // Play piercing sound (only one sound active per projectile)
         Global.getSoundPlayer().playLoop(SHIELD_HIT_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
     }
@@ -83,14 +79,14 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
         damage *= getRangedSpecDamageMult(proj);
         float empDamage = shot.empPerHit;
 
-        engine.applyDamage(entity, proj.getLocation(),
+        Global.getCombatEngine().applyDamage(entity, proj.getLocation(),
                     damage,
                     proj.getDamageType(),
                     empDamage,
                     false, false, proj.getSource());
 
         // Render the hit
-        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
+        Global.getCombatEngine().spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
         // Play piercing sound (only one sound active per projectile)
         Global.getSoundPlayer().playLoop(SHIELD_HIT_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
     }
@@ -104,14 +100,14 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
         float empDamage = shot.empPerHit;
 
         // Deal damage first, then check if it counts as a hit
-        engine.applyDamage(entity, proj.getLocation(),
+        Global.getCombatEngine().applyDamage(entity, proj.getLocation(),
                     damage,
                     proj.getDamageType(),
                     empDamage,
                     true, false, proj.getSource());
 
         // Render the hit
-        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount * 2f, .5f);
+        Global.getCombatEngine().spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount * 2f, .5f);
         // Play piercing sound (only one sound active per projectile)
         Global.getSoundPlayer().playLoop(PIERCE_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
 
@@ -140,38 +136,22 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
             return 1f + (chancePercent * 0.01f);
         }
     }
-
+    
     @Override
-    public void renderInWorldCoords(ViewportAPI viewport) {
-        if (engine == null) {
-            return;
+    public void onFire(DamagingProjectileAPI projectile, WeaponAPI weapon, CombatEngineAPI engine) {
+        if ((projectile == null) || (weapon == null)) return;
+        
+        final String DATA_KEY = DATA_KEY_PREFIX + weapon.getShip().getId() + "_" + weapon.getSlot().getId();
+        LocalData localData = (LocalData) engine.getCustomData().get(DATA_KEY);
+        if (localData == null) {
+            localData = new LocalData();
+            engine.getCustomData().put(DATA_KEY, localData);
         }
-
-        for (DamagingProjectileAPI proj : engine.getProjectiles()) {
-            String spec = proj.getProjectileSpecId();
-
-            if (spec == null || !spec.equals(PROJ_ID)) {
-                continue;
-            }
-
-            Vector2f Here = new Vector2f(0,0) ;
-            Here.x = proj.getLocation().x;
-            Here.y = proj.getLocation().y;
-
-            SpriteAPI sprite = Global.getSettings().getSprite("flare", "nidhoggr_ALF");
-
-            if (!engine.isPaused()) {
-                sprite.setAlphaMult(MathUtils.getRandomNumberInRange(0.9f, 1f));
-            } else {
-                float tAlf = sprite.getAlphaMult();
-                sprite.setAlphaMult(tAlf);
-            }
-            sprite.setSize(400, 50);
-            sprite.setAdditiveBlend();
-            sprite.renderAtCenter(Here.x, Here.y);
-        }
+        final Set<DamagingProjectileAPI> hullPierceProjectiles = localData.hullPierceProjectiles;
+        
+        hullPierceProjectiles.add(projectile);
+        engine.addPlugin(new MS_APVisualEffectPlugin(projectile));
     }
-
 
     //*********************
     // PROJECTILE HIT LOGIC
@@ -198,18 +178,34 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     private static final List<MS_MicroLanceShot> SHOTS = new ArrayList<>();
     private static final Map<String, IntervalUtil> COOLDOWNS = new HashMap<>();
 
-    private CombatEngineAPI engine;
-
     @Override
-    public void advance(float amount, List<InputEventAPI> events) {
-        if (engine != Global.getCombatEngine()) {
+    public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
+        if (engine == null) {
             SHOTS.clear();
             COOLDOWNS.clear();
-            engine = Global.getCombatEngine();
+            return;
         }
 
         if (engine.isPaused()) {
             return;
+        }
+        
+        final String DATA_KEY = DATA_KEY_PREFIX + weapon.getShip().getId() + "_" + weapon.getSlot().getId();
+        LocalData localData = (LocalData) engine.getCustomData().get(DATA_KEY);
+        if (localData == null) {
+            localData = new LocalData();
+            engine.getCustomData().put(DATA_KEY, localData);
+        }
+        final Set<DamagingProjectileAPI> hullPierceProjectiles = localData.hullPierceProjectiles;
+        
+        if (hullPierceProjectiles.isEmpty()) return;
+        
+        Iterator<DamagingProjectileAPI> iter = hullPierceProjectiles.iterator();
+        while (iter.hasNext()) {
+            DamagingProjectileAPI proj = iter.next();
+            if (proj.isExpired() || !Global.getCombatEngine().isEntityInPlay(proj)) {
+                iter.remove();
+            }
         }
 
         List<String> keysToRemove = new ArrayList<>();
@@ -220,9 +216,11 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
         }
         for (String key: keysToRemove) COOLDOWNS.remove(key);
 
+        iter = hullPierceProjectiles.iterator();
         // Scan all shots on the map for NL projectiles
         PROJECTILES:
-        for (DamagingProjectileAPI proj : engine.getProjectiles()) {
+        while (iter.hasNext()) {
+            DamagingProjectileAPI proj = iter.next();
             String spec = proj.getProjectileSpecId();
 
             // Is this a NL proj?
@@ -540,6 +538,10 @@ public class MS_ShikiPiercePlugin extends BaseEveryFrameCombatPlugin {
     private void endLanceShot(MS_MicroLanceShot shot, DamagingProjectileAPI proj) {
         shot.hitsLeft = 0;
         shot.expired = true;
-        engine.removeEntity(proj);
+        Global.getCombatEngine().removeEntity(proj);
+    }
+    
+    private static final class LocalData {
+        final Set<DamagingProjectileAPI> hullPierceProjectiles = new LinkedHashSet<>(100);
     }
 }

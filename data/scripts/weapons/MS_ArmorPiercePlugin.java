@@ -1,29 +1,31 @@
-package data.scripts.plugins;
+package data.scripts.weapons;
 
+import com.fs.starfarer.api.AnimationAPI;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.*;
-import com.fs.starfarer.api.input.InputEventAPI;
-import com.fs.starfarer.api.graphics.SpriteAPI;
 import static com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.MAX_CHANCE_PERCENT;
 import static com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.MAX_RANGE;
 import static com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.MIN_RANGE;
 import com.fs.starfarer.api.impl.campaign.skills.RangedSpecialization.RangedSpecDamageDealtMod;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import data.scripts.plugins.MS_APVisualEffectPlugin;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
-import org.lwjgl.util.vector.Vector2f;
 
 //import static org.lwjgl.opengl.GL11.GL_ONE;
 //import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
-public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
+public class MS_ArmorPiercePlugin implements EveryFrameWeaponEffectPlugin, OnFireEffectPlugin {
 
     // OBJECTIVES:
     // NL should pierce targets and deal 1000 damage per hit at normal damage
@@ -34,8 +36,10 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     // - if the fighter survives the hit, it does count
     // Hull under a module is not hit
 
-//    private static final String WEAPON_ID = "ms_rhpc";
-    private static final String PROJ_ID = "ms_rhpcblast";
+    private static final String DATA_KEY_PREFIX = "MS_HullPierceWeapon_";
+    
+    private static final String NIDHOGGR_PROJ_ID = "ms_rhpcblast";
+    
     private static final int MAX_HITS = 8; // For base 1000 damage per hit
 
     // Calculate time to cover 50 px
@@ -63,14 +67,14 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
         damage *= getRangedSpecDamageMult(proj);
         float empDamage = shot.empPerHit * shot.hitsLeft;
 
-        engine.applyDamage(entity, proj.getLocation(),
+        Global.getCombatEngine().applyDamage(entity, proj.getLocation(),
                     damage,
                     proj.getDamageType(),
                     empDamage,
                     false, false, proj.getSource());
 
         // Render the hit
-        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
+        Global.getCombatEngine().spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
         // Play piercing sound (only one sound active per projectile)
         Global.getSoundPlayer().playLoop(SHIELD_HIT_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
     }
@@ -83,14 +87,14 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
         damage *= getRangedSpecDamageMult(proj);
         float empDamage = shot.empPerHit * hitsToBreak;
 
-        engine.applyDamage(entity, proj.getLocation(),
+        Global.getCombatEngine().applyDamage(entity, proj.getLocation(),
                     damage,
                     proj.getDamageType(),
                     empDamage,
                     false, false, proj.getSource());
 
         // Render the hit
-        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
+        Global.getCombatEngine().spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount, 1f);
         // Play piercing sound (only one sound active per projectile)
         Global.getSoundPlayer().playLoop(SHIELD_HIT_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
     }
@@ -104,14 +108,14 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
         float empDamage = shot.empPerHit;
 
         // Deal damage first, then check if it counts as a hit
-        engine.applyDamage(entity, proj.getLocation(),
+        Global.getCombatEngine().applyDamage(entity, proj.getLocation(),
                     damage,
                     proj.getDamageType(),
                     empDamage,
                     true, false, proj.getSource());
 
         // Render the hit
-        engine.spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount * 2f, .5f);
+        Global.getCombatEngine().spawnExplosion(proj.getLocation(), entity.getVelocity(), COLOR1, speed * amount * 2f, .5f);
         // Play piercing sound (only one sound active per projectile)
         Global.getSoundPlayer().playLoop(PIERCE_SOUND, proj, 1f, 1f, proj.getLocation(), entity.getVelocity());
 
@@ -140,36 +144,21 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             return 1f + (chancePercent * 0.01f);
         }
     }
-
+    
     @Override
-    public void renderInWorldCoords(ViewportAPI viewport) {
-        if (engine == null) {
-            return;
+    public void onFire(DamagingProjectileAPI projectile, WeaponAPI weapon, CombatEngineAPI engine) {
+        if ((projectile == null) || (weapon == null)) return;
+        
+        final String DATA_KEY = DATA_KEY_PREFIX + weapon.getShip().getId() + "_" + weapon.getSlot().getId();
+        LocalData localData = (LocalData) engine.getCustomData().get(DATA_KEY);
+        if (localData == null) {
+            localData = new LocalData();
+            engine.getCustomData().put(DATA_KEY, localData);
         }
-
-        for (DamagingProjectileAPI proj : engine.getProjectiles()) {
-            String spec = proj.getProjectileSpecId();
-
-            if (spec == null || !spec.equals(PROJ_ID)) {
-                continue;
-            }
-
-            Vector2f Here = new Vector2f(0,0) ;
-            Here.x = proj.getLocation().x;
-            Here.y = proj.getLocation().y;
-
-            SpriteAPI sprite = Global.getSettings().getSprite("flare", "nidhoggr_ALF");
-
-            if (!engine.isPaused()) {
-                sprite.setAlphaMult(MathUtils.getRandomNumberInRange(0.9f, 1f));
-            } else {
-                float tAlf = sprite.getAlphaMult();
-                sprite.setAlphaMult(tAlf);
-            }
-            sprite.setSize(800, 100);
-            sprite.setAdditiveBlend();
-            sprite.renderAtCenter(Here.x, Here.y);
-        }
+        final Set<DamagingProjectileAPI> hullPierceProjectiles = localData.hullPierceProjectiles;
+        
+        hullPierceProjectiles.add(projectile);
+        engine.addPlugin(new MS_APVisualEffectPlugin(projectile));
     }
 
 
@@ -197,21 +186,77 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
 
     private static final List<MS_NidhoggerLanceShot> SHOTS = new ArrayList<>();
     private static final Map<String, IntervalUtil> COOLDOWNS = new HashMap<>();
-
-    private CombatEngineAPI engine;
+    
+    //animation stuff
+    private WeaponAPI theWeapon;
+    private WeaponAPI theMuzzle;
+    private AnimationAPI theCharge;
+    private AnimationAPI theSparkles;
+    private AnimationAPI theHeat;
+    private AnimationAPI theFlash;
+    private ShipAPI animShip;
+    
+    private final List <WeaponAPI> theFlare = new ArrayList<>();
+    private final IntervalUtil anim = new IntervalUtil (0.03f, 0.03f);
+    private int frameC = 0;
+    private int maxFrameC = 0;
+    private int frameZ = 0;
+    private int maxFrameZ = 0;
+    private int frameM = 0;
+    private int maxFrameM = 0;
+    private float heat;    
+    private float charge;
+    private float lastCharge=0;
+    private float pFacing=0;
+    
+    private static final float CHARGEDOWN_RATIO=10f;
+    private static final float COOLING_RATIO=0.25f;
+    
+    private boolean runOnce=false;
+    private boolean fired=false;
+    private boolean firing = false;
+    private boolean chargeUp = false;
+    private boolean chargeDown = false;
+    private boolean reset=true;
 
     @Override
-    public void advance(float amount, List<InputEventAPI> events) {
-        if (engine != Global.getCombatEngine()) {
+    public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
+        if (engine == null) {
             SHOTS.clear();
             COOLDOWNS.clear();
-            engine = Global.getCombatEngine();
+            return;
         }
 
         if (engine.isPaused()) {
             return;
         }
-
+        
+        if (weapon.getShip().getHullSpec().getHullId().contains("ms_mimir")) {
+            animateMimirFiringSequence(amount, engine, weapon);
+        }
+        
+        ///////////////////
+        //     SHOTS     //
+        ///////////////////
+        
+        final String DATA_KEY = DATA_KEY_PREFIX + weapon.getShip().getId() + "_" + weapon.getSlot().getId();
+        LocalData localData = (LocalData) engine.getCustomData().get(DATA_KEY);
+        if (localData == null) {
+            localData = new LocalData();
+            engine.getCustomData().put(DATA_KEY, localData);
+        }
+        final Set<DamagingProjectileAPI> hullPierceProjectiles = localData.hullPierceProjectiles;
+        
+        if (hullPierceProjectiles.isEmpty()) return;
+        
+        Iterator<DamagingProjectileAPI> iter = hullPierceProjectiles.iterator();
+        while (iter.hasNext()) {
+            DamagingProjectileAPI proj = iter.next();
+            if (proj.isExpired() || !Global.getCombatEngine().isEntityInPlay(proj)) {
+                iter.remove();
+            }
+        }
+        
         List<String> keysToRemove = new ArrayList<>();
         for (String key : COOLDOWNS.keySet()) {
             IntervalUtil cooldown = COOLDOWNS.get(key);
@@ -220,13 +265,16 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
         }
         for (String key: keysToRemove) COOLDOWNS.remove(key);
 
+        iter = hullPierceProjectiles.iterator();
         // Scan all shots on the map for NL projectiles
         PROJECTILES:
-        for (DamagingProjectileAPI proj : engine.getProjectiles()) {
+        while (iter.hasNext()) {
+            DamagingProjectileAPI proj = iter.next();
             String spec = proj.getProjectileSpecId();
 
             // Is this a NL proj?
-            if (spec == null || !spec.equals(PROJ_ID)) {
+            if (spec == null || !spec.equals(NIDHOGGR_PROJ_ID)) {
+                iter.remove();
                 continue;
             }
 
@@ -512,7 +560,158 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
             shot.expired = true; // We assume each shot will expire next time around
         }
         SHOTS.removeAll(toRemove);
-
+    }
+    
+    private void animateMimirFiringSequence(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
+        
+        if(engine.isPaused()) return;
+        
+        if (!runOnce || animShip == null) {            
+            runOnce=true;
+            theFlare.clear();
+            animShip=weapon.getShip();
+            //get the weapon, all the sprites, sizes, and set the frames to the visible ones
+            for (WeaponAPI w : animShip.getAllWeapons()) {
+                switch(w.getSlot().getId()) {
+                    case "MAIN":
+                        theWeapon = w;
+                        break;
+                    case "CHARGE":
+                        theCharge = w.getAnimation();
+                        maxFrameC = theCharge.getNumFrames()-1;
+                        break;
+                    case "HEAT":
+                        w.getAnimation().setFrame(1);
+                        theHeat = w.getAnimation();
+                        theHeat.setAlphaMult(0);
+                        break;
+                    case "ZAP":
+                        theSparkles = w.getAnimation();
+                        maxFrameZ = theSparkles.getNumFrames();
+                        break;
+                    case "MUZZLE":
+                        theMuzzle = w;
+                        theFlash = w.getAnimation();
+                        maxFrameM = theFlash.getNumFrames();
+                        break;
+                }
+            }
+            return;
+        }
+        
+        ///////////////////
+        //   ANIMATION   //
+        ///////////////////
+        
+        float newCharge = weapon.getChargeLevel();
+        //skip the script if the weapon isn't firing or cooling
+        if (newCharge>0 || firing){
+                  
+            anim.advance(amount);
+            
+            if (newCharge>lastCharge){
+                firing = true;
+                chargeUp=true;
+                chargeDown=false;
+                if (reset){
+                    reset=false;
+                    charge=1;
+                    frameC=0;
+                    frameZ=0;
+                }
+            } else {
+                chargeUp=false;
+                chargeDown=true;
+                reset=true;
+            }            
+            lastCharge=newCharge;
+            
+            if(newCharge==0 && heat==0 && charge==0){
+                firing=false;
+            }
+            
+            //lightning effect after firing
+            if (frameZ!=0 && anim.intervalElapsed()){
+                frameZ++;
+                if (frameZ==maxFrameZ){
+                    frameZ=0;
+                }
+            }
+            //the barrel get hot only if the gun fired
+            heat = Math.max(heat-amount*COOLING_RATIO,0);
+            //fading of the chargeup light after firing or in case of overload/venting
+            if(chargeDown && charge>0){
+                charge = Math.min(
+                        1,
+                        Math.max(
+                                0,
+                                charge - charge*amount*CHARGEDOWN_RATIO + (((float)Math.random()-0.5f)/20)
+                        )
+                );
+            }
+            //animate the charge
+            if (chargeUp && frameC!=maxFrameC && anim.intervalElapsed()){
+                charge=1;
+                frameC++;
+            }
+            
+            //FIRING!
+            if (newCharge==1){
+                if (theWeapon.getAmmo()==0){
+                    fired=true;
+                    heat=1;
+                    frameZ=1;
+                    engine.addSmoothParticle(
+                            theWeapon.getLocation(),
+                            animShip.getVelocity(),
+                            MathUtils.getRandomNumberInRange(125, 150),
+                            0.25f,
+                            1,
+                            new Color (50,255,100)
+                    );                
+                    engine.addHitParticle(
+                            theWeapon.getLocation(),
+                            animShip.getVelocity(),
+                            MathUtils.getRandomNumberInRange(50, 75),
+                            1f,
+                            0.1f,
+                            new Color (200,255,200)
+                    );
+                    
+                    //projectile replacement
+                    /*for (DamagingProjectileAPI p : engine.getProjectiles()){
+                        if ( p.getWeapon() == weapon ) {
+                            pFacing = p.getFacing();
+                            engine.removeEntity(p);
+                            break;
+                        }
+                    }*/
+                    //Vector2f muzzle_location = new Vector2f (theWeapon.getLocation());
+                    //Vector2f ship_velocity = new Vector2f(theWeapon.getShip().getVelocity());
+                    
+                    //SimpleEntity
+                    //public CombatEntityAPI spawnProjectile(ShipAPI ship, WeaponAPI weapon, String weaponId, Vector2f point, float angle, Vector2f shipVelocity)
+                    //engine.spawnProjectile(animShip, weapon, "ms_rhpbc_replacement", muzzle_location, pFacing, ship_velocity);
+                }
+            }
+            
+            //animate the muzzle
+            if((fired || frameM!=0) && anim.intervalElapsed()){               
+                fired=false;
+                frameM++;
+                if (frameM==maxFrameM){
+                    frameM=0;
+                }
+            }
+            
+            //apply the animation and heat to the decos
+            theCharge.setFrame(frameC);
+            theCharge.setAlphaMult(charge);
+            theFlash.setFrame(frameM);
+            theHeat.setAlphaMult(heat);
+            theHeat.setFrame(1);
+            theSparkles.setFrame(frameZ);
+        }
     }
 
     private boolean isShieldHit(CombatEntityAPI entity, DamagingProjectileAPI proj) {
@@ -540,6 +739,10 @@ public class MS_ArmorPiercePlugin extends BaseEveryFrameCombatPlugin {
     private void endLanceShot(MS_NidhoggerLanceShot shot, DamagingProjectileAPI proj) {
         shot.hitsLeft = 0;
         shot.expired = true;
-        engine.removeEntity(proj);
+        Global.getCombatEngine().removeEntity(proj);
+    }
+    
+    private static final class LocalData {
+        final Set<DamagingProjectileAPI> hullPierceProjectiles = new LinkedHashSet<>(100);
     }
 }

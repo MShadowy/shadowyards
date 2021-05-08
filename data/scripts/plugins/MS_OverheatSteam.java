@@ -27,29 +27,35 @@ public class MS_OverheatSteam extends BaseEveryFrameCombatPlugin {
         mag.put(WeaponSize.MEDIUM, 1.5f);
         mag.put(WeaponSize.LARGE, 2.5f);
     }
+    
+    private CombatEngineAPI engine;
+    private ShipAPI ship;
+    
+    public MS_OverheatSteam (ShipAPI ship) {
+        this.ship = ship;
+    }
 
     @Override
     public void init(CombatEngineAPI engine) {
+        this.engine = engine;
     }
 
     private final IntervalUtil interval = new IntervalUtil(0.1f, 0.1f);
 
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
-        CombatEngineAPI engine = Global.getCombatEngine();
-
         if (engine.isPaused()) {
             return;
         }
 
-        interval.advance(amount);
+        /*interval.advance(amount);
 
         if (interval.intervalElapsed()) {
             float smokeSize = 0.8f + 0.4f * (float) Math.random();
 
             List<ShipAPI> ships = engine.getShips();
 
-            for (ShipAPI ship : ships) {
+            for (ShipAPI ship : ships) {*/
 
                 if (ship.getSystem() != null && ship.getSystem().getId().contentEquals("ms_overdrive")) {
                     ShipSystemAPI system = ship.getSystem();
@@ -58,6 +64,8 @@ public class MS_OverheatSteam extends BaseEveryFrameCombatPlugin {
 
                     if (system != null) {
                         if (system.isActive() && !system.isOn()) {
+                            float smokeSize = 0.8f + 0.4f * (float) Math.random();
+                            
                             for (WeaponAPI weapon : weapons) {
 
                                 float smokeSizeValue = mag.get(weapon.getSize());
@@ -74,17 +82,13 @@ public class MS_OverheatSteam extends BaseEveryFrameCombatPlugin {
 
                             Global.getSoundPlayer().playSound(sound, 1f, 0.5f, ship.getLocation(), ship.getVelocity());
                         }
+                        
+                        if (!system.isActive()) {
+                            Global.getCombatEngine().removePlugin(this);
+                        }
                     }
                 }
-            }
-        }
-    }
-    
-    @Override
-    public void renderInUICoords(ViewportAPI viewport) {
-    }
-     
-    @Override
-    public void renderInWorldCoords(ViewportAPI viewport) {  
+            //}
+        //}
     }
 }

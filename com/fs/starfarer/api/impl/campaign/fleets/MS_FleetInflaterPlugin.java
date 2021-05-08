@@ -107,6 +107,8 @@ public class MS_FleetInflaterPlugin implements FleetInflater, AutofitPlugin.Auto
             String cat = spec.getAutofitCategory();
             if (isPriority(spec)) {
 		priorityFighters.add(cat, new AvailableFighterImpl(spec, 1000));
+            } else if (isPriority(spec) && spec.getId().equals("ms_shikome_wing")) {
+                priorityFighters.add(cat, new AvailableFighterImpl(spec, 50));
             } else {
 		nonPriorityFighters.add(cat, new AvailableFighterImpl(spec, 1000));
             }
