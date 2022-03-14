@@ -1,6 +1,5 @@
 package data.campaign.econ.industries;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
@@ -10,9 +9,7 @@ import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import data.campaign.econ.MS_items;
 import java.awt.Color;
-import java.util.List;
 
 public class MS_medCenter extends BaseIndustry implements MarketImmigrationModifier {
     
@@ -20,7 +17,7 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
     public void apply() {
         super.apply(true);
         
-        int size = market.getSize();
+        /*int size = market.getSize();
         int bat = 1;
         if (size - 5 > 1) {
             bat = size - 5;
@@ -94,7 +91,7 @@ public class MS_medCenter extends BaseIndustry implements MarketImmigrationModif
         
         Pair<String, Integer> deficit = getMaxDeficit(Commodities.CREW, Commodities.ORGANICS);
         
-        applyDeficitToProduction(1, deficit, MS_items.GUTS);
+        applyDeficitToProduction(1, deficit, MS_items.GUTS);*/
         
         if (!isFunctional()) {
             supply.clear();

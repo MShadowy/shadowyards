@@ -18,19 +18,6 @@ public class MS_CCskirmishTactics extends BaseHullMod {
     }
     
     @Override
-    public void applyEffectsAfterShipCreation(ShipAPI ship, String id)
-    {
-        if (!"shadow_industry".equals(Misc.getCommissionFactionId()))
-        {
-            ship.getVariant().removeMod(HULLMOD_ID);
-        }
-        if (ship.getVariant().hasHullMod("CHM_commission"))
-        {
-            ship.getVariant().removeMod("CHM_commission");
-        }
-    }
-    
-    @Override
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
         if (index == 0) return "" + (int) TURN_SPEED;
         if (index == 1) return "" + (int) TURN_ACCELERATION;

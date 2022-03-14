@@ -87,10 +87,10 @@ public class MS_FleetInflaterPlugin implements FleetInflater, AutofitPlugin.Auto
             String cat = spec.getAutofitCategory();
 			
             if (isPriority(spec)) {
-		List<AvailableWeapon> list = priorityWeapons.getWeapons(tier).getWeapons(cat);
+		List<AvailableWeapon> list = (List<AvailableWeapon>) priorityWeapons.getWeapons(tier).getWeapons(cat);
 		list.add(new AvailableWeaponImpl(spec, 1000));
             } else {
-		List<AvailableWeapon> list = nonPriorityWeapons.getWeapons(tier).getWeapons(cat);
+		List<AvailableWeapon> list = (List<AvailableWeapon>) nonPriorityWeapons.getWeapons(tier).getWeapons(cat);
 		list.add(new AvailableWeaponImpl(spec, 1000));
             }
             weaponCategories.add(cat);
@@ -152,7 +152,7 @@ public class MS_FleetInflaterPlugin implements FleetInflater, AutofitPlugin.Auto
                         num = 100;
                     }
                     
-                    List<AvailableWeapon> priority = priorityWeapons.getWeapons(t).getWeapons(cat);
+                    List<AvailableWeapon> priority = (List<AvailableWeapon>) priorityWeapons.getWeapons(t).getWeapons(cat);
                     Set<Integer> picks = makePicks(num, priority.size(), random);
                     for (Integer index : picks) {
                         AvailableWeapon w = priority.get(index);
@@ -161,7 +161,7 @@ public class MS_FleetInflaterPlugin implements FleetInflater, AutofitPlugin.Auto
                     
                     num -= picks.size();
                     if (num > 0) {
-                        List<AvailableWeapon> nonPriority = nonPriorityWeapons.getWeapons(t).getWeapons(cat);
+                        List<AvailableWeapon> nonPriority = (List<AvailableWeapon>) nonPriorityWeapons.getWeapons(t).getWeapons(cat);
                         picks = makePicks(num, nonPriority.size(), random);
                         for (Integer index : picks) {
                             AvailableWeapon w = nonPriority.get(index);
@@ -437,5 +437,10 @@ public class MS_FleetInflaterPlugin implements FleetInflater, AutofitPlugin.Auto
     public boolean isPlayerCampaignRefit()
     {
         return false;
+    }
+
+    @Override
+    public boolean isAllowSlightRandomization() {
+	return true;
     }
 }

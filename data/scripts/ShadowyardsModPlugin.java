@@ -114,9 +114,7 @@ public class ShadowyardsModPlugin extends BaseModPlugin {
             admin.setGender(Gender.FEMALE);
             admin.setPostId(Ranks.POST_FACTION_LEADER);
             admin.setRankId(Ranks.FACTION_LEADER);
-            
-            admin.getStats().setSkillLevel(Skills.SPACE_OPERATIONS, 3);
-            admin.getStats().setSkillLevel(Skills.PLANETARY_OPERATIONS, 3);
+
             admin.getStats().setSkillLevel(Skills.INDUSTRIAL_PLANNING, 3);
             admin.setAICoreId(Commodities.BETA_CORE);
             admin.getName().setFirst("Mahika");

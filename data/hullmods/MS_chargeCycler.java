@@ -9,7 +9,7 @@ import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponType;
 
 public class MS_chargeCycler extends BaseHullMod {
-    private final float RATE = 1.1f;
+    private final float RATE = 1.15f;
     
     @Override
     public String getDescriptionParam(int index, HullSize hullSize) {
@@ -38,7 +38,7 @@ public class MS_chargeCycler extends BaseHullMod {
         for (WeaponAPI w : ship.getAllWeapons()) {
             //only bother with ammo regenerators
             
-            float reloadRate = w.getAmmoPerSecond();
+            float reloadRate = w.getSpec().getAmmoPerSecond();
             float nuCharge = reloadRate * RATE;
             if (w.getType() == WeaponType.ENERGY && w.usesAmmo() && reloadRate > 0) {
                 w.getAmmoTracker().setAmmoPerSecond(nuCharge);

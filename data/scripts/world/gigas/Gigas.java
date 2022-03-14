@@ -149,7 +149,7 @@ public class Gigas {
                 0.3f  
         );
         
-        MS_Utils.addDerelict(system, vel, "ms_ninurta_Standard", ShipCondition.AVERAGE, 11900f, true);
+        MS_Utils.addDerelict(system, vel, "ms_ninurta_standard", ShipCondition.AVERAGE, 11900f, true);
         MS_Utils.addDerelict(system, vel, "ms_sargasso_Assault", ShipCondition.AVERAGE, 11000f, true);
         
         PlanetAPI vel3 = system.addPlanet("kain", vel, "Kain", "frozen", 211, 110f, 14500f, 243f);
