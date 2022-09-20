@@ -1,7 +1,91 @@
+0.9.6-rc1 Dev Changleog
+
+    Updated the SRA's relationships on generation to include more factions, which should resolve some weirdness in Nexerelin
+    An error with the Nidhoggr Lance that was preventing it from properly applying the piercing effect has been resolved
+    TODO Adjust firing script to allow for the Lance to to be held at partial charge, which should make the AI a little less weird with it
+    Increased the Ninurta's monthly and per deployment supply costs to 12 (from 8)
+    Increased the Cetus' monthly and per deployment supply costs to 9 (from 7)
+    Increased the Skadi's OP to 260 (from 220)
+    Realized I had not, in fact, given the Mimir (R) it's short hop version of the Lock Drive and fixed this oversight
+    Updated and improved the Tartarus sprite
+    Updated descriptions for the Modular Fabricators to remove now erroneous text referring to nanoforge compatability
+    Entirely replaced the sprite for the Poseidon High Value Bounty, (TODO) and gave it a custom Flux Draining system and interlinked main weapon
+    	The System temporarily reduces the flux pool of the target vessel
+    		The Poseidon does not directly get this flux itself, instead powering it's main weapon with it
+    		The effect lasts about 15 seconds, but can be "reinvigorated" if the Poseidon can vampirize another ship
+    		Stacks up to 5 times, with weapon effect increases happening at 1, 3, and 5 pips
+    		System becomes much less accurate as number of pips increase
+    	The basic weapon effect is a faily basic plasma bolt, decent damage, not great flux efficiency, middling RoF
+    		Uses on hit effects to attach scripts
+    		Every weapon effect increase adds additional subprojectiles when the weapon is fired, each with it's own effect
+    			1 pip : Additional damage
+    			3 pips: Huge indiscriminate EMP bursts
+    			5 pips: Big shovey impulse blast / slight effect refresher on each hit
+    PARTIAL Added the Asphodel Test Bed Cruiser to High Value Bounties
+    	Still remaining to do is to adjust it's firing script so to make it friendlier for AI use
+    Updated the Maleficent sprite and gave it a unique hullmod, Wolfpack Systems
+    	WpS linearly improves weapon performance aboard the host ship for each additional ship with the same hullmod within a range of 800:
+    		RoF of Ballistic and Energy weapons increased by 20%
+    		Damage of Beams and Missile weapons increased by 25%
+    		If WpS cannot network with anything else, it gives no bonus
+    Increased beam speed for the Kamal and Mughal to 10,000 (from 2,000) 
+    Made the Yajna system significantly less compressed, which should hopefully help resolve some issues with patrols
+    Fixed an issue with unbuildable structures causing ridiculously inflated planet bounty prices in Nexerelin
+    Shikomes now no longer glow like the freakin' sun when under the effects of the Fighter Control Relay
+    Changed 12 (of 15) EveryFrameScripts that were always being loaded in combat so that they should only show up when being used
+    Updated the script for the SRA's faction doctrine to be more in line with the current system
+    Adjusted Charge Cyclers recharge increase down to 15% (from 25%)
+    Updated the Phase Anchor script to include the speed disruption effect in standard Phase Cloaks
+    	The speed disruption reaches its full effect more rapidly (at 33% flux/disruption) but is not as severe (50% speed reduction)
+    Fixed a bug in the GAT system where the system effect was not correctly unapplying
+    Also generally went through and cleared out a number of old and unused scripts
+    Adjusted the flux dissipation on some of the Yardie derived ships:
+    	The Southpaws flux dissipation has beeing increased to 220 (from 150)
+    	The Potnia-bis' flux dissipation has been increased to 360 (from 300)
+    	The Potnia-tris' flux dissipation has been increased to 240 (from 200)
+    Trimmed the number of missions down to five
+    Removed the Cloned Organs commodity from circulation, due a number of issues with its basic implementation
+    Fixed a typo in the world gen scripts that was preventing a particular derelict from spawning
+    Added a new music track to the campaign layer, courtesy of Mesotronik
+    
+    CONSIDER Shuffling ships to specific factions/subfactions as a way of keeping up ship variety while reducing total number of ships
+    TODO Add one more Large Missile Launcher
+        2nd, another AoE weapon, missilized version of the Shamash's phase gun:
+          inital AoE damage and range is small, but ignores shields, follow up damage is from a persisting AoE DoT (explained as a "phase storm" caused by the p-mass bubble escaping
+          back into p-space)
+          duration undetermined; tentatively 4-8 seconds, randomized within a range
+          At ~1/2 to 2/3rds of the way through the effect it begins diminishing in size at a logarithmic/exponential pace (depending on what feels better)
+          sucks into the middle
+          greater intensity as it ends?
+          main elements:
+             main script tracking ships inside AoE and applying damage through EMP strikes at semi-random intervals
+          supporting elements:
+             scripted spawning of "wandering" non-colliding projectiles, serving as both visual elements and the purpose of AI Trickery (i.e. getting to keep their shields up)
+          visual elements:
+             scripted spawning of "wandering" invisible non-colliding projectiles to be chased by custom trail effects
+             scripted "phase storm cloud" effect consisting of two custom particle types
+                should approximately fill the effected area
+                mostly translucent "cloud" effect particle that is present for most of the time the effect is active; some rotation/movement?
+                "cloud to cloud" lightning particle; appears behind "cloud" particles at random intervals in semi-random clusters for short durations
+             non damaging emp arcs between random points within area of effect
+             SCRIPTS NEEDED:
+                MAIN SCRIPT - handles initial detonation, AoE damage and spawning of sub projectiles
+                SUBPROJ HANDLERS - directs sub projectiles and sets them to non-colliding, spawns custom trails that follow them
+                CLOUD HANDLER - handles the visual effects for the storm system, spawning the custom particles and timing the cloud-to-cloud lightning
+    TODO Trim and redo missions - PARTIAL; missions trimmed
+        KEEPERS - Triune, They Might be Giants, Drums in the Deep, Cease and Desist plus the Random missions and Stampede
+        CHANGES
+                TRIUNE - Expand mission events considerably with FS2 style mission expansion; at least a plot twist and some in mission dialogue
+                TMBG - Get ships predamaged as intended, set CR to the desired levels, change it to a pursuit mission
+                DRUMS - Expand mission events with FS2 style mission extension, have virus bomb attack shown in post mission success cutscene
+                CAD - Mission needs to be reconsidered and seriously rebalanced
+                RANDOM - Fix Random mission script so it actually spawns fleets successfully, solves bugs where it would sometimes fail to generate fleets (Done)
+                STAMPEDE - More Buffalo, more variations on Buffalo, fewer friendly ships, and fix it to make it work consistently
+
 0.9.5-rc4 Changelog
 
     The Carmine (Redwings) should show up in SRA military and black markets and in Redwings fleets, as in retrospect there wasn't much reason to keep it from showing up while the mission string that would put it in game isn't even implemented yet
-    Finally seem to have resolved the ongoing Mimir vector crash bug, with thanks to President Matt Damon on the discrod
+    Finally seem to have resolved the ongoing Mimir vector crash bug, with thanks to President Matt Damon on the discord
     Redwings Command no longers makes Euripides a military market, and as such its uh... military market has been removed
     	Please note that this will not effect existing saves
     Some adjustments to Modular Fabricators and their sub industries in order to prevent possible issues with industry ids getting confused

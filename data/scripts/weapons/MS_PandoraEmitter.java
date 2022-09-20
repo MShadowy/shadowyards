@@ -204,6 +204,10 @@ public class MS_PandoraEmitter implements EveryFrameWeaponEffectPlugin {
         public Map<String, Object> getCustomData() {
             return null;
         }
+
+        @Override
+        public void setHitpoints(float hp) {
+        }
     }
     //</editor-fold>
 }

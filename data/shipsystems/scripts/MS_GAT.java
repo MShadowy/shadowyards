@@ -64,57 +64,67 @@ public class MS_GAT extends BaseShipSystemScript {
         ShipSystemAPI system = ship.getSystem();
         List<WeaponAPI> weaps = ship.getAllWeapons();
         
-        if (ship.getPhaseCloak() != null && ship.getPhaseCloak().isActive()) {
-            if (ship.getSystem().isActive()) ship.getPhaseCloak().deactivate();
-        }
-        
-        if (state == State.ACTIVE) {
-            float mult = 1f + ROF_BONUS.get(ship.getHullSize()) * effectLevel;
-            
-            stats.getEnergyRoFMult().modifyMult(id, mult);
-            stats.getMaxRecoilMult().modifyMult(id, RECOIL_MULT * effectLevel);
-            stats.getRecoilDecayMult().modifyMult(id, RECOIL_MULT * effectLevel);
-            stats.getRecoilPerShotMult().modifyMult(id, RECOIL_MULT * effectLevel);
-            stats.getEnergyWeaponFluxCostMod().modifyMult(id, FLUX_USE_MULT * effectLevel);
-            stats.getMissileMaxSpeedBonus().modifyMult(id, mult);
-            for (WeaponAPI w : weaps) {
-                if (!w.getType().equals(WeaponType.ENERGY)) {
-                    continue;
+        if (null != state) switch (state) {
+            case IN:
+                if (ship.getPhaseCloak() != null && ship.getPhaseCloak().isActive()) {
+                    if (ship.getSystem().isActive()) ship.getPhaseCloak().deactivate();
                 }
                 
-                if (!w.isBeam()) {
-                    stats.getEnergyWeaponDamageMult().modifyMult(id, PROJ_DAM_MULT.get(ship.getHullSize()) * effectLevel);   
-                }
-                for (BeamAPI b : w.getBeams()) {
-                    if (b != null) {
-                        stats.getBeamWeaponDamageMult().modifyMult(id, BEAM_DAM_MULT.get(ship.getHullSize()) * effectLevel);
+                break;
+            case ACTIVE:
+                float mult = 1f + ROF_BONUS.get(ship.getHullSize()) * effectLevel;
+                stats.getEnergyRoFMult().modifyMult(id, mult);
+                stats.getMaxRecoilMult().modifyMult(id, RECOIL_MULT * effectLevel);
+                stats.getRecoilDecayMult().modifyMult(id, RECOIL_MULT * effectLevel);
+                stats.getRecoilPerShotMult().modifyMult(id, RECOIL_MULT * effectLevel);
+                stats.getEnergyWeaponFluxCostMod().modifyMult(id, FLUX_USE_MULT * effectLevel);
+                stats.getMissileMaxSpeedBonus().modifyMult(id, mult);
+                for (WeaponAPI w : weaps) {
+                    if (!w.getType().equals(WeaponType.ENERGY)) {
+                        continue;
                     }
+                    
+                    if (!w.isBeam()) {
+                        stats.getEnergyWeaponDamageMult().modifyMult(id, PROJ_DAM_MULT.get(ship.getHullSize()) * effectLevel);
+                    }
+                    for (BeamAPI b : w.getBeams()) {
+                        if (b != null) {
+                            stats.getBeamWeaponDamageMult().modifyMult(id, BEAM_DAM_MULT.get(ship.getHullSize()) * effectLevel);
+                        }
+                    }
+                }   if (player && effectLevel > 0) {
+                    float multB = RECOIL_MULT * effectLevel;
+                    float multC = BEAM_DAM_MULT.get(ship.getHullSize()) * effectLevel;
+                    float multD = PROJ_DAM_MULT.get(ship.getHullSize()) * effectLevel;
+                    float multE = FLUX_USE_MULT * effectLevel;
+                    float bonus1 = (int) (ROF_BONUS.get(ship.getHullSize()) * effectLevel * 100f);
+                    float bonus2 = (int) (100f - (multB * 100f)) * -1f;
+                    float bonus3 = (int) (100f - (multC * 100f)) * -1f;
+                    float bonus4 = (int) (100f - (multD * 100f)) * -1f;
+                    float bonus5 = (int) 100f - (multE * 100f);
+                    
+                    Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY1,
+                            system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
+                            "all weapons rate of fire increased " + (int) Math.round(bonus1) + "%", false);
+                    Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY2,
+                            system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
+                            "damage increased - projectiles by " + (int) Math.round(bonus4) + "%, beams by " + (int) Math.round(bonus3) + "%" , false);
+                    Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY3,
+                            system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
+                            "weapon recoil increased by " + (int) Math.round(bonus2) + "%" , false);
+                    Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY4,
+                            system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
+                            "weapon flux use decreased by " + (int) Math.round(bonus5) + "%" , false);
                 }
-            }
-            if (player && effectLevel > 0) {
-                float multB = RECOIL_MULT * effectLevel;
-                float multC = BEAM_DAM_MULT.get(ship.getHullSize()) * effectLevel;
-                float multD = PROJ_DAM_MULT.get(ship.getHullSize()) * effectLevel;
-                float multE = FLUX_USE_MULT * effectLevel;
-                float bonus1 = (int) (ROF_BONUS.get(ship.getHullSize()) * effectLevel * 100f);
-                float bonus2 = (int) (100f - (multB * 100f)) * -1f;
-                float bonus3 = (int) (100f - (multC * 100f)) * -1f;
-                float bonus4 = (int) (100f - (multD * 100f)) * -1f;
-                float bonus5 = (int) 100f - (multE * 100f);
                 
-                Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY1,
-                    system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
-                    "all weapons rate of fire increased " + (int) Math.round(bonus1) + "%", false);
-                Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY2,
-                    system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
-                    "damage increased - projectiles by " + (int) Math.round(bonus4) + "%, beams by " + (int) Math.round(bonus3) + "%" , false);
-                Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY3,
-                    system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
-                    "weapon recoil increased by " + (int) Math.round(bonus2) + "%" , false);
-                Global.getCombatEngine().maintainStatusForPlayerShip(STATUSKEY4,
-                    system.getSpecAPI().getIconSpriteName(), system.getDisplayName(),
-                    "weapon flux use decreased by " + (int) Math.round(bonus5) + "%" , false);
-            }
+                break;
+            case OUT:
+            case IDLE:
+            case COOLDOWN:
+                unapply(stats, id);
+                break;
+            default:
+                break;
         }
     }
     
@@ -127,6 +137,7 @@ public class MS_GAT extends BaseShipSystemScript {
         stats.getEnergyWeaponFluxCostMod().unmodify(id);
         stats.getMissileMaxSpeedBonus().unmodify(id);
         stats.getEnergyWeaponDamageMult().unmodify(id);
+        stats.getBeamWeaponDamageMult().unmodify(id);
     }
     
     @Override
