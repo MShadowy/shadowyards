@@ -23,6 +23,11 @@ public class MS_radiationAbsorbers extends BaseIndustry {
 	public boolean isAvailableToBuild() {
             return false;
 	}
+        
+        @Override
+	public boolean showWhenUnavailable() {
+		return false;
+	}
     
         @Override
         public void apply() {

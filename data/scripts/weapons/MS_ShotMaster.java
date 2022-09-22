@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import data.scripts.plugins.MS_PulsePopperPlugin;
+import data.scripts.weapons.MS_ghostFireHandler;
 import org.lazywizard.lazylib.combat.CombatUtils;
 
 public class MS_ShotMaster implements EveryFrameWeaponEffectPlugin {
@@ -33,6 +34,8 @@ public class MS_ShotMaster implements EveryFrameWeaponEffectPlugin {
                 case "ms_cepc_tiny":
                     engine.addPlugin(new MS_PulsePopperPlugin(proj));
                     break;
+                case "ms_ghostlight_proj":
+                    engine.addPlugin(new MS_ghostFireHandler(proj, weapon.getShip().getShipTarget()));
             }
         }
     }
